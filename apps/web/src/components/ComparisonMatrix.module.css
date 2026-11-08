@@ -1,0 +1,262 @@
+.matrixWrapper {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-medium);
+  padding: 1.75rem;
+  box-shadow: var(--shadow-lg);
+  margin: 1.5rem 0;
+}
+
+.matrixHeader {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1.25rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .matrixHeader {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.titleGroup {
+  max-width: 550px;
+}
+
+.badgePulseWrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.5rem;
+}
+
+.sparkleIcon {
+  color: var(--brand-primary);
+}
+
+.matrixBadge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+  letter-spacing: 0.05em;
+}
+
+.matrixTitle {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.matrixSubtitle {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.savingsCard {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: var(--deal-green-bg);
+  border: 1px solid var(--deal-green-border);
+  padding: 0.75rem 1.25rem;
+  border-radius: var(--radius-md);
+}
+
+.savingsIcon {
+  color: var(--deal-green);
+}
+
+.savingsLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.savingsValue {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--deal-green);
+}
+
+.savingsSub {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+/* Cards Grid */
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .cardsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .cardsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.rateCard {
+  background: var(--bg-surface-elevated);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  padding: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.rateCard:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-medium);
+}
+
+.bestRateCard {
+  border: 2px solid var(--brand-primary);
+  background: linear-gradient(180deg, rgba(13, 148, 136, 0.05) 0%, transparent 100%);
+  box-shadow: 0 10px 25px -5px rgba(13, 148, 136, 0.2);
+}
+
+.bestPriceRibbon {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--brand-gradient);
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+  white-space: nowrap;
+  box-shadow: 0 4px 10px rgba(13, 148, 136, 0.3);
+}
+
+.cardHeader {
+  margin-top: 0.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.platformNameRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.platformName {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+}
+
+.officialBadge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  background: var(--brand-primary);
+  color: #ffffff;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+.priceRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+}
+
+.priceAmount {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.bestRateCard .priceAmount {
+  color: var(--brand-primary);
+}
+
+.pricePeriod {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.totalPriceNote {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* Perks */
+.perksList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1rem 0;
+  flex: 1;
+}
+
+.perkItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.825rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+.checkGreen {
+  color: var(--deal-green);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.checkMuted {
+  color: var(--text-muted);
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Footer CTAs */
+.cardFooter {
+  margin-top: auto;
+  padding-top: 0.75rem;
+}
+
+.directBookingBtn {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.externalBookingBtn {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 0.85rem;
+}

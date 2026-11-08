@@ -1,0 +1,247 @@
+.heroSection {
+  position: relative;
+  padding: 3.5rem 0 2.5rem;
+  background: radial-gradient(circle at 50% 0%, rgba(13, 148, 136, 0.12) 0%, transparent 70%);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.heroContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.heroHeader {
+  max-width: 840px;
+  margin-bottom: 2rem;
+}
+
+.badgePromo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 1rem;
+  border-radius: var(--radius-full);
+  background: rgba(13, 148, 136, 0.12);
+  color: var(--brand-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 1.25rem;
+  border: 1px solid rgba(13, 148, 136, 0.25);
+}
+
+.badgePulse {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--brand-primary);
+  box-shadow: 0 0 10px var(--brand-primary);
+}
+
+.heroTitle {
+  font-size: 2.75rem;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+@media (min-width: 768px) {
+  .heroTitle {
+    font-size: 3.6rem;
+  }
+}
+
+.gradientText {
+  background: var(--brand-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.heroSubtitle {
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* Type Filter Tabs */
+.typeTabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.typeTab {
+  padding: 0.5rem 1.1rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.typeTab:hover {
+  background: var(--bg-muted);
+  border-color: var(--border-medium);
+  color: var(--text-primary);
+}
+
+.typeTabActive {
+  background: var(--brand-gradient);
+  color: #ffffff !important;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.3);
+}
+
+/* Floating Search Box */
+.searchBox {
+  width: 100%;
+  max-width: 980px;
+  background: var(--bg-surface);
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-medium);
+  box-shadow: var(--shadow-float);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  align-items: stretch;
+  position: relative;
+  z-index: 20;
+}
+
+@media (min-width: 860px) {
+  .searchBox {
+    flex-direction: row;
+    align-items: center;
+    border-radius: var(--radius-full);
+    padding: 0.6rem 0.85rem 0.6rem 1.5rem;
+  }
+}
+
+.searchField {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  text-align: left;
+}
+
+.fieldLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.2rem;
+}
+
+.fieldIcon {
+  color: var(--brand-primary);
+}
+
+.fieldInput {
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  outline: none;
+  padding: 0.15rem 0;
+}
+
+.divider {
+  display: none;
+  width: 1px;
+  height: 38px;
+  background: var(--border-subtle);
+  margin: 0 0.75rem;
+}
+
+@media (min-width: 860px) {
+  .divider {
+    display: block;
+  }
+}
+
+.destinationDropdown {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  width: 320px;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  padding: 0.75rem;
+  z-index: 30;
+  text-align: left;
+}
+
+.dropdownTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  padding-left: 0.5rem;
+}
+
+.dropdownItem {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.75rem;
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+
+.dropdownItem:hover {
+  background: var(--bg-muted);
+  color: var(--brand-primary);
+}
+
+.searchSubmitBtn {
+  padding: 0.9rem 1.6rem;
+  border-radius: var(--radius-full);
+}
+
+/* Trust Banner */
+.trustBanner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin-top: 2rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.trustItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.trustIcon {
+  color: var(--deal-green);
+}

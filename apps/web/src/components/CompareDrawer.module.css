@@ -1,0 +1,312 @@
+/* Floating Bottom Bar */
+.floatingBar {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 45;
+  width: calc(100% - 32px);
+  max-width: 860px;
+  background: rgba(15, 23, 42, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: var(--radius-full);
+  padding: 0.65rem 1.25rem;
+  box-shadow: var(--shadow-float);
+  color: #ffffff;
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translate(-50%, 60px);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+.barContent {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.barInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.scaleIconWrapper {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--brand-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.barTitle {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.barSub {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .barSub {
+    display: block;
+  }
+}
+
+.thumbnails {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.thumbWrapper {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+}
+
+.thumbImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbRemoveBtn {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.75);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+}
+
+.barActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.clearBtn {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 600;
+  padding: 0.4rem 0.6rem;
+  border-radius: var(--radius-sm);
+  transition: color 0.2s ease;
+}
+
+.clearBtn:hover {
+  color: #ffffff;
+}
+
+.compareNowBtn {
+  padding: 0.6rem 1.1rem;
+  font-size: 0.85rem;
+  border-radius: var(--radius-full);
+}
+
+/* Modal */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: var(--bg-backdrop);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.modalContainer {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-medium);
+  width: 100%;
+  max-width: 1100px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+}
+
+.modalHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--bg-surface-elevated);
+}
+
+.modalTitle {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.modalSubtitle {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.modalCloseBtn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  background: var(--bg-muted);
+  transition: all 0.2s ease;
+}
+
+.modalCloseBtn:hover {
+  color: var(--text-primary);
+  background: var(--border-medium);
+}
+
+.tableScroll {
+  overflow-x: auto;
+  padding: 1.5rem;
+  flex: 1;
+}
+
+.compareTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.compareTable th, .compareTable td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.featureColHeader {
+  width: 220px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.propColHeader {
+  min-width: 240px;
+}
+
+.headerPropCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.headerPropImg {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+}
+
+.headerPropTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.headerPropLocation {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.headerRating {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--brand-primary);
+}
+
+.sectionHeaderRow td {
+  background: var(--bg-muted);
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.65rem 1rem;
+}
+
+.featureLabel {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.bestRateCell {
+  background: rgba(13, 148, 136, 0.06);
+}
+
+.cellBestPrice {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: var(--deal-green);
+}
+
+.cellBestTag {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--brand-primary);
+}
+
+.savingsCell {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--deal-green);
+}
+
+.amenityCell {
+  text-align: center;
+}
+
+.checkIcon {
+  color: var(--deal-green);
+}
+
+.minusIcon {
+  color: var(--text-muted);
+}
+
+.tableBookBtn {
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 0.85rem;
+}

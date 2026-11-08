@@ -1,0 +1,273 @@
+.card {
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: var(--shadow-sm);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-xl);
+  border-color: var(--border-medium);
+}
+
+/* Image */
+.imageContainer {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--bg-muted);
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.05);
+}
+
+.topBadges {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: flex;
+  gap: 0.4rem;
+  z-index: 2;
+}
+
+.typeBadge {
+  background: rgba(15, 23, 42, 0.75);
+  color: #ffffff;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.floatingActions {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  z-index: 2;
+}
+
+.iconBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.iconBtn:hover {
+  background: #ffffff;
+  transform: scale(1.1);
+}
+
+.favorited {
+  color: #ef4444;
+}
+
+.compared {
+  background: var(--brand-primary);
+  color: #ffffff;
+  border-color: var(--brand-primary);
+}
+
+.ratingOverlay {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(8px);
+  color: #ffffff;
+  padding: 0.3rem 0.65rem;
+  border-radius: var(--radius-full);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.starIcon {
+  color: var(--accent-gold);
+  fill: var(--accent-gold);
+}
+
+.ratingScore {
+  font-weight: 700;
+}
+
+.reviewCount {
+  color: rgba(255, 255, 255, 0.7);
+  font-weight: 400;
+}
+
+/* Content */
+.content {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.locationRow {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-bottom: 0.35rem;
+}
+
+.locationIcon {
+  color: var(--brand-primary);
+}
+
+.titleLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--text-primary);
+  margin-bottom: 0.65rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: color 0.2s ease;
+}
+
+.title:hover {
+  color: var(--brand-primary);
+}
+
+.amenitiesRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.amenityChip {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  background: var(--bg-muted);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  text-transform: capitalize;
+}
+
+.amenityMore {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+/* Comparison Strip */
+.comparisonStrip {
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+  margin-bottom: 1rem;
+}
+
+.priceContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.priceLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--text-muted);
+  letter-spacing: 0.03em;
+}
+
+.priceValueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.priceValue {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--deal-green);
+  letter-spacing: -0.02em;
+}
+
+.priceNight {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.savingsTag {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--deal-green);
+}
+
+.providerBadge {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--brand-primary);
+  background: rgba(13, 148, 136, 0.1);
+  padding: 0.35rem 0.65rem;
+  border-radius: var(--radius-full);
+}
+
+.providerCheck {
+  color: var(--brand-primary);
+}
+
+/* Card Actions */
+.cardActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.detailsBtn {
+  padding: 0.65rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.bookBtn {
+  padding: 0.65rem 0.8rem;
+  font-size: 0.85rem;
+}
