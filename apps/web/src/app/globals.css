@@ -1,8 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 :root {
   --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-arabic: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
 
   /* Color Palette - Light Mode */
   --bg-primary: #f8fafc;
@@ -262,4 +263,34 @@ h1, h2, h3, h4, h5, h6 {
 
 .pulse-badge {
   animation: pulseSubtle 2.5s infinite ease-in-out;
+}
+
+/* ==========================================================================
+   RTL (Right-To-Left) Mode Support (Arabic)
+   ========================================================================== */
+[dir="rtl"], html[dir="rtl"], body[dir="rtl"] {
+  font-family: var(--font-arabic);
+  direction: rtl;
+  text-align: right;
+}
+
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6 {
+  font-family: var(--font-arabic);
+  letter-spacing: 0;
+  line-height: 1.35;
+}
+
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+[dir="rtl"] input,
+[dir="rtl"] select,
+[dir="rtl"] textarea {
+  text-align: right;
 }

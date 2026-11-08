@@ -2,10 +2,13 @@
 
 import React from "react";
 import Link from "next/link";
-import { Compass, ShieldCheck, Heart, ExternalLink, Globe } from "lucide-react";
+import { Compass, ShieldCheck } from "lucide-react";
+import { useI18n } from "../lib/i18n";
 import styles from "./Footer.module.css";
 
 export function Footer() {
+  const { t } = useI18n();
+
   return (
     <footer className={styles.footer}>
       <div className={`container ${styles.footerContainer}`}>
@@ -20,18 +23,16 @@ export function Footer() {
                 Ziri<span className={styles.logoAccent}>go</span>
               </span>
             </Link>
-            <p className={styles.brandDesc}>
-              The transparent accommodation comparison engine. We audit major online travel portals in real time to guarantee you book at the authentic lowest rate with direct host benefits.
-            </p>
+            <p className={styles.brandDesc}>{t.footerDesc}</p>
             <div className={styles.trustBadge}>
               <ShieldCheck size={18} className={styles.trustBadgeIcon} />
-              <span>Best Direct Rate Guarantee • No Hidden Fees</span>
+              <span>{t.footerGuarantee}</span>
             </div>
           </div>
 
           {/* Nav links */}
           <div className={styles.linksCol}>
-            <h4 className={styles.colTitle}>Popular Destinations</h4>
+            <h4 className={styles.colTitle}>{t.destinationsCol}</h4>
             <ul className={styles.linksList}>
               <li><Link href="/">French Riviera & Cassis</Link></li>
               <li><Link href="/">Paris Historic Marais</Link></li>
@@ -43,9 +44,8 @@ export function Footer() {
           </div>
 
           <div className={styles.linksCol}>
-            <h4 className={styles.colTitle}>Platform Comparison</h4>
+            <h4 className={styles.colTitle}>{t.comparisonCol}</h4>
             <ul className={styles.linksList}>
-              <li><Link href="/">How Zirigo Compares Rates</Link></li>
               <li><Link href="/">Booking.com vs Direct</Link></li>
               <li><Link href="/">Airbnb Fees Breakdown</Link></li>
               <li><Link href="/">Host Direct Booking Program</Link></li>
@@ -54,9 +54,9 @@ export function Footer() {
           </div>
 
           <div className={styles.linksCol}>
-            <h4 className={styles.colTitle}>For Hosts & Hoteliers</h4>
+            <h4 className={styles.colTitle}>{t.hostsCol}</h4>
             <ul className={styles.linksList}>
-              <li><Link href="/">List your accommodation</Link></li>
+              <li><Link href="/">{t.listProperty}</Link></li>
               <li><Link href="/">PMS & Channel Manager Sync</Link></li>
               <li><Link href="/">Commission-Free Direct Bookings</Link></li>
               <li><Link href="/">Partner Success Stories</Link></li>
@@ -67,14 +67,14 @@ export function Footer() {
         {/* Bottom bar */}
         <div className={styles.bottomBar}>
           <div className={styles.copyright}>
-            © {new Date().getFullYear()} Zirigo Inc. All rights reserved. Built with Next.js, Turbo & Drizzle ORM.
+            © {new Date().getFullYear()} {t.copyright}
           </div>
           <div className={styles.socialRow}>
-            <span>Terms of Service</span>
+            <span>{t.terms}</span>
             <span>•</span>
-            <span>Privacy Policy</span>
+            <span>{t.privacy}</span>
             <span>•</span>
-            <span>Cookie Settings</span>
+            <span>{t.cookies}</span>
           </div>
         </div>
       </div>

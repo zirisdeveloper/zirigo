@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { X, CheckCircle2, ShieldCheck, Sparkles, Calendar, Users, Zap, Mail, Phone, User } from "lucide-react";
+import { X, CheckCircle2, ShieldCheck, Calendar, Users, Zap, Mail, Phone, User } from "lucide-react";
 import { Property, RoomUnit } from "../lib/types";
 import { formatCurrency } from "../lib/data";
+import { useI18n } from "../lib/i18n";
 import styles from "./BookingModal.module.css";
 
 interface BookingModalProps {
@@ -13,6 +14,8 @@ interface BookingModalProps {
 }
 
 export function BookingModal({ property, currency, onClose }: BookingModalProps) {
+  const { t, isRTL } = useI18n();
+
   if (!property) return null;
 
   const [selectedRoom, setSelectedRoom] = useState<RoomUnit>(
@@ -73,10 +76,10 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
           <div className={styles.headerTitleGroup}>
             <div className={styles.directPill}>
               <Zap size={14} />
-              <span>Official Direct Booking</span>
+              <span>{t.officialDirect}</span>
             </div>
             <h2 className={styles.title}>
-              {isSuccess ? "Reservation Confirmed!" : "Direct Booking with Host"}
+              {isSuccess ? t.confirmedTitle : t.directBookingTitle}
             </h2>
           </div>
           <button onClick={onClose} className={styles.closeBtn} aria-label="Close modal">
@@ -90,46 +93,46 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
             <div className={styles.successIconWrapper}>
               <CheckCircle2 size={54} className={styles.successIcon} />
             </div>
-            <h3 className={styles.successHeadline}>You're all set!</h3>
+            <h3 className={styles.successHeadline}>{t.allSet}</h3>
             <p className={styles.successSub}>
-              Your direct reservation for <strong>{property.title}</strong> has been secured at the guaranteed lowest rate.
+              {t.confirmedSub} (<strong>{property.title}</strong>).
             </p>
 
             <div className={styles.voucherCard}>
               <div className={styles.voucherRow}>
-                <span className={styles.voucherLabel}>Confirmation Code:</span>
+                <span className={styles.voucherLabel}>{t.confirmationCode}</span>
                 <span className={styles.voucherCode}>{bookingRef}</span>
               </div>
               <div className={styles.voucherRow}>
-                <span className={styles.voucherLabel}>Dates:</span>
+                <span className={styles.voucherLabel}>{t.dates}</span>
                 <span>
-                  {checkIn} → {checkOut} ({nights} nights)
+                  {checkIn} → {checkOut} ({nights} {t.night.replace("/", "")})
                 </span>
               </div>
               <div className={styles.voucherRow}>
-                <span className={styles.voucherLabel}>Selected Unit:</span>
+                <span className={styles.voucherLabel}>{t.selectedUnit}</span>
                 <span>{selectedRoom.title}</span>
               </div>
               <div className={styles.voucherRow}>
-                <span className={styles.voucherLabel}>Total Paid:</span>
+                <span className={styles.voucherLabel}>{t.totalPaid}</span>
                 <strong className={styles.voucherTotal}>
                   {formatCurrency(total, currency)}
                 </strong>
               </div>
               {savings > 0 && (
                 <div className={styles.voucherSavings}>
-                  🎉 You saved {formatCurrency(savings, currency)} by booking direct on Zirigo!
+                  🎉 {t.savedBanner} ({formatCurrency(savings, currency)})
                 </div>
               )}
             </div>
 
             <p className={styles.voucherNote}>
-              A confirmation email and WhatsApp host arrival guide have been sent to{" "}
+              {t.emailSentNote}{" "}
               <strong>{email || "your email"}</strong>.
             </p>
 
             <button onClick={onClose} className={`btn btn-primary ${styles.successBtn}`}>
-              Done
+              {t.doneBtn}
             </button>
           </div>
         ) : (
@@ -149,7 +152,7 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
                     {property.city}, {property.country}
                   </div>
                   <div className={styles.snapshotRating}>
-                    ★ {property.rating.toFixed(2)} ({property.reviewCount} verified reviews)
+                    ★ {property.rating.toFixed(2)} ({property.reviewCount} {t.reviews})
                   </div>
                 </div>
               </div>
@@ -157,7 +160,7 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
               {/* Room Selection */}
               {property.rooms.length > 1 && (
                 <div className={styles.formGroup}>
-                  <label className={styles.label}>Select Room / Suite</label>
+                  <label className={styles.label}>{t.selectRoomUnit}</label>
                   <select
                     value={selectedRoom.id}
                     onChange={(e) => {
@@ -168,7 +171,7 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
                   >
                     {property.rooms.map((r) => (
                       <option key={r.id} value={r.id}>
-                        {r.title} ({formatCurrency(r.basePricePerNight, currency)}/night)
+                        {r.title} ({formatCurrency(r.basePricePerNight, currency)}{t.night})
                       </option>
                     ))}
                   </select>
@@ -179,7 +182,7 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
               <div className={styles.rowTwoCols}>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>
-                    <Calendar size={14} /> Check-In
+                    <Calendar size={14} /> {t.checkIn}
                   </label>
                   <input
                     type="date"
@@ -191,7 +194,7 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
                 </div>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>
-                    <Calendar size={14} /> Check-Out
+                    <Calendar size={14} /> {t.checkOut}
                   </label>
                   <input
                     type="date"
@@ -205,30 +208,30 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>
-                  <Users size={14} /> Guests Count
+                  <Users size={14} /> {t.guests}
                 </label>
                 <select
                   value={guestsCount}
                   onChange={(e) => setGuestsCount(Number(e.target.value))}
                   className={styles.input}
                 >
-                  <option value={1}>1 Guest</option>
-                  <option value={2}>2 Guests</option>
-                  <option value={3}>3 Guests</option>
-                  <option value={4}>4 Guests</option>
-                  <option value={6}>6 Guests</option>
+                  <option value={1}>{t.guestSingle}</option>
+                  <option value={2}>2 {t.guestPlural}</option>
+                  <option value={3}>3 {t.guestPlural}</option>
+                  <option value={4}>4 {t.guestPlural}</option>
+                  <option value={6}>{t.guestPlus}</option>
                 </select>
               </div>
 
               {/* Guest Details */}
               <div className={styles.formGroup}>
                 <label className={styles.label}>
-                  <User size={14} /> Full Name
+                  <User size={14} /> {t.fullName}
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="e.g. Éléonore Laurent"
+                  placeholder={t.fullNamePlaceholder}
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   className={styles.input}
@@ -238,7 +241,7 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
               <div className={styles.rowTwoCols}>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>
-                    <Mail size={14} /> Email
+                    <Mail size={14} /> {t.email}
                   </label>
                   <input
                     type="email"
@@ -251,7 +254,7 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
                 </div>
                 <div className={styles.formGroup}>
                   <label className={styles.label}>
-                    <Phone size={14} /> Phone / WhatsApp
+                    <Phone size={14} /> {t.phoneWhatsApp}
                   </label>
                   <input
                     type="tel"
@@ -264,10 +267,10 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.label}>Special Requests (Optional)</label>
+                <label className={styles.label}>{t.specialRequests}</label>
                 <textarea
                   rows={2}
-                  placeholder="Early check-in, dietary restrictions, airport pickup..."
+                  placeholder={t.specialRequestsPlaceholder}
                   value={specialRequests}
                   onChange={(e) => setSpecialRequests(e.target.value)}
                   className={styles.input}
@@ -278,30 +281,30 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
             {/* Right Column: Price Summary */}
             <div className={styles.rightCol}>
               <div className={styles.summaryCard}>
-                <h4 className={styles.summaryTitle}>Direct Price Breakdown</h4>
+                <h4 className={styles.summaryTitle}>{t.priceBreakdown}</h4>
 
                 <div className={styles.summaryRow}>
                   <span>
-                    {formatCurrency(nightlyPrice, currency)} × {nights} {nights === 1 ? "night" : "nights"}
+                    {formatCurrency(nightlyPrice, currency)} × {nights} {t.night.replace("/", "")}
                   </span>
                   <span>{formatCurrency(subtotal, currency)}</span>
                 </div>
 
                 {cleaningFee > 0 && (
                   <div className={styles.summaryRow}>
-                    <span>Cleaning Fee</span>
+                    <span>{t.cleaningFee}</span>
                     <span>{formatCurrency(cleaningFee, currency)}</span>
                   </div>
                 )}
 
                 <div className={styles.summaryRow}>
-                  <span>Platform Service Fee</span>
-                  <span className={styles.freeFee}>€0 FREE (Waived)</span>
+                  <span>{t.serviceFee}</span>
+                  <span className={styles.freeFee}>{t.waivedFree}</span>
                 </div>
 
                 {savings > 0 && (
                   <div className={`${styles.summaryRow} ${styles.savingsRow}`}>
-                    <span>OTA Price Comparison Savings</span>
+                    <span>{t.otaSavings}</span>
                     <span className={styles.savingsNumber}>
                       -{formatCurrency(savings, currency)}
                     </span>
@@ -311,7 +314,7 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
                 <div className={styles.divider} />
 
                 <div className={styles.totalRow}>
-                  <span>Total Amount</span>
+                  <span>{t.totalAmount}</span>
                   <span className={styles.totalAmount}>
                     {formatCurrency(total, currency)}
                   </span>
@@ -320,18 +323,18 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
                 <div className={styles.perksNotice}>
                   <ShieldCheck size={16} className={styles.shieldIcon} />
                   <div>
-                    <strong>Direct Booking Guarantees:</strong>
+                    <strong>{t.directGuarantees}</strong>
                     <ul className={styles.perksBullets}>
-                      <li>100% Secure reservation</li>
-                      <li>Direct communication with property host</li>
-                      <li>Free cancellation policy respected</li>
+                      <li>{t.guaranteeSecure}</li>
+                      <li>{t.guaranteeDirectContact}</li>
+                      <li>{t.guaranteeCancellation}</li>
                     </ul>
                   </div>
                 </div>
 
                 <button type="submit" className={`btn btn-primary ${styles.confirmBtn}`}>
                   <Zap size={16} />
-                  <span>Confirm Direct Booking</span>
+                  <span>{t.confirmBookingBtn}</span>
                 </button>
               </div>
             </div>

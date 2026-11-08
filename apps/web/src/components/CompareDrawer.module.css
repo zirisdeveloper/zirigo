@@ -208,6 +208,10 @@
   text-align: left;
 }
 
+[dir="rtl"] .compareTable {
+  text-align: right;
+}
+
 .compareTable th, .compareTable td {
   padding: 1rem;
   border-bottom: 1px solid var(--border-subtle);

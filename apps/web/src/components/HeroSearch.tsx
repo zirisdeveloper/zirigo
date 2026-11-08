@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from "react";
-import { Search, MapPin, Calendar, Users, SlidersHorizontal, CheckCircle2 } from "lucide-react";
+import { Search, MapPin, Calendar, Users, CheckCircle2 } from "lucide-react";
+import { useI18n } from "../lib/i18n";
 import styles from "./HeroSearch.module.css";
 
 interface HeroSearchProps {
@@ -15,15 +16,6 @@ interface HeroSearchProps {
   onTypeChange: (type: string) => void;
 }
 
-const PROPERTY_TYPES = [
-  { id: "all", label: "All Stays" },
-  { id: "villa", label: "Luxury Villas" },
-  { id: "hotel", label: "Boutique Hotels" },
-  { id: "apartment", label: "City Lofts" },
-  { id: "chalet", label: "Alpine Chalets" },
-  { id: "resort", label: "Spa Resorts" },
-];
-
 const POPULAR_DESTINATIONS = [
   "Cassis, France",
   "Paris, France",
@@ -34,11 +26,21 @@ const POPULAR_DESTINATIONS = [
 ];
 
 export function HeroSearch({ onSearch, activeType, onTypeChange }: HeroSearchProps) {
+  const { t, isRTL } = useI18n();
   const [query, setQuery] = useState("");
   const [checkIn, setCheckIn] = useState("2026-06-15");
   const [checkOut, setCheckOut] = useState("2026-06-20");
   const [guests, setGuests] = useState(2);
   const [showDestinationDropdown, setShowDestinationDropdown] = useState(false);
+
+  const PROPERTY_TYPES = [
+    { id: "all", label: t.typeAll },
+    { id: "villa", label: t.typeVilla },
+    { id: "hotel", label: t.typeHotel },
+    { id: "apartment", label: t.typeApartment },
+    { id: "chalet", label: t.typeChalet },
+    { id: "resort", label: t.typeResort },
+  ];
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,26 +64,24 @@ export function HeroSearch({ onSearch, activeType, onTypeChange }: HeroSearchPro
         <div className={styles.heroHeader}>
           <div className={styles.badgePromo}>
             <span className={styles.badgePulse} />
-            <span>Real-Time Multi-Platform Comparison Engine</span>
+            <span>{t.heroPromo}</span>
           </div>
           <h1 className={styles.heroTitle}>
-            Compare Prices Everywhere. <br />
-            <span className={styles.gradientText}>Book Direct for the Best Rate.</span>
+            {t.heroTitle1} <br />
+            <span className={styles.gradientText}>{t.heroTitle2}</span>
           </h1>
-          <p className={styles.heroSubtitle}>
-            Zirigo scans Booking.com, Airbnb, Agoda, and Expedia simultaneously to guarantee you the lowest price, exclusive host perks, and zero hidden service fees.
-          </p>
+          <p className={styles.heroSubtitle}>{t.heroSubtitle}</p>
         </div>
 
         {/* Accommodation Type Filter Tabs */}
         <div className={styles.typeTabs}>
-          {PROPERTY_TYPES.map((t) => (
+          {PROPERTY_TYPES.map((type) => (
             <button
-              key={t.id}
-              onClick={() => onTypeChange(t.id)}
-              className={`${styles.typeTab} ${activeType === t.id ? styles.typeTabActive : ""}`}
+              key={type.id}
+              onClick={() => onTypeChange(type.id)}
+              className={`${styles.typeTab} ${activeType === type.id ? styles.typeTabActive : ""}`}
             >
-              {t.label}
+              {type.label}
             </button>
           ))}
         </div>
@@ -92,19 +92,19 @@ export function HeroSearch({ onSearch, activeType, onTypeChange }: HeroSearchPro
           <div className={styles.searchField} style={{ position: "relative" }}>
             <label className={styles.fieldLabel}>
               <MapPin size={15} className={styles.fieldIcon} />
-              <span>Destination</span>
+              <span>{t.destination}</span>
             </label>
             <input
               type="text"
-              placeholder="Where are you going?"
+              placeholder={t.whereGoing}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onFocus={() => setShowDestinationDropdown(true)}
               className={styles.fieldInput}
             />
             {showDestinationDropdown && (
-              <div className={styles.destinationDropdown}>
-                <div className={styles.dropdownTitle}>Popular Destinations</div>
+              <div className={`${styles.destinationDropdown} ${isRTL ? styles.rtlDropdown : ""}`}>
+                <div className={styles.dropdownTitle}>{t.popularDestinations}</div>
                 {POPULAR_DESTINATIONS.map((dest) => (
                   <button
                     key={dest}
@@ -126,7 +126,7 @@ export function HeroSearch({ onSearch, activeType, onTypeChange }: HeroSearchPro
           <div className={styles.searchField}>
             <label className={styles.fieldLabel}>
               <Calendar size={15} className={styles.fieldIcon} />
-              <span>Check-in</span>
+              <span>{t.checkIn}</span>
             </label>
             <input
               type="date"
@@ -141,7 +141,7 @@ export function HeroSearch({ onSearch, activeType, onTypeChange }: HeroSearchPro
           <div className={styles.searchField}>
             <label className={styles.fieldLabel}>
               <Calendar size={15} className={styles.fieldIcon} />
-              <span>Check-out</span>
+              <span>{t.checkOut}</span>
             </label>
             <input
               type="date"
@@ -157,25 +157,25 @@ export function HeroSearch({ onSearch, activeType, onTypeChange }: HeroSearchPro
           <div className={styles.searchField}>
             <label className={styles.fieldLabel}>
               <Users size={15} className={styles.fieldIcon} />
-              <span>Guests</span>
+              <span>{t.guests}</span>
             </label>
             <select
               value={guests}
               onChange={(e) => setGuests(Number(e.target.value))}
               className={styles.fieldInput}
             >
-              <option value={1}>1 Guest</option>
-              <option value={2}>2 Guests</option>
-              <option value={3}>3 Guests</option>
-              <option value={4}>4 Guests</option>
-              <option value={6}>6+ Guests</option>
+              <option value={1}>{t.guestSingle}</option>
+              <option value={2}>2 {t.guestPlural}</option>
+              <option value={3}>3 {t.guestPlural}</option>
+              <option value={4}>4 {t.guestPlural}</option>
+              <option value={6}>{t.guestPlus}</option>
             </select>
           </div>
 
           {/* Search Button */}
           <button type="submit" className={`btn btn-primary ${styles.searchSubmitBtn}`}>
             <Search size={18} />
-            <span>Search & Compare</span>
+            <span>{t.searchBtn}</span>
           </button>
         </form>
 
@@ -183,15 +183,15 @@ export function HeroSearch({ onSearch, activeType, onTypeChange }: HeroSearchPro
         <div className={styles.trustBanner}>
           <div className={styles.trustItem}>
             <CheckCircle2 size={16} className={styles.trustIcon} />
-            <span><strong>Average 18% Savings</strong> vs major OTA portals</span>
+            <span>{t.trustSavings}</span>
           </div>
           <div className={styles.trustItem}>
             <CheckCircle2 size={16} className={styles.trustIcon} />
-            <span><strong>Transparent Comparison:</strong> 4+ platforms audited</span>
+            <span>{t.trustMultiPlatform}</span>
           </div>
           <div className={styles.trustItem}>
             <CheckCircle2 size={16} className={styles.trustIcon} />
-            <span><strong>Direct Host Perks:</strong> Free breakfast, welcome wine & passes</span>
+            <span>{t.trustDirectPerks}</span>
           </div>
         </div>
       </div>

@@ -9,11 +9,11 @@ import { BookingModal } from "../components/BookingModal";
 import { Footer } from "../components/Footer";
 import { PROPERTIES, getProperties } from "../lib/data";
 import { Property } from "../lib/types";
+import { useI18n } from "../lib/i18n";
 import {
   SlidersHorizontal,
   LayoutGrid,
   List,
-  Sparkles,
   ShieldCheck,
   Zap,
   TrendingDown,
@@ -22,16 +22,9 @@ import {
 } from "lucide-react";
 import styles from "./page.module.css";
 
-const AMENITY_FILTERS = [
-  { id: "pool", label: "Pool" },
-  { id: "ocean_view", label: "Sea View" },
-  { id: "spa", label: "Spa & Hot Tub" },
-  { id: "wifi", label: "Fast WiFi" },
-  { id: "air_conditioning", label: "Air Conditioning" },
-  { id: "kitchen", label: "Kitchen" },
-];
-
 export default function HomePage() {
+  const { t, isRTL } = useI18n();
+
   const [activeType, setActiveType] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAmenities, setSelectedAmenities] = useState<string[]>([]);
@@ -44,6 +37,15 @@ export default function HomePage() {
   const [favorites, setFavorites] = useState<string[]>([]);
   const [comparedIds, setComparedIds] = useState<string[]>([]);
   const [bookingProperty, setBookingProperty] = useState<Property | null>(null);
+
+  const AMENITY_FILTERS = [
+    { id: "pool", label: t.amenityPool },
+    { id: "ocean_view", label: t.amenitySeaView },
+    { id: "spa", label: t.amenitySpa },
+    { id: "wifi", label: t.amenityWifi },
+    { id: "air_conditioning", label: t.amenityAC },
+    { id: "kitchen", label: t.amenityKitchen },
+  ];
 
   // Toggle favorite
   const handleToggleFavorite = (id: string) => {
@@ -59,7 +61,7 @@ export default function HomePage() {
         return prev.filter((item) => item !== id);
       }
       if (prev.length >= 3) {
-        alert("You can compare up to 3 accommodations simultaneously.");
+        alert(isRTL ? "يمكنك مقارنة 3 أماكن إقامة كحد أقصى في وقت واحد." : "You can compare up to 3 accommodations simultaneously.");
         return prev;
       }
       return [...prev, id];
@@ -97,7 +99,7 @@ export default function HomePage() {
         compareCount={comparedIds.length}
         onOpenCompare={() => {
           if (comparedIds.length === 0) {
-            alert("Please select at least one property using the compare icon (⚖️) to view the comparison table.");
+            alert(isRTL ? "يرجى تحديد مكان إقامة واحد على الأقل للمقارنة عبر النقر على أيقونة الميزان (⚖️)." : "Please select at least one property using the compare icon (⚖️) to view the comparison table.");
           }
         }}
         currency={currency}
@@ -122,7 +124,7 @@ export default function HomePage() {
           <div className={styles.amenityFilterGroup}>
             <span className={styles.filterGroupLabel}>
               <SlidersHorizontal size={14} />
-              <span>Filters:</span>
+              <span>{t.filters}</span>
             </span>
             {AMENITY_FILTERS.map((am) => {
               const active = selectedAmenities.includes(am.id);
@@ -143,16 +145,16 @@ export default function HomePage() {
           <div className={styles.rightControls}>
             {/* Sort Dropdown */}
             <div className={styles.sortWrapper}>
-              <span className={styles.sortLabel}>Sort:</span>
+              <span className={styles.sortLabel}>{t.sortBy}</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
                 className={styles.sortSelect}
               >
-                <option value="popular">Most Popular</option>
-                <option value="price_asc">Price: Low to High</option>
-                <option value="price_desc">Price: High to Low</option>
-                <option value="rating">Top Rated (4.9+)</option>
+                <option value="popular">{t.sortPopular}</option>
+                <option value="price_asc">{t.sortPriceAsc}</option>
+                <option value="price_desc">{t.sortPriceDesc}</option>
+                <option value="rating">{t.sortRating}</option>
               </select>
             </div>
 
@@ -179,8 +181,8 @@ export default function HomePage() {
         {/* Results Counter & Active Filter summary */}
         <div className={styles.resultsInfoRow}>
           <div className={styles.resultsCount}>
-            Showing <strong>{filteredProperties.length}</strong> verified accommodations
-            {searchQuery && <span> matching "{searchQuery}"</span>}
+            {t.showingStays} <strong>{filteredProperties.length}</strong> {t.typeAll.toLowerCase()}
+            {searchQuery && <span> {t.matching} "{searchQuery}"</span>}
           </div>
 
           {(searchQuery || selectedAmenities.length > 0 || activeType !== "all") && (
@@ -193,7 +195,7 @@ export default function HomePage() {
               }}
               className={styles.resetFiltersBtn}
             >
-              Reset all filters
+              {t.resetFilters}
             </button>
           )}
         </div>
@@ -217,10 +219,8 @@ export default function HomePage() {
         ) : (
           <div className={styles.emptyState}>
             <Building size={48} className={styles.emptyIcon} />
-            <h3 className={styles.emptyTitle}>No matching accommodations found</h3>
-            <p className={styles.emptySub}>
-              Try adjusting your destination, accommodation type, or removing some filters.
-            </p>
+            <h3 className={styles.emptyTitle}>{t.noResultsTitle}</h3>
+            <p className={styles.emptySub}>{t.noResultsSub}</p>
             <button
               onClick={() => {
                 setSearchQuery("");
@@ -229,7 +229,7 @@ export default function HomePage() {
               }}
               className="btn btn-primary"
             >
-              View all accommodations
+              {t.viewAllBtn}
             </button>
           </div>
         )}
@@ -237,11 +237,9 @@ export default function HomePage() {
         {/* Why Zirigo Direct Booking Section */}
         <div className={styles.whyZirigoSection}>
           <div className={styles.whyHeader}>
-            <span className={styles.whyBadge}>The Zirigo Difference</span>
-            <h2 className={styles.whyTitle}>Why Savvy Travelers Choose Zirigo</h2>
-            <p className={styles.whySubtitle}>
-              Traditional travel agencies charge up to 20% commission that gets passed on to you. We eliminate the middlemen.
-            </p>
+            <span className={styles.whyBadge}>{t.whyBadge}</span>
+            <h2 className={styles.whyTitle}>{t.whyTitle}</h2>
+            <p className={styles.whySubtitle}>{t.whySubtitle}</p>
           </div>
 
           <div className={styles.whyGrid}>
@@ -249,30 +247,24 @@ export default function HomePage() {
               <div className={styles.whyIconWrapper}>
                 <TrendingDown size={24} />
               </div>
-              <h4 className={styles.whyCardTitle}>Guaranteed Lowest Rates</h4>
-              <p className={styles.whyCardText}>
-                We compare prices across Airbnb, Booking.com, and Agoda, then connect you with direct host rates that are consistently 10% to 25% lower.
-              </p>
+              <h4 className={styles.whyCardTitle}>{t.why1Title}</h4>
+              <p className={styles.whyCardText}>{t.why1Desc}</p>
             </div>
 
             <div className={styles.whyCard}>
               <div className={styles.whyIconWrapper}>
                 <Zap size={24} />
               </div>
-              <h4 className={styles.whyCardTitle}>Exclusive Direct Perks</h4>
-              <p className={styles.whyCardText}>
-                Hosts offer complimentary gourmet breakfasts, welcome champagne, and flexible check-in when you book directly through Zirigo.
-              </p>
+              <h4 className={styles.whyCardTitle}>{t.why2Title}</h4>
+              <p className={styles.whyCardText}>{t.why2Desc}</p>
             </div>
 
             <div className={styles.whyCard}>
               <div className={styles.whyIconWrapper}>
                 <ShieldCheck size={24} />
               </div>
-              <h4 className={styles.whyCardTitle}>Zero Hidden Fees</h4>
-              <p className={styles.whyCardText}>
-                The price you see is the price you pay. No surprising traveler service fees added at the final checkout step.
-              </p>
+              <h4 className={styles.whyCardTitle}>{t.why3Title}</h4>
+              <p className={styles.whyCardText}>{t.why3Desc}</p>
             </div>
           </div>
         </div>

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Star, MapPin, Heart, Scale, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 import { Property } from "../lib/types";
 import { formatCurrency } from "../lib/data";
+import { useI18n } from "../lib/i18n";
 import styles from "./PropertyCard.module.css";
 
 interface PropertyCardProps {
@@ -26,6 +27,7 @@ export function PropertyCard({
   onToggleCompare,
   onOpenBookingModal,
 }: PropertyCardProps) {
+  const { t, isRTL } = useI18n();
   const sortedRates = [...property.rates].sort((a, b) => a.pricePerNight - b.pricePerNight);
   const bestRate = sortedRates[0];
   const highestRate = sortedRates[sortedRates.length - 1];
@@ -48,7 +50,7 @@ export function PropertyCard({
           {property.isFeatured && (
             <span className={`badge badge-featured`}>
               <Sparkles size={12} />
-              Featured
+              {t.featured}
             </span>
           )}
         </div>
@@ -61,7 +63,7 @@ export function PropertyCard({
               onToggleFavorite(property.id);
             }}
             className={`${styles.iconBtn} ${isFavorite ? styles.favorited : ""}`}
-            title={isFavorite ? "Remove from wishlist" : "Add to wishlist"}
+            title={isFavorite ? t.removeFromWishlist : t.addToWishlist}
             aria-label="Wishlist toggle"
           >
             <Heart size={16} fill={isFavorite ? "#ef4444" : "none"} />
@@ -73,7 +75,7 @@ export function PropertyCard({
               onToggleCompare(property.id);
             }}
             className={`${styles.iconBtn} ${isCompared ? styles.compared : ""}`}
-            title={isCompared ? "Remove from comparison" : "Add to comparison"}
+            title={isCompared ? t.removeFromCompare : t.addToCompare}
             aria-label="Compare toggle"
           >
             <Scale size={16} />
@@ -84,7 +86,7 @@ export function PropertyCard({
         <div className={styles.ratingOverlay}>
           <Star size={13} className={styles.starIcon} />
           <span className={styles.ratingScore}>{property.rating.toFixed(2)}</span>
-          <span className={styles.reviewCount}>({property.reviewCount})</span>
+          <span className={styles.reviewCount}>({property.reviewCount} {t.reviews})</span>
         </div>
       </div>
 
@@ -118,16 +120,16 @@ export function PropertyCard({
         {/* Live Comparison Price Strip */}
         <div className={styles.comparisonStrip}>
           <div className={styles.priceContainer}>
-            <span className={styles.priceLabel}>Best Rate Available</span>
+            <span className={styles.priceLabel}>{t.bestRateAvailable}</span>
             <div className={styles.priceValueRow}>
               <span className={styles.priceValue}>
                 {formatCurrency(bestRate.pricePerNight, currency)}
               </span>
-              <span className={styles.priceNight}>/ night</span>
+              <span className={styles.priceNight}>{t.night}</span>
             </div>
             {savings > 0 && (
               <div className={styles.savingsTag}>
-                Save {formatCurrency(savings, currency)} vs {highestRate.platformName}
+                {t.saveVs} {formatCurrency(savings, currency)} vs {highestRate.platformName}
               </div>
             )}
           </div>
@@ -144,14 +146,14 @@ export function PropertyCard({
             href={`/properties/${property.slug}`}
             className={`btn btn-secondary ${styles.detailsBtn}`}
           >
-            <span>Compare Rates</span>
-            <ArrowRight size={14} />
+            <span>{t.compareRates}</span>
+            <ArrowRight size={14} className={isRTL ? "rtl-flip" : ""} />
           </Link>
           <button
             onClick={() => onOpenBookingModal(property)}
             className={`btn btn-primary ${styles.bookBtn}`}
           >
-            <span>Instant Book</span>
+            <span>{t.instantBook}</span>
           </button>
         </div>
       </div>

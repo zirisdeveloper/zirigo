@@ -4,6 +4,7 @@ import React from "react";
 import { Check, ShieldCheck, Zap, ExternalLink, ArrowRight, Sparkles, TrendingDown } from "lucide-react";
 import { PlatformRate } from "../lib/types";
 import { formatCurrency } from "../lib/data";
+import { useI18n } from "../lib/i18n";
 import styles from "./ComparisonMatrix.module.css";
 
 interface ComparisonMatrixProps {
@@ -19,6 +20,7 @@ export function ComparisonMatrix({
   nights = 3,
   onSelectDirectBooking,
 }: ComparisonMatrixProps) {
+  const { t, isRTL } = useI18n();
   // Sort rates with lowest price first
   const sortedRates = [...rates].sort((a, b) => a.pricePerNight - b.pricePerNight);
   const bestRate = sortedRates[0];
@@ -33,22 +35,20 @@ export function ComparisonMatrix({
         <div className={styles.titleGroup}>
           <div className={styles.badgePulseWrapper}>
             <Sparkles size={16} className={styles.sparkleIcon} />
-            <span className={styles.matrixBadge}>Real-Time Rate Audit</span>
+            <span className={styles.matrixBadge}>{t.rateAuditBadge}</span>
           </div>
-          <h3 className={styles.matrixTitle}>Direct Booking vs Other Platforms</h3>
-          <p className={styles.matrixSubtitle}>
-            We audit OTA channels to guarantee you the authentic best deal with zero markup.
-          </p>
+          <h3 className={styles.matrixTitle}>{t.matrixTitle}</h3>
+          <p className={styles.matrixSubtitle}>{t.matrixSubtitle}</p>
         </div>
 
         {totalSavings > 0 && (
           <div className={styles.savingsCard}>
             <TrendingDown size={22} className={styles.savingsIcon} />
             <div>
-              <div className={styles.savingsLabel}>You save up to</div>
+              <div className={styles.savingsLabel}>{t.youSaveUpTo}</div>
               <div className={styles.savingsValue}>
                 {formatCurrency(totalSavings, currency)}
-                <span className={styles.savingsSub}> for {nights} nights</span>
+                <span className={styles.savingsSub}> {t.forNights} {nights} {t.night.replace("/", "")}</span>
               </div>
             </div>
           </div>
@@ -72,23 +72,23 @@ export function ComparisonMatrix({
               {isBest && (
                 <div className={styles.bestPriceRibbon}>
                   <ShieldCheck size={13} />
-                  <span>Lowest Price Verified</span>
+                  <span>{t.lowestPriceVerified}</span>
                 </div>
               )}
 
               <div className={styles.cardHeader}>
                 <div className={styles.platformNameRow}>
                   <span className={styles.platformName}>{rate.platformName}</span>
-                  {isDirect && <span className={styles.officialBadge}>Official Direct</span>}
+                  {isDirect && <span className={styles.officialBadge}>{t.officialDirect}</span>}
                 </div>
                 <div className={styles.priceRow}>
                   <span className={styles.priceAmount}>
                     {formatCurrency(rate.pricePerNight, currency)}
                   </span>
-                  <span className={styles.pricePeriod}>/ night</span>
+                  <span className={styles.pricePeriod}>{t.night}</span>
                 </div>
                 <div className={styles.totalPriceNote}>
-                  Total: {formatCurrency(totalPrice, currency)} ({nights} nights)
+                  {t.totalForStay}: {formatCurrency(totalPrice, currency)} ({nights} {t.night.replace("/", "")})
                 </div>
               </div>
 
@@ -110,8 +110,8 @@ export function ComparisonMatrix({
                     className={`btn btn-primary ${styles.directBookingBtn}`}
                   >
                     <Zap size={16} />
-                    <span>Book Direct & Save</span>
-                    <ArrowRight size={15} />
+                    <span>{t.bookDirectAndSave}</span>
+                    <ArrowRight size={15} className={isRTL ? "rtl-flip" : ""} />
                   </button>
                 ) : (
                   <a
@@ -120,8 +120,8 @@ export function ComparisonMatrix({
                     rel="noopener noreferrer"
                     className={`btn btn-secondary ${styles.externalBookingBtn}`}
                   >
-                    <span>View on {rate.platformName}</span>
-                    <ExternalLink size={14} />
+                    <span>{t.viewOn} {rate.platformName}</span>
+                    <ExternalLink size={14} className={isRTL ? "rtl-flip" : ""} />
                   </a>
                 )}
               </div>

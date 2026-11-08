@@ -7,7 +7,8 @@ import { Navbar } from "../../../components/Navbar";
 import { ComparisonMatrix } from "../../../components/ComparisonMatrix";
 import { BookingModal } from "../../../components/BookingModal";
 import { Footer } from "../../../components/Footer";
-import { getPropertyBySlug, PROPERTIES, formatCurrency } from "../../../lib/data";
+import { getPropertyBySlug, formatCurrency } from "../../../lib/data";
+import { useI18n } from "../../../lib/i18n";
 import {
   Star,
   MapPin,
@@ -19,7 +20,6 @@ import {
   Users,
   Bed,
   Bath,
-  ArrowLeft,
   ChevronRight,
   Clock,
   Sparkles,
@@ -38,6 +38,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  const { t, isRTL } = useI18n();
   const [currency, setCurrency] = useState("EUR");
   const [isFavorite, setIsFavorite] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
@@ -59,12 +60,12 @@ export default function PropertyDetailPage({ params }: PageProps) {
       <div className={`container ${styles.detailContainer}`}>
         {/* Breadcrumb */}
         <nav className={styles.breadcrumb}>
-          <Link href="/">Home</Link>
-          <ChevronRight size={14} />
+          <Link href="/">{t.home}</Link>
+          <ChevronRight size={14} className={isRTL ? "rtl-flip" : ""} />
           <span>{property.country}</span>
-          <ChevronRight size={14} />
+          <ChevronRight size={14} className={isRTL ? "rtl-flip" : ""} />
           <span>{property.city}</span>
-          <ChevronRight size={14} />
+          <ChevronRight size={14} className={isRTL ? "rtl-flip" : ""} />
           <span className={styles.activeBreadcrumb}>{property.title}</span>
         </nav>
 
@@ -79,7 +80,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
                 ))}
               </span>
               <span className={styles.ratingBadge}>
-                ★ {property.rating.toFixed(2)} ({property.reviewCount} reviews)
+                ★ {property.rating.toFixed(2)} ({property.reviewCount} {t.reviews})
               </span>
             </div>
 
@@ -97,19 +98,19 @@ export default function PropertyDetailPage({ params }: PageProps) {
               className={`${styles.actionButton} ${isFavorite ? styles.favorited : ""}`}
             >
               <Heart size={18} fill={isFavorite ? "#ef4444" : "none"} />
-              <span>{isFavorite ? "Saved" : "Save"}</span>
+              <span>{isFavorite ? t.saved : t.save}</span>
             </button>
             <button
               onClick={() => {
                 if (navigator.clipboard) {
                   navigator.clipboard.writeText(window.location.href);
-                  alert("Link copied to clipboard!");
+                  alert(t.linkCopied);
                 }
               }}
               className={styles.actionButton}
             >
               <Share2 size={18} />
-              <span>Share</span>
+              <span>{t.share}</span>
             </button>
           </div>
         </div>
@@ -147,22 +148,22 @@ export default function PropertyDetailPage({ params }: PageProps) {
               <div className={styles.highlightItem}>
                 <ShieldCheck size={20} className={styles.highlightIcon} />
                 <div>
-                  <strong>Guaranteed Best Price</strong>
-                  <p>Save 15% vs OTA platforms</p>
+                  <strong>{t.guaranteedBestPrice}</strong>
+                  <p>{t.guaranteedBestPriceSub}</p>
                 </div>
               </div>
               <div className={styles.highlightItem}>
                 <Clock size={20} className={styles.highlightIcon} />
                 <div>
-                  <strong>Flexible Cancellation</strong>
-                  <p>Free cancellation up to 48 hours</p>
+                  <strong>{t.flexibleCancellation}</strong>
+                  <p>{t.flexibleCancellationSub}</p>
                 </div>
               </div>
               <div className={styles.highlightItem}>
                 <Sparkles size={20} className={styles.highlightIcon} />
                 <div>
-                  <strong>Direct Host Perks</strong>
-                  <p>Welcome gifts & direct contact</p>
+                  <strong>{t.directHostPerks}</strong>
+                  <p>{t.directHostPerksSub}</p>
                 </div>
               </div>
             </div>
@@ -179,13 +180,13 @@ export default function PropertyDetailPage({ params }: PageProps) {
 
             {/* About / Description */}
             <section className={styles.sectionBlock}>
-              <h2 className={styles.sectionHeading}>About this property</h2>
+              <h2 className={styles.sectionHeading}>{t.aboutProperty}</h2>
               <p className={styles.descriptionText}>{property.description}</p>
             </section>
 
             {/* Room Options & Layouts */}
             <section className={styles.sectionBlock}>
-              <h2 className={styles.sectionHeading}>Available Room Options</h2>
+              <h2 className={styles.sectionHeading}>{t.availableRooms}</h2>
               <div className={styles.roomsGrid}>
                 {property.rooms.map((room) => (
                   <div key={room.id} className={styles.roomCard}>
@@ -197,9 +198,9 @@ export default function PropertyDetailPage({ params }: PageProps) {
                       <p className={styles.roomDesc}>{room.description}</p>
 
                       <div className={styles.roomSpecs}>
-                        <span><Users size={14} /> {room.capacityGuests} Guests</span>
-                        <span><Bed size={14} /> {room.capacityBeds} Beds</span>
-                        <span><Bath size={14} /> {room.capacityBathrooms} Bath</span>
+                        <span><Users size={14} /> {room.capacityGuests} {t.guests}</span>
+                        <span><Bed size={14} /> {room.capacityBeds} {t.beds}</span>
+                        <span><Bath size={14} /> {room.capacityBathrooms} {t.bath}</span>
                       </div>
 
                       <div className={styles.roomFooter}>
@@ -207,13 +208,13 @@ export default function PropertyDetailPage({ params }: PageProps) {
                           <span className={styles.roomPrice}>
                             {formatCurrency(room.basePricePerNight, currency)}
                           </span>
-                          <span className={styles.roomPriceSub}> / night</span>
+                          <span className={styles.roomPriceSub}> {t.night}</span>
                         </div>
                         <button
                           onClick={() => setIsBookingOpen(true)}
                           className="btn btn-primary"
                         >
-                          Select Room
+                          {t.selectRoom}
                         </button>
                       </div>
                     </div>
@@ -224,7 +225,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
 
             {/* Amenities Grid */}
             <section className={styles.sectionBlock}>
-              <h2 className={styles.sectionHeading}>What this place offers</h2>
+              <h2 className={styles.sectionHeading}>{t.whatOffers}</h2>
               <div className={styles.amenitiesGrid}>
                 {property.amenities.map((am) => (
                   <div key={am} className={styles.amenityItem}>
@@ -239,7 +240,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
             <section className={styles.sectionBlock}>
               <div className={styles.reviewsHeader}>
                 <h2 className={styles.sectionHeading}>
-                  Guest Reviews ★ {property.rating.toFixed(2)} ({property.reviewCount})
+                  {t.guestReviews} ★ {property.rating.toFixed(2)} ({property.reviewCount})
                 </h2>
               </div>
 
@@ -277,7 +278,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
                   <span className={styles.sidebarPrice}>
                     {formatCurrency(bestRate.pricePerNight, currency)}
                   </span>
-                  <span className={styles.sidebarNight}>/ night</span>
+                  <span className={styles.sidebarNight}>{t.night}</span>
                 </div>
                 <div className={styles.sidebarRating}>
                   ★ {property.rating.toFixed(2)}
@@ -286,16 +287,16 @@ export default function PropertyDetailPage({ params }: PageProps) {
 
               <div className={styles.directGuaranteeBanner}>
                 <Zap size={15} />
-                <span>Zirigo Direct Best Price Guarantee</span>
+                <span>{t.guaranteedBestPrice}</span>
               </div>
 
               <div className={styles.quickDateBox}>
                 <div className={styles.dateCell}>
-                  <label>CHECK-IN</label>
+                  <label>{t.checkIn.toUpperCase()}</label>
                   <span>15 Jun 2026</span>
                 </div>
                 <div className={styles.dateCell}>
-                  <label>CHECK-OUT</label>
+                  <label>{t.checkOut.toUpperCase()}</label>
                   <span>18 Jun 2026</span>
                 </div>
               </div>
@@ -303,15 +304,15 @@ export default function PropertyDetailPage({ params }: PageProps) {
               <div className={styles.sidebarPerks}>
                 <div className={styles.sidebarPerkItem}>
                   <CheckCircle2 size={15} className={styles.perkCheck} />
-                  <span>Free cancellation up to 48 hours</span>
+                  <span>{t.flexibleCancellation}</span>
                 </div>
                 <div className={styles.sidebarPerkItem}>
                   <CheckCircle2 size={15} className={styles.perkCheck} />
-                  <span>No platform traveler booking fees</span>
+                  <span>{t.why3Title}</span>
                 </div>
                 <div className={styles.sidebarPerkItem}>
                   <CheckCircle2 size={15} className={styles.perkCheck} />
-                  <span>Complimentary welcome host gift</span>
+                  <span>{t.directHostPerks}</span>
                 </div>
               </div>
 
@@ -320,11 +321,11 @@ export default function PropertyDetailPage({ params }: PageProps) {
                 className={`btn btn-primary ${styles.sidebarBookBtn}`}
               >
                 <Zap size={18} />
-                <span>Reserve on Zirigo Direct</span>
+                <span>{t.reserveDirect}</span>
               </button>
 
               <p className={styles.sidebarNote}>
-                You won't be charged yet. Instant confirmation upon checkout.
+                {t.noChargeYet}
               </p>
             </div>
           </aside>

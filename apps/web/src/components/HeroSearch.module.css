@@ -191,6 +191,13 @@
   text-align: left;
 }
 
+[dir="rtl"] .destinationDropdown,
+.rtlDropdown {
+  left: auto;
+  right: 0;
+  text-align: right;
+}
+
 .dropdownTitle {
   font-size: 0.75rem;
   font-weight: 700;
@@ -198,6 +205,11 @@
   text-transform: uppercase;
   margin-bottom: 0.5rem;
   padding-left: 0.5rem;
+}
+
+[dir="rtl"] .dropdownTitle {
+  padding-left: 0;
+  padding-right: 0.5rem;
 }
 
 .dropdownItem {
@@ -212,6 +224,10 @@
   font-weight: 500;
   text-align: left;
   transition: background 0.15s ease;
+}
+
+[dir="rtl"] .dropdownItem {
+  text-align: right;
 }
 
 .dropdownItem:hover {

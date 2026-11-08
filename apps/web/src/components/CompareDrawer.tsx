@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Scale, X, ArrowRight, Check, Minus, ShieldCheck, Zap } from "lucide-react";
+import { Scale, X, ArrowRight, Check, Minus, Zap } from "lucide-react";
 import { Property } from "../lib/types";
 import { formatCurrency } from "../lib/data";
+import { useI18n } from "../lib/i18n";
 import styles from "./CompareDrawer.module.css";
 
 interface CompareDrawerProps {
@@ -21,19 +22,19 @@ export function CompareDrawer({
   onClear,
   onSelectDirectBooking,
 }: CompareDrawerProps) {
+  const { t, isRTL } = useI18n();
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   if (properties.length === 0) return null;
 
   const ALL_AMENITIES_CHECK = [
-    { id: "ocean_view", label: "Ocean / Sea View" },
-    { id: "pool", label: "Swimming Pool" },
-    { id: "spa", label: "Spa & Wellness" },
-    { id: "kitchen", label: "Kitchen / Kitchenette" },
-    { id: "wifi", label: "High-speed WiFi" },
-    { id: "air_conditioning", label: "Air Conditioning" },
-    { id: "free_parking", label: "Free Private Parking" },
-    { id: "breakfast", label: "Breakfast Included" },
+    { id: "ocean_view", label: t.amenitySeaView },
+    { id: "pool", label: t.amenityPool },
+    { id: "spa", label: t.amenitySpa },
+    { id: "kitchen", label: t.amenityKitchen },
+    { id: "wifi", label: t.amenityWifi },
+    { id: "air_conditioning", label: t.amenityAC },
+    { id: "breakfast", label: t.trustDirectPerks },
   ];
 
   return (
@@ -47,9 +48,9 @@ export function CompareDrawer({
             </div>
             <div>
               <div className={styles.barTitle}>
-                {properties.length} {properties.length === 1 ? "Stay" : "Stays"} Selected for Comparison
+                {properties.length} {t.selectedForComparison}
               </div>
-              <div className={styles.barSub}>Compare prices, perks & amenities side by side</div>
+              <div className={styles.barSub}>{t.comparePricesSub}</div>
             </div>
           </div>
 
@@ -72,14 +73,14 @@ export function CompareDrawer({
           {/* Actions */}
           <div className={styles.barActions}>
             <button onClick={onClear} className={styles.clearBtn}>
-              Clear All
+              {t.clearAll}
             </button>
             <button
               onClick={() => setIsOpenModal(true)}
               className={`btn btn-primary ${styles.compareNowBtn}`}
             >
-              <span>Compare Now</span>
-              <ArrowRight size={16} />
+              <span>{t.compareNow}</span>
+              <ArrowRight size={16} className={isRTL ? "rtl-flip" : ""} />
             </button>
           </div>
         </div>
@@ -92,10 +93,8 @@ export function CompareDrawer({
             {/* Modal Header */}
             <div className={styles.modalHeader}>
               <div>
-                <h2 className={styles.modalTitle}>Side-by-Side Accommodation Comparison</h2>
-                <p className={styles.modalSubtitle}>
-                  Evaluate live platform rates, specifications, and exclusive direct perks.
-                </p>
+                <h2 className={styles.modalTitle}>{t.sideBySideTitle}</h2>
+                <p className={styles.modalSubtitle}>{t.sideBySideSub}</p>
               </div>
               <button onClick={() => setIsOpenModal(false)} className={styles.modalCloseBtn}>
                 <X size={22} />
@@ -107,7 +106,7 @@ export function CompareDrawer({
               <table className={styles.compareTable}>
                 <thead>
                   <tr>
-                    <th className={styles.featureColHeader}>Feature</th>
+                    <th className={styles.featureColHeader}>{t.feature}</th>
                     {properties.map((p) => (
                       <th key={p.id} className={styles.propColHeader}>
                         <div className={styles.headerPropCard}>
@@ -121,7 +120,7 @@ export function CompareDrawer({
                             {p.city}, {p.country}
                           </div>
                           <div className={styles.headerRating}>
-                            ★ {p.rating.toFixed(2)} ({p.reviewCount} reviews)
+                            ★ {p.rating.toFixed(2)} ({p.reviewCount} {t.reviews})
                           </div>
                         </div>
                       </th>
@@ -131,12 +130,12 @@ export function CompareDrawer({
                 <tbody>
                   {/* Category: Pricing Matrix */}
                   <tr className={styles.sectionHeaderRow}>
-                    <td colSpan={properties.length + 1}>Direct vs OTA Pricing (per night)</td>
+                    <td colSpan={properties.length + 1}>{t.categoryPricing}</td>
                   </tr>
 
                   <tr>
                     <td className={styles.featureLabel}>
-                      <strong>Zirigo Direct (Guaranteed Best)</strong>
+                      <strong>{t.directGuaranteed}</strong>
                     </td>
                     {properties.map((p) => {
                       const directRate = p.rates.find((r) => r.platformName === "Zirigo Direct");
@@ -145,14 +144,14 @@ export function CompareDrawer({
                           <div className={styles.cellBestPrice}>
                             {directRate ? formatCurrency(directRate.pricePerNight, currency) : "N/A"}
                           </div>
-                          <span className={styles.cellBestTag}>Lowest Price</span>
+                          <span className={styles.cellBestTag}>{t.lowestPriceVerified}</span>
                         </td>
                       );
                     })}
                   </tr>
 
                   <tr>
-                    <td className={styles.featureLabel}>Booking.com Rate</td>
+                    <td className={styles.featureLabel}>Booking.com</td>
                     {properties.map((p) => {
                       const bookingRate = p.rates.find((r) => r.platformName === "Booking.com");
                       return (
@@ -164,7 +163,7 @@ export function CompareDrawer({
                   </tr>
 
                   <tr>
-                    <td className={styles.featureLabel}>Airbnb Rate</td>
+                    <td className={styles.featureLabel}>Airbnb</td>
                     {properties.map((p) => {
                       const airbnbRate = p.rates.find((r) => r.platformName === "Airbnb");
                       return (
@@ -176,14 +175,14 @@ export function CompareDrawer({
                   </tr>
 
                   <tr>
-                    <td className={styles.featureLabel}>Your Savings with Direct</td>
+                    <td className={styles.featureLabel}>{t.yourSavings}</td>
                     {properties.map((p) => {
                       const directRate = p.rates.find((r) => r.platformName === "Zirigo Direct");
                       const highest = Math.max(...p.rates.map((r) => r.pricePerNight));
                       const diff = directRate ? highest - directRate.pricePerNight : 0;
                       return (
                         <td key={p.id} className={styles.savingsCell}>
-                          {diff > 0 ? `Save ${formatCurrency(diff, currency)} / night` : "Best Available"}
+                          {diff > 0 ? `${t.saveVs} ${formatCurrency(diff, currency)} ${t.night}` : t.lowestPriceVerified}
                         </td>
                       );
                     })}
@@ -191,11 +190,11 @@ export function CompareDrawer({
 
                   {/* Category: Specs */}
                   <tr className={styles.sectionHeaderRow}>
-                    <td colSpan={properties.length + 1}>Property Specifications</td>
+                    <td colSpan={properties.length + 1}>{t.categorySpecs}</td>
                   </tr>
 
                   <tr>
-                    <td className={styles.featureLabel}>Type</td>
+                    <td className={styles.featureLabel}>{t.specType}</td>
                     {properties.map((p) => (
                       <td key={p.id} style={{ textTransform: "capitalize" }}>
                         {p.type}
@@ -204,7 +203,7 @@ export function CompareDrawer({
                   </tr>
 
                   <tr>
-                    <td className={styles.featureLabel}>Cancellation Policy</td>
+                    <td className={styles.featureLabel}>{t.specCancellation}</td>
                     {properties.map((p) => (
                       <td key={p.id} style={{ textTransform: "capitalize" }}>
                         {p.cancellationPolicy}
@@ -213,7 +212,7 @@ export function CompareDrawer({
                   </tr>
 
                   <tr>
-                    <td className={styles.featureLabel}>Check-in / Check-out</td>
+                    <td className={styles.featureLabel}>{t.specCheckInOut}</td>
                     {properties.map((p) => (
                       <td key={p.id}>
                         {p.checkInTime} / {p.checkOutTime}
@@ -223,7 +222,7 @@ export function CompareDrawer({
 
                   {/* Category: Amenities */}
                   <tr className={styles.sectionHeaderRow}>
-                    <td colSpan={properties.length + 1}>Amenities Checklist</td>
+                    <td colSpan={properties.length + 1}>{t.categoryAmenities}</td>
                   </tr>
 
                   {ALL_AMENITIES_CHECK.map((am) => (
@@ -246,7 +245,7 @@ export function CompareDrawer({
 
                   {/* Booking CTA row */}
                   <tr>
-                    <td className={styles.featureLabel}>Action</td>
+                    <td className={styles.featureLabel}>{t.action}</td>
                     {properties.map((p) => (
                       <td key={p.id}>
                         <button
@@ -257,7 +256,7 @@ export function CompareDrawer({
                           className={`btn btn-primary ${styles.tableBookBtn}`}
                         >
                           <Zap size={14} />
-                          <span>Book on Zirigo</span>
+                          <span>{t.bookOnZirigo}</span>
                         </button>
                       </td>
                     ))}

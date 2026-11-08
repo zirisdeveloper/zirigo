@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Compass, Moon, Sun, Heart, Sparkles, Scale } from "lucide-react";
+import { Compass, Moon, Sun, Heart, Sparkles, Scale, Globe } from "lucide-react";
+import { useI18n, Language } from "../lib/i18n";
 import styles from "./Navbar.module.css";
 
 interface NavbarProps {
@@ -20,6 +21,7 @@ export function Navbar({
   currency,
   onCurrencyChange,
 }: NavbarProps) {
+  const { language, setLanguage, t, isRTL } = useI18n();
   const [isDark, setIsDark] = useState(false);
 
   useEffect(() => {
@@ -53,7 +55,7 @@ export function Navbar({
           <span className={styles.logoText}>
             Ziri<span className={styles.logoAccent}>go</span>
           </span>
-          <span className={styles.tagline}>Comparator & Direct Booking</span>
+          <span className={styles.tagline}>{t.tagline}</span>
         </Link>
 
         {/* Action Controls */}
@@ -62,22 +64,37 @@ export function Navbar({
           <button
             onClick={onOpenCompare}
             className={`${styles.actionBtn} ${compareCount > 0 ? styles.activeAction : ""}`}
-            title="Compare accommodations"
+            title={t.compare}
           >
             <Scale size={18} />
-            <span className={styles.actionLabel}>Compare</span>
+            <span className={styles.actionLabel}>{t.compare}</span>
             {compareCount > 0 && (
               <span className={styles.badgeCount}>{compareCount}</span>
             )}
           </button>
 
           {/* Favorites Button */}
-          <div className={styles.actionBtn} title="Saved properties">
+          <div className={styles.actionBtn} title={t.wishlist}>
             <Heart size={18} />
-            <span className={styles.actionLabel}>Wishlist</span>
+            <span className={styles.actionLabel}>{t.wishlist}</span>
             {favoriteCount > 0 && (
               <span className={styles.badgeCount}>{favoriteCount}</span>
             )}
+          </div>
+
+          {/* Language Switcher */}
+          <div className={styles.selectWrapper}>
+            <Globe size={15} className={styles.selectIcon} />
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value as Language)}
+              className={styles.languageSelect}
+              aria-label="Select language"
+            >
+              <option value="en">English (EN)</option>
+              <option value="fr">Français (FR)</option>
+              <option value="ar">العربية (AR)</option>
+            </select>
           </div>
 
           {/* Currency Switcher */}
@@ -99,8 +116,8 @@ export function Navbar({
           <button
             onClick={toggleTheme}
             className={styles.themeToggleBtn}
-            title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-            aria-label="Toggle dark mode"
+            title={t.themeToggle}
+            aria-label={t.themeToggle}
           >
             {isDark ? <Sun size={19} /> : <Moon size={19} />}
           </button>
@@ -108,7 +125,7 @@ export function Navbar({
           {/* List Property CTA */}
           <button className={`btn btn-primary ${styles.listPropertyBtn}`}>
             <Sparkles size={16} />
-            <span>List a Property</span>
+            <span>{t.listProperty}</span>
           </button>
         </div>
       </div>
