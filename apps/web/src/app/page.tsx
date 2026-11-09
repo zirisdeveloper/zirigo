@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Navbar } from "../components/Navbar";
 import { HeroSearch } from "../components/HeroSearch";
 import { PropertyCard } from "../components/PropertyCard";
@@ -32,6 +32,23 @@ export default function HomePage() {
   const [sortBy, setSortBy] = useState<"popular" | "price_asc" | "price_desc" | "rating">("popular");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [currency, setCurrency] = useState("EUR");
+
+  // Dynamic properties loaded from store / API
+  const [propertiesList, setPropertiesList] = useState<Property[]>(PROPERTIES);
+
+  useEffect(() => {
+    fetch("/api/properties")
+      .then((res) => {
+        if (res.ok) return res.json();
+        return null;
+      })
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setPropertiesList(data);
+        }
+      })
+      .catch((err) => console.error("Error fetching live properties:", err));
+  }, []);
 
   // Interaction State
   const [favorites, setFavorites] = useState<string[]>([]);
@@ -78,18 +95,50 @@ export default function HomePage() {
 
   // Filtered properties
   const filteredProperties = useMemo(() => {
-    return getProperties({
-      query: searchQuery,
-      type: activeType,
-      minRating: minRating > 0 ? minRating : undefined,
-      amenities: selectedAmenities.length > 0 ? selectedAmenities : undefined,
-      sortBy,
-    });
-  }, [searchQuery, activeType, minRating, selectedAmenities, sortBy]);
+    return propertiesList
+      .filter((prop) => {
+        if (activeType !== "all" && prop.type !== activeType) return false;
+        if (searchQuery) {
+          const q = searchQuery.toLowerCase();
+          const matchTitle = prop.title.toLowerCase().includes(q);
+          const matchCity = prop.city.toLowerCase().includes(q);
+          const matchCountry = prop.country.toLowerCase().includes(q);
+          if (!matchTitle && !matchCity && !matchCountry) return false;
+        }
+        if (minRating > 0 && prop.rating < minRating) return false;
+        if (selectedAmenities.length > 0) {
+          const hasAll = selectedAmenities.every((amenity) => prop.amenities.includes(amenity));
+          if (!hasAll) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        const priceA =
+          a.rates?.find((r) => r.platformName.toLowerCase().includes("direct"))?.pricePerNight ||
+          a.rates?.[0]?.pricePerNight ||
+          0;
+        const priceB =
+          b.rates?.find((r) => r.platformName.toLowerCase().includes("direct"))?.pricePerNight ||
+          b.rates?.[0]?.pricePerNight ||
+          0;
+
+        switch (sortBy) {
+          case "price_asc":
+            return priceA - priceB;
+          case "price_desc":
+            return priceB - priceA;
+          case "rating":
+            return b.rating - a.rating;
+          case "popular":
+          default:
+            return b.reviewCount - a.reviewCount;
+        }
+      });
+  }, [propertiesList, searchQuery, activeType, minRating, selectedAmenities, sortBy]);
 
   const comparedProperties = useMemo(() => {
-    return PROPERTIES.filter((p) => comparedIds.includes(p.id));
-  }, [comparedIds]);
+    return propertiesList.filter((p) => comparedIds.includes(p.id));
+  }, [propertiesList, comparedIds]);
 
   return (
     <main className={styles.main}>

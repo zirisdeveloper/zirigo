@@ -61,11 +61,34 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
   const serviceFee = 0; // Direct booking waived fee
   const total = subtotal + cleaningFee + serviceFee;
 
-  const handleConfirm = (e: React.FormEvent) => {
+  const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
     const randomRef = "ZRG-" + Math.floor(100000 + Math.random() * 900000);
     setBookingRef(randomRef);
     setIsSuccess(true);
+
+    try {
+      await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          propertyId: property.id,
+          propertyTitle: property.title,
+          roomTitle: selectedRoom?.title,
+          guestName: name,
+          guestEmail: email,
+          guestPhone: phone,
+          checkInDate: checkIn,
+          checkOutDate: checkOut,
+          guestsCount,
+          totalAmount: total,
+          currency,
+          specialRequests,
+        }),
+      });
+    } catch (err) {
+      console.error("Failed to persist booking:", err);
+    }
   };
 
   return (

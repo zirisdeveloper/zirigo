@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, use } from "react";
+import React, { useState, use, useEffect } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Navbar } from "../../../components/Navbar";
@@ -8,6 +8,7 @@ import { ComparisonMatrix } from "../../../components/ComparisonMatrix";
 import { BookingModal } from "../../../components/BookingModal";
 import { Footer } from "../../../components/Footer";
 import { getPropertyBySlug, formatCurrency } from "../../../lib/data";
+import { Property, RoomUnit, PropertyReview } from "../../../lib/types";
 import { useI18n } from "../../../lib/i18n";
 import {
   Star,
@@ -32,17 +33,51 @@ interface PageProps {
 
 export default function PropertyDetailPage({ params }: PageProps) {
   const resolvedParams = use(params);
-  const property = getPropertyBySlug(resolvedParams.slug);
+  const initial = getPropertyBySlug(resolvedParams.slug);
+  const [property, setProperty] = useState<Property | null>(initial || null);
+  const [isLoading, setIsLoading] = useState(!initial);
 
-  if (!property) {
-    notFound();
-  }
+  useEffect(() => {
+    fetch(`/api/properties/${resolvedParams.slug}`)
+      .then((res) => {
+        if (res.ok) return res.json();
+        return null;
+      })
+      .then((data) => {
+        if (data && !data.error) {
+          setProperty(data);
+        }
+      })
+      .catch((err) => console.error("Error loading property:", err))
+      .finally(() => setIsLoading(false));
+  }, [resolvedParams.slug]);
 
   const { t, isRTL } = useI18n();
   const [currency, setCurrency] = useState("EUR");
   const [isFavorite, setIsFavorite] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+
+  if (isLoading) {
+    return (
+      <main className={styles.main}>
+        <Navbar
+          favoriteCount={0}
+          compareCount={0}
+          onOpenCompare={() => {}}
+          currency={currency}
+          onCurrencyChange={setCurrency}
+        />
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh", fontSize: "1.1rem", color: "var(--text-muted)" }}>
+          Chargement de l'hébergement...
+        </div>
+      </main>
+    );
+  }
+
+  if (!property) {
+    notFound();
+  }
 
   const bestRate = [...property.rates].sort((a, b) => a.pricePerNight - b.pricePerNight)[0];
 
@@ -125,7 +160,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
             />
           </div>
           <div className={styles.thumbnailsColumn}>
-            {property.images.map((img, idx) => (
+            {property.images.map((img: string, idx: number) => (
               <button
                 key={idx}
                 onClick={() => setSelectedImageIndex(idx)}
@@ -188,7 +223,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
             <section className={styles.sectionBlock}>
               <h2 className={styles.sectionHeading}>{t.availableRooms}</h2>
               <div className={styles.roomsGrid}>
-                {property.rooms.map((room) => (
+                {property.rooms.map((room: RoomUnit) => (
                   <div key={room.id} className={styles.roomCard}>
                     {room.images[0] && (
                       <img src={room.images[0]} alt={room.title} className={styles.roomImg} />
@@ -227,7 +262,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
             <section className={styles.sectionBlock}>
               <h2 className={styles.sectionHeading}>{t.whatOffers}</h2>
               <div className={styles.amenitiesGrid}>
-                {property.amenities.map((am) => (
+                {property.amenities.map((am: string) => (
                   <div key={am} className={styles.amenityItem}>
                     <CheckCircle2 size={18} className={styles.amenityCheck} />
                     <span>{am.replace(/_/g, " ")}</span>
@@ -245,7 +280,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
               </div>
 
               <div className={styles.reviewsGrid}>
-                {property.reviews.map((rev) => (
+                {property.reviews.map((rev: PropertyReview) => (
                   <div key={rev.id} className={styles.reviewCard}>
                     <div className={styles.reviewAuthorRow}>
                       <img

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Compass, Moon, Sun, Heart, Sparkles, Scale, Globe } from "lucide-react";
+import { Compass, Moon, Sun, Heart, Sparkles, Scale, Globe, ShieldCheck } from "lucide-react";
 import { useI18n, Language } from "../lib/i18n";
 import styles from "./Navbar.module.css";
 
@@ -122,11 +122,26 @@ export function Navbar({
             {isDark ? <Sun size={19} /> : <Moon size={19} />}
           </button>
 
+          {/* Admin Platform Link */}
+          <Link
+            href="/admin"
+            className={styles.actionBtn}
+            title="Espace Administration"
+            style={{ textDecoration: "none" }}
+          >
+            <ShieldCheck size={18} style={{ color: "var(--brand-primary)" }} />
+            <span className={styles.actionLabel}>Admin</span>
+          </Link>
+
           {/* List Property CTA */}
-          <button className={`btn btn-primary ${styles.listPropertyBtn}`}>
+          <Link
+            href="/admin/properties/new"
+            className={`btn btn-primary ${styles.listPropertyBtn}`}
+            style={{ textDecoration: "none" }}
+          >
             <Sparkles size={16} />
             <span>{t.listProperty}</span>
-          </button>
+          </Link>
         </div>
       </div>
     </header>

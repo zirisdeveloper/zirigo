@@ -56,10 +56,10 @@ export function Footer() {
           <div className={styles.linksCol}>
             <h4 className={styles.colTitle}>{t.hostsCol}</h4>
             <ul className={styles.linksList}>
-              <li><Link href="/">{t.listProperty}</Link></li>
-              <li><Link href="/">PMS & Channel Manager Sync</Link></li>
+              <li><Link href="/admin/properties/new">{t.listProperty}</Link></li>
+              <li><Link href="/admin">Espace Administration</Link></li>
+              <li><Link href="/admin/rates">Comparateur & Tarifs</Link></li>
               <li><Link href="/">Commission-Free Direct Bookings</Link></li>
-              <li><Link href="/">Partner Success Stories</Link></li>
             </ul>
           </div>
         </div>
