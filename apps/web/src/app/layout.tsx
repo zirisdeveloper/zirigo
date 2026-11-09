@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     "comparateur hébergement",
     "réservation directe",
     "villas de luxe",
-    "hôtels de charme",
+    "hôtels",
     "comparateur prix hôtel",
     "Zirigo",
   ],
