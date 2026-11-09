@@ -1,7 +1,7 @@
 :root {
-  --font-display: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-arabic: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+  --font-display: var(--font-outfit), 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: var(--font-jakarta), 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-arabic: var(--font-cairo), 'Cairo', 'Segoe UI', Tahoma, sans-serif;
 
   /* Color Palette - Light Mode */
   --bg-primary: #f8fafc;

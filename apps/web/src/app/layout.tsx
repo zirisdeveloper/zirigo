@@ -1,6 +1,29 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import type { ReactNode } from "react";
+import { Cairo, Outfit, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import { Providers } from "../components/Providers";
+
+const cairo = Cairo({
+  subsets: ["arabic", "latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+  variable: "--font-cairo",
+  display: "swap",
+});
+
+const outfit = Outfit({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+  variable: "--font-outfit",
+  display: "swap",
+});
+
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-jakarta",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Zirigo | Plateforme de Comparaison et de Réservation d'Hébergements",
@@ -16,24 +39,27 @@ export const metadata: Metadata = {
   ],
 };
 
+export const viewport: Viewport = {
+  themeColor: "#0d9488",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <html lang="fr" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html
+      lang="fr"
+      suppressHydrationWarning
+      className={`${cairo.variable} ${outfit.variable} ${plusJakartaSans.variable}`}
+    >
       <body>
         <Providers>{children}</Providers>
       </body>
     </html>
   );
 }
+
