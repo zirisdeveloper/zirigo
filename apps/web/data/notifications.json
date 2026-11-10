@@ -1,0 +1,16 @@
+[
+  {
+    "id": "notif-1794304094525-188",
+    "userId": "usr-1794302681659",
+    "alertId": "alert-1794304094521",
+    "alertName": "villa",
+    "propertyId": "prop-1794302879213",
+    "propertySlug": "villa",
+    "propertyTitle": "villa",
+    "propertyCity": "bejaia, Algerie",
+    "pricePerNight": 220,
+    "message": "1 hébergement(s) correspondent déjà à votre alerte « villa », dont villa.",
+    "isRead": false,
+    "createdAt": "2026-11-10T09:48:14.525Z"
+  }
+]

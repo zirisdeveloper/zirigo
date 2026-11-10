@@ -4,7 +4,7 @@ import React from "react";
 import { Check, ShieldCheck, Zap, ExternalLink, ArrowRight, Sparkles, TrendingDown } from "lucide-react";
 import { PlatformRate } from "../lib/types";
 import { formatCurrency } from "../lib/data";
-import { useI18n } from "../lib/i18n";
+import { useI18n, translateRatePerk } from "../lib/i18n";
 import styles from "./ComparisonMatrix.module.css";
 
 interface ComparisonMatrixProps {
@@ -20,7 +20,7 @@ export function ComparisonMatrix({
   nights = 3,
   onSelectDirectBooking,
 }: ComparisonMatrixProps) {
-  const { t, isRTL } = useI18n();
+  const { t, language, isRTL } = useI18n();
   // Sort rates with lowest price first
   const sortedRates = [...rates].sort((a, b) => a.pricePerNight - b.pricePerNight);
   const bestRate = sortedRates[0];
@@ -65,9 +65,8 @@ export function ComparisonMatrix({
           return (
             <div
               key={rate.platformName}
-              className={`${styles.rateCard} ${isBest ? styles.bestRateCard : ""} ${
-                isDirect ? styles.directCard : ""
-              }`}
+              className={`${styles.rateCard} ${isBest ? styles.bestRateCard : ""} ${isDirect ? styles.directCard : ""
+                }`}
             >
               {isBest && (
                 <div className={styles.bestPriceRibbon}>
@@ -97,7 +96,7 @@ export function ComparisonMatrix({
                 {rate.perks.map((perk, i) => (
                   <div key={i} className={styles.perkItem}>
                     <Check size={14} className={isBest ? styles.checkGreen : styles.checkMuted} />
-                    <span>{perk}</span>
+                    <span>{translateRatePerk(perk, language)}</span>
                   </div>
                 ))}
               </div>

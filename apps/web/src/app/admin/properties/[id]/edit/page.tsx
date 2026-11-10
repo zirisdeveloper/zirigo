@@ -72,3 +72,4 @@ export default function EditPropertyPage({ params }: PageProps) {
     </div>
   );
 }
+

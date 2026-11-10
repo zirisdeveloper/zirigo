@@ -7,7 +7,7 @@ import { useI18n } from "../lib/i18n";
 import styles from "./Footer.module.css";
 
 export function Footer() {
-  const { t } = useI18n();
+  const { t, ext } = useI18n();
 
   return (
     <footer className={styles.footer}>
@@ -34,32 +34,32 @@ export function Footer() {
           <div className={styles.linksCol}>
             <h4 className={styles.colTitle}>{t.destinationsCol}</h4>
             <ul className={styles.linksList}>
-              <li><Link href="/">French Riviera & Cassis</Link></li>
-              <li><Link href="/">Paris Historic Marais</Link></li>
-              <li><Link href="/">Chamonix & Mont-Blanc</Link></li>
-              <li><Link href="/">Amalfi Coast & Positano</Link></li>
-              <li><Link href="/">Marrakech Palmeraie</Link></li>
-              <li><Link href="/">Algiers Waterfront Bay</Link></li>
+              <li><Link href="/">{ext.footerDest1}</Link></li>
+              <li><Link href="/">{ext.footerDest2}</Link></li>
+              <li><Link href="/">{ext.footerDest3}</Link></li>
+              <li><Link href="/">{ext.footerDest4}</Link></li>
+              <li><Link href="/">{ext.footerDest5}</Link></li>
+              <li><Link href="/">{ext.footerDest6}</Link></li>
             </ul>
           </div>
 
           <div className={styles.linksCol}>
             <h4 className={styles.colTitle}>{t.comparisonCol}</h4>
             <ul className={styles.linksList}>
-              <li><Link href="/">Booking.com vs Direct</Link></li>
-              <li><Link href="/">Airbnb Fees Breakdown</Link></li>
-              <li><Link href="/">Host Direct Booking Program</Link></li>
-              <li><Link href="/">Price Match Guarantee</Link></li>
+              <li><Link href="/">{ext.footerComp1}</Link></li>
+              <li><Link href="/">{ext.footerComp2}</Link></li>
+              <li><Link href="/">{ext.footerComp3}</Link></li>
+              <li><Link href="/">{ext.footerComp4}</Link></li>
             </ul>
           </div>
 
           <div className={styles.linksCol}>
             <h4 className={styles.colTitle}>{t.hostsCol}</h4>
             <ul className={styles.linksList}>
-              <li><Link href="/admin/properties/new">{t.listProperty}</Link></li>
-              <li><Link href="/admin">Espace Administration</Link></li>
-              <li><Link href="/admin/rates">Comparateur & Tarifs</Link></li>
-              <li><Link href="/">Commission-Free Direct Bookings</Link></li>
+              <li><Link href="/espace-perso/annonces/new">{t.listProperty}</Link></li>
+              <li><Link href="/espace-perso">{ext.personalSpaceTitle}</Link></li>
+              <li><Link href="/espace-perso/alertes">{ext.alertsAndNotifs}</Link></li>
+              <li><Link href="/admin">{ext.adminSpace}</Link></li>
             </ul>
           </div>
         </div>

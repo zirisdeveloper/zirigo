@@ -1,62 +1,73 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Link from "next/link";
-import { Compass, Moon, Sun, Heart, Sparkles, Scale, Globe, ShieldCheck } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Compass, Moon, Sun, Heart, Sparkles, Scale, Globe, LogOut, User } from "lucide-react";
 import { useI18n, Language } from "../lib/i18n";
+import { useAuth } from "../lib/authContext";
+import { usePreferences } from "../lib/preferencesContext";
+import { CurrencyCode } from "../lib/types";
 import styles from "./Navbar.module.css";
 
 interface NavbarProps {
   favoriteCount: number;
   compareCount: number;
   onOpenCompare: () => void;
-  currency: string;
-  onCurrencyChange: (c: string) => void;
+  currency?: CurrencyCode;
+  onCurrencyChange?: (c: CurrencyCode) => void;
 }
 
 export function Navbar({
   favoriteCount,
   compareCount,
   onOpenCompare,
-  currency,
+  currency: propCurrency,
   onCurrencyChange,
 }: NavbarProps) {
-  const { language, setLanguage, t, isRTL } = useI18n();
-  const [isDark, setIsDark] = useState(false);
+  const router = useRouter();
+  const { t, ext } = useI18n();
+  const { user, unreadNotificationsCount, logout } = useAuth();
+  const {
+    currency: ctxCurrency,
+    language,
+    isDark,
+    setCurrency: setCtxCurrency,
+    setLanguage,
+    toggleTheme,
+  } = usePreferences();
 
-  useEffect(() => {
-    const savedTheme = localStorage.getItem("zirigo_theme");
-    if (savedTheme === "dark") {
-      setIsDark(true);
-      document.documentElement.setAttribute("data-theme", "dark");
-    }
-  }, []);
+  const activeCurrency = propCurrency || ctxCurrency;
 
-  const toggleTheme = () => {
-    const next = !isDark;
-    setIsDark(next);
-    if (next) {
-      document.documentElement.setAttribute("data-theme", "dark");
-      localStorage.setItem("zirigo_theme", "dark");
-    } else {
-      document.documentElement.removeAttribute("data-theme");
-      localStorage.setItem("zirigo_theme", "light");
+  const handleCurrencySelect = (val: string) => {
+    const nextCurrency = val as CurrencyCode;
+    setCtxCurrency(nextCurrency);
+    if (onCurrencyChange && onCurrencyChange !== setCtxCurrency) {
+      onCurrencyChange(nextCurrency);
     }
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    router.push("/");
+    router.refresh();
   };
 
   return (
     <header className={styles.header}>
       <div className={`container ${styles.navbarInner}`}>
-        {/* Brand Logo */}
-        <Link href="/" className={styles.logo}>
-          <div className={styles.logoIconWrapper}>
-            <Compass className={styles.logoIcon} />
-          </div>
-          <span className={styles.logoText}>
-            Ziri<span className={styles.logoAccent}>go</span>
-          </span>
+        {/* Brand Logo & Tagline */}
+        <div className={styles.brandGroup}>
+          <Link href="/" className={styles.logo}>
+            <div className={styles.logoIconWrapper}>
+              <Compass className={styles.logoIcon} />
+            </div>
+            <span className={styles.logoText}>
+              Ziri<span className={styles.logoAccent}>go</span>
+            </span>
+          </Link>
           <span className={styles.tagline}>{t.tagline}</span>
-        </Link>
+        </div>
 
         {/* Action Controls */}
         <div className={styles.navActions}>
@@ -100,14 +111,14 @@ export function Navbar({
           {/* Currency Switcher */}
           <div className={styles.currencyWrapper}>
             <select
-              value={currency}
-              onChange={(e) => onCurrencyChange(e.target.value)}
+              value={activeCurrency}
+              onChange={(e) => handleCurrencySelect(e.target.value)}
               className={styles.currencySelect}
               aria-label="Select currency"
             >
+              <option value="DZD">DZD</option>
               <option value="EUR">€ EUR</option>
               <option value="USD">$ USD</option>
-              <option value="DZD">DZD</option>
               <option value="GBP">£ GBP</option>
             </select>
           </div>
@@ -122,20 +133,41 @@ export function Navbar({
             {isDark ? <Sun size={19} /> : <Moon size={19} />}
           </button>
 
-          {/* Admin Platform Link */}
+          {/* Espace Perso / Connexion */}
           <Link
-            href="/admin"
-            className={styles.actionBtn}
-            title="Espace Administration"
+            href={user ? "/espace-perso" : "/connexion"}
+            className={`${styles.actionBtn} ${styles.personalSpaceBtn} ${user ? styles.activeAction : ""}`}
+            title={user ? ext.personalSpaceTitle : ext.loginRegisterTitle}
             style={{ textDecoration: "none" }}
           >
-            <ShieldCheck size={18} style={{ color: "var(--brand-primary)" }} />
-            <span className={styles.actionLabel}>Admin</span>
+            <User size={18} />
+            <span className={styles.actionLabel}>
+              {user ? user.name.split(" ")[0] : ext.personalSpace}
+            </span>
+            {user && unreadNotificationsCount > 0 && (
+              <span className={styles.badgeCount} style={{ backgroundColor: "var(--alert-red)" }}>
+                {unreadNotificationsCount}
+              </span>
+            )}
           </Link>
 
-          {/* List Property CTA */}
+          {/* Logout Button when connected */}
+          {user && (
+            <button
+              type="button"
+              onClick={handleLogout}
+              className={styles.actionBtn}
+              title={ext.logoutTitle}
+              style={{ color: "var(--alert-red)", borderColor: "rgba(239, 68, 68, 0.25)" }}
+            >
+              <LogOut size={17} />
+              <span className={styles.actionLabel}>{ext.logout}</span>
+            </button>
+          )}
+
+          {/* List Property CTA -> Requires Auth in Espace Perso */}
           <Link
-            href="/admin/properties/new"
+            href={user ? "/espace-perso/annonces/new" : "/connexion?redirect=/espace-perso/annonces/new"}
             className={`btn btn-primary ${styles.listPropertyBtn}`}
             style={{ textDecoration: "none" }}
           >

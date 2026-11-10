@@ -1,22 +1,66 @@
 "use client";
 
-import React, { useState } from "react";
-import { X, CheckCircle2, ShieldCheck, Calendar, Users, Zap, Mail, Phone, User } from "lucide-react";
-import { Property, RoomUnit } from "../lib/types";
+import React, { useState, useEffect, useMemo } from "react";
+import {
+  X,
+  CheckCircle2,
+  ShieldCheck,
+  Calendar,
+  Users,
+  Zap,
+  Mail,
+  Phone,
+  User,
+  AlertCircle,
+  CalendarX2,
+} from "lucide-react";
+import { AvailabilityBlock, Property, RoomUnit } from "../lib/types";
 import { formatCurrency } from "../lib/data";
 import { useI18n } from "../lib/i18n";
+import { addDaysIso, datesOverlap, isValidIsoDate } from "../lib/dateUtils";
 import styles from "./BookingModal.module.css";
 
 interface BookingModalProps {
   property: Property | null;
   currency: string;
   onClose: () => void;
+  initialCheckIn?: string;
+  initialCheckOut?: string;
 }
 
-export function BookingModal({ property, currency, onClose }: BookingModalProps) {
-  const { t, isRTL } = useI18n();
-
+export function BookingModal({
+  property,
+  currency,
+  onClose,
+  initialCheckIn,
+  initialCheckOut,
+}: BookingModalProps) {
   if (!property) return null;
+  return (
+    <BookingModalContent
+      property={property}
+      currency={currency}
+      onClose={onClose}
+      initialCheckIn={initialCheckIn}
+      initialCheckOut={initialCheckOut}
+    />
+  );
+}
+
+function BookingModalContent({
+  property,
+  currency,
+  onClose,
+  initialCheckIn,
+  initialCheckOut,
+}: {
+  property: Property;
+  currency: string;
+  onClose: () => void;
+  initialCheckIn?: string;
+  initialCheckOut?: string;
+}) {
+  const { t, ext, language } = useI18n();
 
   const [selectedRoom, setSelectedRoom] = useState<RoomUnit>(
     property.rooms[0] || {
@@ -34,15 +78,49 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
     }
   );
 
-  const [checkIn, setCheckIn] = useState("2026-06-15");
-  const [checkOut, setCheckOut] = useState("2026-06-18");
+  const defaultCheckIn = initialCheckIn && isValidIsoDate(initialCheckIn) ? initialCheckIn : "2026-06-15";
+  const defaultCheckOut =
+    initialCheckOut && isValidIsoDate(initialCheckOut) && initialCheckOut > defaultCheckIn
+      ? initialCheckOut
+      : addDaysIso(defaultCheckIn, 1);
+
+  const [checkIn, setCheckIn] = useState(defaultCheckIn);
+  const [checkOut, setCheckOut] = useState(defaultCheckOut);
+
+  const handleCheckInChange = (nextCheckIn: string) => {
+    setCheckIn(nextCheckIn);
+    if (isValidIsoDate(nextCheckIn)) {
+      setCheckOut(addDaysIso(nextCheckIn, 1));
+    }
+  };
   const [guestsCount, setGuestsCount] = useState(2);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [specialRequests, setSpecialRequests] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [bookingRef, setBookingRef] = useState("");
+  const [blockedRanges, setBlockedRanges] = useState<AvailabilityBlock[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/availability?propertyId=${encodeURIComponent(property.id)}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && Array.isArray(data.blocks)) {
+          setBlockedRanges(data.blocks);
+        }
+      })
+      .catch(() => {
+        // leave empty if unreachable
+      });
+  }, [property.id]);
+
+  const overlappingBlock = useMemo(() => {
+    if (!checkIn || !checkOut || checkIn >= checkOut) return null;
+    return blockedRanges.find((b) => datesOverlap(checkIn, checkOut, b.startDate, b.endDate)) || null;
+  }, [blockedRanges, checkIn, checkOut]);
 
   // Calculate nights
   const d1 = new Date(checkIn);
@@ -63,12 +141,33 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
 
   const handleConfirm = async (e: React.FormEvent) => {
     e.preventDefault();
-    const randomRef = "ZRG-" + Math.floor(100000 + Math.random() * 900000);
-    setBookingRef(randomRef);
-    setIsSuccess(true);
+    setErrorMessage(null);
 
+    if (checkIn >= checkOut) {
+      setErrorMessage(
+        language === "ar"
+          ? "يجب أن يكون تاريخ المغادرة بعد تاريخ الوصول."
+          : language === "en"
+          ? "Check-out date must be after check-in date."
+          : "La date de départ doit être postérieure à la date d'arrivée."
+      );
+      return;
+    }
+
+    if (overlappingBlock) {
+      setErrorMessage(
+        language === "ar"
+          ? `التواريخ المختارة محجوزة (${overlappingBlock.startDate} → ${overlappingBlock.endDate}).`
+          : language === "en"
+          ? `Selected dates overlap an unavailable period (${overlappingBlock.startDate} → ${overlappingBlock.endDate}).`
+          : `Ces dates sont indisponibles (${overlappingBlock.startDate} → ${overlappingBlock.endDate}).`
+      );
+      return;
+    }
+
+    setIsSubmitting(true);
     try {
-      await fetch("/api/bookings", {
+      const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -86,8 +185,19 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
           specialRequests,
         }),
       });
+      const data = await res.json();
+      if (!res.ok) {
+        setErrorMessage(data.error || "Impossible d'enregistrer la réservation.");
+        return;
+      }
+
+      setBookingRef(data.bookingReference || "ZIR-" + Math.floor(100000 + Math.random() * 900000));
+      setIsSuccess(true);
     } catch (err) {
       console.error("Failed to persist booking:", err);
+      setErrorMessage("Erreur réseau lors de l'envoi de votre réservation.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -211,7 +321,7 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
                     type="date"
                     required
                     value={checkIn}
-                    onChange={(e) => setCheckIn(e.target.value)}
+                    onChange={(e) => handleCheckInChange(e.target.value)}
                     className={styles.input}
                   />
                 </div>
@@ -223,11 +333,81 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
                     type="date"
                     required
                     value={checkOut}
+                    min={isValidIsoDate(checkIn) ? addDaysIso(checkIn, 1) : undefined}
                     onChange={(e) => setCheckOut(e.target.value)}
                     className={styles.input}
                   />
                 </div>
               </div>
+
+              {blockedRanges.length > 0 && (
+                <div
+                  style={{
+                    background: "var(--bg-muted)",
+                    border: "1px solid var(--border-subtle)",
+                    borderRadius: "var(--radius-md)",
+                    padding: "0.6rem 0.75rem",
+                    fontSize: "0.78rem",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.35rem",
+                      fontWeight: 700,
+                      color: "var(--text-secondary)",
+                      marginBottom: "0.35rem",
+                    }}
+                  >
+                    <CalendarX2 size={13} />
+                    <span>{ext.availability.unavailableNotice}</span>
+                  </div>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                    {blockedRanges.map((b) => (
+                      <span
+                        key={b.id}
+                        style={{
+                          padding: "0.15rem 0.45rem",
+                          borderRadius: "6px",
+                          background: "var(--alert-red-bg)",
+                          color: "var(--alert-red)",
+                          fontFamily: "monospace",
+                          fontWeight: 700,
+                          fontSize: "0.73rem",
+                        }}
+                      >
+                        {b.startDate} → {b.endDate}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {(overlappingBlock || errorMessage) && (
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.45rem",
+                    padding: "0.65rem 0.8rem",
+                    borderRadius: "var(--radius-md)",
+                    background: "var(--alert-red-bg)",
+                    border: "1px solid rgba(239, 68, 68, 0.35)",
+                    color: "var(--alert-red)",
+                    fontSize: "0.82rem",
+                    fontWeight: 600,
+                  }}
+                >
+                  <AlertCircle size={15} style={{ flexShrink: 0 }} />
+                  <span>
+                    {errorMessage ||
+                      (overlappingBlock
+                        ? `${overlappingBlock.startDate} → ${overlappingBlock.endDate}`
+                        : "")}
+                  </span>
+                </div>
+              )}
 
               <div className={styles.formGroup}>
                 <label className={styles.label}>
@@ -355,9 +535,13 @@ export function BookingModal({ property, currency, onClose }: BookingModalProps)
                   </div>
                 </div>
 
-                <button type="submit" className={`btn btn-primary ${styles.confirmBtn}`}>
+                <button
+                  type="submit"
+                  disabled={isSubmitting || Boolean(overlappingBlock)}
+                  className={`btn btn-primary ${styles.confirmBtn}`}
+                >
                   <Zap size={16} />
-                  <span>{t.confirmBookingBtn}</span>
+                  <span>{isSubmitting ? ext.saving : t.confirmBookingBtn}</span>
                 </button>
               </div>
             </div>

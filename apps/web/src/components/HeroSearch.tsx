@@ -1,61 +1,184 @@
 "use client";
 
-import React, { useState } from "react";
-import { Search, MapPin, Calendar, Users, CheckCircle2 } from "lucide-react";
-import { useI18n } from "../lib/i18n";
+import React, { useState, useEffect, useRef } from "react";
+import { Search, MapPin, Calendar, CalendarCheck2, Users, CheckCircle2, X, Check } from "lucide-react";
+import { useI18n, Language } from "../lib/i18n";
+import { addDaysIso, isValidIsoDate } from "../lib/dateUtils";
 import styles from "./HeroSearch.module.css";
 
+export type SearchDateMode = "flexible" | "fixed";
+
 interface HeroSearchProps {
+  searchQuery?: string;
+  dateMode?: SearchDateMode;
+  dates?: { checkIn: string; checkOut: string };
   onSearch: (params: {
     query: string;
-    type: string;
+    types: string[];
+    dateMode: SearchDateMode;
     guests: number;
     dates: { checkIn: string; checkOut: string };
   }) => void;
-  activeType: string;
-  onTypeChange: (type: string) => void;
+  onDateFilterChange?: (
+    mode: SearchDateMode,
+    dates: { checkIn: string; checkOut: string }
+  ) => void;
+  selectedTypes: string[];
+  onToggleType: (type: string) => void;
 }
 
-const POPULAR_DESTINATIONS = [
-  "Cassis, France",
-  "Paris, France",
-  "Chamonix, France",
-  "Positano, Italy",
-  "Marrakech, Morocco",
-  "Algiers, Algeria",
-];
+const POPULAR_DESTINATIONS: Record<Language, string[]> = {
+  fr: [
+    "Cassis, France",
+    "Paris, France",
+    "Chamonix, France",
+    "Positano, Italie",
+    "Marrakech, Maroc",
+    "Alger, Algérie",
+  ],
+  en: [
+    "Cassis, France",
+    "Paris, France",
+    "Chamonix, France",
+    "Positano, Italy",
+    "Marrakech, Morocco",
+    "Algiers, Algeria",
+  ],
+  ar: [
+    "كاسيس، فرنسا",
+    "باريس، فرنسا",
+    "شاموني، فرنسا",
+    "بوسيتانو، إيطاليا",
+    "مراكش، المغرب",
+    "الجزائر العاصمة، الجزائر",
+  ],
+};
 
-export function HeroSearch({ onSearch, activeType, onTypeChange }: HeroSearchProps) {
-  const { t, isRTL } = useI18n();
-  const [query, setQuery] = useState("");
-  const [checkIn, setCheckIn] = useState("2026-06-15");
-  const [checkOut, setCheckOut] = useState("2026-06-20");
+export function HeroSearch({
+  searchQuery,
+  dateMode: externalDateMode,
+  dates: externalDates,
+  onSearch,
+  onDateFilterChange,
+  selectedTypes,
+  onToggleType,
+}: HeroSearchProps) {
+  const { t, ext, language, isRTL } = useI18n();
+  const av = ext.availability;
+  const [query, setQuery] = useState(searchQuery || "");
+  const [dateMode, setDateMode] = useState<SearchDateMode>(externalDateMode || "flexible");
+  const [checkIn, setCheckIn] = useState(externalDates?.checkIn || "2026-06-15");
+  const [checkOut, setCheckOut] = useState(externalDates?.checkOut || "2026-06-16");
   const [guests, setGuests] = useState(2);
   const [showDestinationDropdown, setShowDestinationDropdown] = useState(false);
+  const destinationFieldRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (searchQuery !== undefined) {
+      setQuery(searchQuery);
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
+    if (externalDateMode !== undefined) {
+      setDateMode(externalDateMode);
+    }
+  }, [externalDateMode]);
+
+  useEffect(() => {
+    if (externalDates) {
+      setCheckIn(externalDates.checkIn);
+      setCheckOut(externalDates.checkOut);
+    }
+  }, [externalDates]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        destinationFieldRef.current &&
+        !destinationFieldRef.current.contains(event.target as Node)
+      ) {
+        setShowDestinationDropdown(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const PROPERTY_TYPES = [
     { id: "all", label: t.typeAll },
-    { id: "villa", label: t.typeVilla },
     { id: "hotel", label: t.typeHotel },
     { id: "apartment", label: t.typeApartment },
+    { id: "villa", label: t.typeVilla },
     { id: "chalet", label: t.typeChalet },
     { id: "resort", label: t.typeResort },
+    { id: "dormitory", label: t.typeDormitory },
   ];
+
+  const scrollToCatalog = () => {
+    const el = document.getElementById("catalog");
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const handleDateModeChange = (nextMode: SearchDateMode) => {
+    setDateMode(nextMode);
+    onDateFilterChange?.(nextMode, { checkIn, checkOut });
+  };
+
+  const handleCheckInChange = (nextCheckIn: string) => {
+    setCheckIn(nextCheckIn);
+    const nextCheckOut = isValidIsoDate(nextCheckIn)
+      ? addDaysIso(nextCheckIn, 1)
+      : checkOut;
+    setCheckOut(nextCheckOut);
+    onDateFilterChange?.(dateMode, { checkIn: nextCheckIn, checkOut: nextCheckOut });
+  };
+
+  const handleCheckOutChange = (nextCheckOut: string) => {
+    setCheckOut(nextCheckOut);
+    onDateFilterChange?.(dateMode, { checkIn, checkOut: nextCheckOut });
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowDestinationDropdown(false);
     onSearch({
       query,
-      type: activeType,
+      types: selectedTypes,
+      dateMode,
       guests,
       dates: { checkIn, checkOut },
     });
+    scrollToCatalog();
   };
 
   const handleSelectDestination = (dest: string) => {
     setQuery(dest);
     setShowDestinationDropdown(false);
+    onSearch({
+      query: dest,
+      types: selectedTypes,
+      dateMode,
+      guests,
+      dates: { checkIn, checkOut },
+    });
+    scrollToCatalog();
   };
+
+  const handleClearQuery = () => {
+    setQuery("");
+    onSearch({
+      query: "",
+      types: selectedTypes,
+      dateMode,
+      guests,
+      dates: { checkIn, checkOut },
+    });
+  };
+
+  const destinations = POPULAR_DESTINATIONS[language] || POPULAR_DESTINATIONS.fr;
 
   return (
     <section className={styles.heroSection}>
@@ -67,45 +190,110 @@ export function HeroSearch({ onSearch, activeType, onTypeChange }: HeroSearchPro
             <span>{t.heroPromo}</span>
           </div>
           <h1 className={styles.heroTitle}>
-            {t.heroTitle1} <br />
+            {t.heroTitle1 && (
+              <>
+                {t.heroTitle1} <br />
+              </>
+            )}
             <span className={styles.gradientText}>{t.heroTitle2}</span>
           </h1>
           <p className={styles.heroSubtitle}>{t.heroSubtitle}</p>
         </div>
 
-        {/* Accommodation Type Filter Tabs */}
+        {/* Accommodation Type Filter Tabs (Multi-select) */}
         <div className={styles.typeTabs}>
-          {PROPERTY_TYPES.map((type) => (
+          {PROPERTY_TYPES.map((type) => {
+            const isSelected =
+              type.id === "all"
+                ? selectedTypes.length === 0
+                : selectedTypes.includes(type.id);
+            return (
+              <button
+                key={type.id}
+                type="button"
+                aria-pressed={isSelected}
+                onClick={() => onToggleType(type.id)}
+                className={`${styles.typeTab} ${isSelected ? styles.typeTabActive : ""}`}
+              >
+                {isSelected && type.id !== "all" && <Check size={14} />}
+                <span>{type.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Date Flexibility Switch (Flexible vs Fixed Dates) */}
+        <div className={styles.dateModeRow}>
+          <div className={styles.dateModeGroup} role="group" aria-label="Date mode">
             <button
-              key={type.id}
-              onClick={() => onTypeChange(type.id)}
-              className={`${styles.typeTab} ${activeType === type.id ? styles.typeTabActive : ""}`}
+              type="button"
+              onClick={() => handleDateModeChange("flexible")}
+              className={`${styles.dateModeBtn} ${
+                dateMode === "flexible" ? styles.dateModeBtnActive : ""
+              }`}
             >
-              {type.label}
+              <Calendar size={14} />
+              <span>{av.flexibleDates}</span>
             </button>
-          ))}
+            <button
+              type="button"
+              onClick={() => handleDateModeChange("fixed")}
+              className={`${styles.dateModeBtn} ${
+                dateMode === "fixed" ? styles.dateModeBtnActive : ""
+              }`}
+            >
+              <CalendarCheck2 size={14} />
+              <span>{av.fixedDates}</span>
+            </button>
+          </div>
+          <span className={styles.dateModeHint}>
+            {dateMode === "fixed" ? av.fixedDatesHint : av.flexibleDatesHint}
+          </span>
         </div>
 
         {/* Floating Luxury Search Box */}
         <form onSubmit={handleSubmit} className={styles.searchBox}>
           {/* Destination */}
-          <div className={styles.searchField} style={{ position: "relative" }}>
+          <div
+            ref={destinationFieldRef}
+            className={styles.searchField}
+            style={{ position: "relative" }}
+          >
             <label className={styles.fieldLabel}>
               <MapPin size={15} className={styles.fieldIcon} />
               <span>{t.destination}</span>
             </label>
-            <input
-              type="text"
-              placeholder={t.whereGoing}
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              onFocus={() => setShowDestinationDropdown(true)}
-              className={styles.fieldInput}
-            />
+            <div style={{ display: "flex", alignItems: "center", gap: "0.35rem" }}>
+              <input
+                type="text"
+                placeholder={t.whereGoing}
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onFocus={() => setShowDestinationDropdown(true)}
+                className={styles.fieldInput}
+                style={{ flex: 1, minWidth: 0 }}
+              />
+              {query && (
+                <button
+                  type="button"
+                  onClick={handleClearQuery}
+                  aria-label="Clear destination"
+                  style={{
+                    color: "var(--text-muted)",
+                    padding: "0.2rem",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    borderRadius: "50%",
+                  }}
+                >
+                  <X size={14} />
+                </button>
+              )}
+            </div>
             {showDestinationDropdown && (
               <div className={`${styles.destinationDropdown} ${isRTL ? styles.rtlDropdown : ""}`}>
                 <div className={styles.dropdownTitle}>{t.popularDestinations}</div>
-                {POPULAR_DESTINATIONS.map((dest) => (
+                {destinations.map((dest) => (
                   <button
                     key={dest}
                     type="button"
@@ -131,7 +319,7 @@ export function HeroSearch({ onSearch, activeType, onTypeChange }: HeroSearchPro
             <input
               type="date"
               value={checkIn}
-              onChange={(e) => setCheckIn(e.target.value)}
+              onChange={(e) => handleCheckInChange(e.target.value)}
               className={styles.fieldInput}
             />
           </div>
@@ -146,7 +334,8 @@ export function HeroSearch({ onSearch, activeType, onTypeChange }: HeroSearchPro
             <input
               type="date"
               value={checkOut}
-              onChange={(e) => setCheckOut(e.target.value)}
+              min={isValidIsoDate(checkIn) ? addDaysIso(checkIn, 1) : undefined}
+              onChange={(e) => handleCheckOutChange(e.target.value)}
               className={styles.fieldInput}
             />
           </div>

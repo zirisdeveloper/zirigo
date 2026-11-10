@@ -21,6 +21,9 @@ export const users = pgTable("users", {
   role: varchar("role", { length: 50 }).default("guest").notNull(), // 'guest' | 'host' | 'admin'
   avatarUrl: text("avatar_url"),
   phone: varchar("phone", { length: 50 }),
+  preferredCurrency: varchar("preferred_currency", { length: 10 }).default("DZD").notNull(),
+  preferredLanguage: varchar("preferred_language", { length: 10 }).default("fr").notNull(),
+  preferredTheme: varchar("preferred_theme", { length: 20 }).default("light").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -47,6 +50,7 @@ export const properties = pgTable("properties", {
   checkInTime: varchar("check_in_time", { length: 20 }).default("15:00").notNull(),
   checkOutTime: varchar("check_out_time", { length: 20 }).default("11:00").notNull(),
   isFeatured: boolean("is_featured").default(false).notNull(),
+  autoBlockOnAccept: boolean("auto_block_on_accept").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -136,12 +140,29 @@ export const reviews = pgTable("reviews", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// 7. Property Availability Blocks Table
+export const availabilityBlocks = pgTable("availability_blocks", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  propertyId: uuid("property_id")
+    .references(() => properties.id, { onDelete: "cascade" })
+    .notNull(),
+  startDate: varchar("start_date", { length: 10 }).notNull(),
+  endDate: varchar("end_date", { length: 10 }).notNull(),
+  reason: varchar("reason", { length: 50 }).default("external_offer").notNull(),
+  source: varchar("source", { length: 50 }).default("manual_owner").notNull(),
+  bookingId: uuid("booking_id").references(() => bookings.id, { onDelete: "set null" }),
+  note: text("note"),
+  createdBy: uuid("created_by").references(() => users.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Relations
 export const propertiesRelations = relations(properties, ({ many }) => ({
   rooms: many(rooms),
   platformRates: many(platformRates),
   bookings: many(bookings),
   reviews: many(reviews),
+  availabilityBlocks: many(availabilityBlocks),
 }));
 
 export const roomsRelations = relations(rooms, ({ one, many }) => ({
@@ -187,5 +208,16 @@ export const reviewsRelations = relations(reviews, ({ one }) => ({
   user: one(users, {
     fields: [reviews.userId],
     references: [users.id],
+  }),
+}));
+
+export const availabilityBlocksRelations = relations(availabilityBlocks, ({ one }) => ({
+  property: one(properties, {
+    fields: [availabilityBlocks.propertyId],
+    references: [properties.id],
+  }),
+  booking: one(bookings, {
+    fields: [availabilityBlocks.bookingId],
+    references: [bookings.id],
   }),
 }));

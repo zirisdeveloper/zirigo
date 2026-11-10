@@ -1,0 +1,130 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <defs>
+    <filter id="chaletShadow" x="-15%" y="-10%" width="130%" height="135%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.16"/>
+    </filter>
+    <linearGradient id="cBaseTop" x1="40" y1="120" x2="216" y2="210" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#dbeafe"/>
+    </linearGradient>
+    <linearGradient id="cBaseSideL" x1="30" y1="158" x2="128" y2="225" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="stoneWallL" x1="60" y1="130" x2="128" y2="175" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+    <linearGradient id="stoneWallR" x1="128" y1="130" x2="188" y2="175" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#64748b"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+    <linearGradient id="woodLight" x1="65" y1="75" x2="128" y2="145" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#d99b66"/>
+      <stop offset="100%" stop-color="#b46e39"/>
+    </linearGradient>
+    <linearGradient id="woodDark" x1="128" y1="75" x2="186" y2="145" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#a8622f"/>
+      <stop offset="100%" stop-color="#7c3f18"/>
+    </linearGradient>
+    <linearGradient id="roofTimber" x1="50" y1="36" x2="185" y2="108" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#5c4033"/>
+      <stop offset="100%" stop-color="#2e1e17"/>
+    </linearGradient>
+    <linearGradient id="snowCap" x1="60" y1="28" x2="170" y2="95" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e0f2fe"/>
+    </linearGradient>
+    <radialGradient id="fireGlow" cx="50%" cy="50%" r="55%">
+      <stop offset="0%" stop-color="#fef9c3"/>
+      <stop offset="55%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </radialGradient>
+    <linearGradient id="pineGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#14532d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Pure White Studio Background -->
+  <rect width="256" height="256" fill="#ffffff"/>
+
+  <!-- Isometric Rounded Plinth -->
+  <g filter="url(#chaletShadow)">
+    <path d="M128 100 L224 155 C231 159 231 169 224 173 L134 225 C130 227 126 227 122 225 L32 173 C25 169 25 159 32 155 Z" fill="url(#cBaseTop)"/>
+    <path d="M27 162 L122 217 C126 219 130 219 134 217 L229 162 L229 170 C229 173 227 175 224 177 L134 229 C130 231 126 231 122 229 L32 177 C29 175 27 173 27 170 Z" fill="url(#cBaseSideL)"/>
+  </g>
+
+  <!-- Cozy Snowy Lawn & Wooden Walkway -->
+  <path d="M128 107 L212 155 L128 204 L44 155 Z" fill="#f1f5f9"/>
+  <path d="M96 155 L128 174 L112 184 L80 165 Z" fill="#92400e" opacity="0.65"/>
+
+  <!-- Stone Chimney on Back Right Roof -->
+  <path d="M150 48 L164 56 L164 90 L150 82 Z" fill="#64748b"/>
+  <path d="M164 56 L176 49 L176 83 L164 90 Z" fill="#475569"/>
+  <path d="M148 48 L162 40 L178 49 L164 57 Z" fill="#e2e8f0"/>
+  <!-- Soft Smoke Curl -->
+  <path d="M162 37 C158 30 168 27 164 20" stroke="#cbd5e1" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+
+  <!-- Ground Stone Floor -->
+  <path d="M64 134 L128 171 L128 190 L64 153 Z" fill="url(#stoneWallL)"/>
+  <path d="M128 171 L188 136 L188 155 L128 190 Z" fill="url(#stoneWallR)"/>
+
+  <!-- Upper Timber Log Cabin Floor & Peaked Gable -->
+  <!-- Front Gable (Left Plane Facing Front-Left) -->
+  <path d="M64 102 L96 52 L128 139 L128 171 L64 134 Z" fill="url(#woodLight)"/>
+  <!-- Log lines -->
+  <line x1="66" y1="112" x2="128" y2="148" stroke="#9a5625" stroke-width="1.3" opacity="0.5"/>
+  <line x1="66" y1="122" x2="128" y2="158" stroke="#9a5625" stroke-width="1.3" opacity="0.5"/>
+  <!-- Side Timber Wall (Right Plane) -->
+  <path d="M128 139 L188 104 L188 136 L128 171 Z" fill="url(#woodDark)"/>
+
+  <!-- Glowing Multipane Windows & Timber Door -->
+  <!-- Ground Front Arch Entry -->
+  <path d="M84 146 L104 157 L104 176 L84 165 Z" fill="#7c2d12"/>
+  <path d="M87 149 L101 157 L101 172 L87 164 Z" fill="url(#fireGlow)"/>
+  <!-- Upper Gable Window -->
+  <path d="M82 95 L110 111 L110 131 L82 115 Z" fill="#451a03"/>
+  <path d="M84 97 L108 111 L108 128 L84 114 Z" fill="url(#fireGlow)"/>
+  <line x1="96" y1="104" x2="96" y2="121" stroke="#451a03" stroke-width="2"/>
+  <!-- Loft Triangle Glow Window -->
+  <polygon points="96,68 106,87 86,76" fill="url(#fireGlow)"/>
+  <!-- Right Wall Glowing Windows -->
+  <path d="M142 135 L158 126 L158 142 L142 151 Z" fill="url(#fireGlow)"/>
+  <path d="M166 121 L180 113 L180 129 L166 137 Z" fill="url(#fireGlow)"/>
+
+  <!-- Timber Front Balcony Deck & Railing -->
+  <path d="M58 126 L130 167 L138 162 L66 121 Z" fill="#7c3f18"/>
+  <path d="M58 115 L130 156" stroke="#b46e39" stroke-width="3" stroke-linecap="round"/>
+  <line x1="64" y1="118" x2="64" y2="128" stroke="#7c3f18" stroke-width="2.5"/>
+  <line x1="82" y1="128" x2="82" y2="138" stroke="#7c3f18" stroke-width="2.5"/>
+  <line x1="102" y1="140" x2="102" y2="150" stroke="#7c3f18" stroke-width="2.5"/>
+  <line x1="122" y1="151" x2="122" y2="161" stroke="#7c3f18" stroke-width="2.5"/>
+
+  <!-- Steep Alpine A-Frame Overhanging Roof (True Parallel Isometric Slope) -->
+  <!-- Roof Underside Eave Shadow -->
+  <path d="M50 104 L96 42 L138 140 L128 145 L96 52 L56 108 Z" fill="#3f2a1d"/>
+  <!-- Main Sloped Roof Surface (Parallel ridge +60,-35 from front peak (96,42) -> (156,17) down to eave (134,140)-(196,105)) -->
+  <path d="M96 42 L156 17 L196 105 L134 140 Z" fill="url(#roofTimber)"/>
+  <!-- Thick Snow Layer Capping Roof & Front Gable Edge -->
+  <path d="M96 40 L156 15 L196 101 C189 107 182 101 176 107 C168 113 162 109 154 116 C146 122 139 122 134 130 Z" fill="url(#snowCap)"/>
+  <path d="M48 103 L96 39 L136 134 C131 137 128 132 128 127 L96 50 L56 106 C52 108 49 106 48 103 Z" fill="#ffffff"/>
+
+  <!-- Snow-Dusted Pine Trees -->
+  <!-- Left Pine -->
+  <rect x="46" y="142" width="5" height="12" fill="#78350f"/>
+  <polygon points="48.5,112 34,136 63,136" fill="url(#pineGrad)"/>
+  <polygon points="48.5,102 37,122 60,122" fill="url(#pineGrad)"/>
+  <polygon points="48.5,95 40,111 57,111" fill="#16a34a"/>
+  <polygon points="48.5,95 42,107 55,107" fill="#ffffff" opacity="0.88"/>
+
+  <!-- Right Front Pine -->
+  <rect x="190" y="144" width="5" height="12" fill="#78350f"/>
+  <polygon points="192.5,118 179,141 206,141" fill="url(#pineGrad)"/>
+  <polygon points="192.5,107 182,126 203,126" fill="#15803d"/>
+  <polygon points="192.5,101 185,115 200,115" fill="#ffffff" opacity="0.9"/>
+
+  <!-- Cozy Outdoor Snow Lantern Post -->
+  <rect x="148" y="160" width="3" height="16" fill="#334155"/>
+  <rect x="146" y="154" width="7" height="7" rx="1.5" fill="url(#fireGlow)"/>
+</svg>

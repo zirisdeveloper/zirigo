@@ -4,19 +4,20 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import {
   TrendingDown,
-  Building2,
   Edit,
-  ExternalLink,
   CheckCircle2,
   AlertTriangle,
   RefreshCw,
   Search,
-  Sparkles,
 } from "lucide-react";
 import { Property } from "@/lib/types";
+import { useI18n, localizeProperty } from "@/lib/i18n";
 import styles from "../admin.module.css";
 
 export default function AdminRatesPage() {
+  const { t, ext, language } = useI18n();
+  const ad = ext.admin;
+
   const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -52,7 +53,6 @@ export default function AdminRatesPage() {
 
   return (
     <div>
-      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -65,10 +65,10 @@ export default function AdminRatesPage() {
       >
         <div>
           <h1 style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-0.02em" }}>
-            Comparateur de Tarifs & Marges
+            {ad.ratesTitle}
           </h1>
           <p style={{ color: "var(--text-muted)", fontSize: "0.95rem", marginTop: "0.25rem" }}>
-            Surveillez en un coup d'œil l'écart de prix entre Zirigo Direct et les OTAs (Booking, Airbnb, etc.).
+            {ad.ratesSub}
           </p>
         </div>
 
@@ -78,18 +78,17 @@ export default function AdminRatesPage() {
           style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
         >
           <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
-          <span>Actualiser</span>
+          <span>{ext.refresh}</span>
         </button>
       </div>
 
-      {/* Main card */}
       <div className={styles.adminCard}>
         <div className={styles.filterBar}>
           <div className={styles.searchBox}>
             <Search size={18} style={{ color: "var(--text-muted)" }} />
             <input
               type="text"
-              placeholder="Rechercher par hébergement ou ville..."
+              placeholder={ext.searchPlaceholder}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={styles.searchInput}
@@ -101,18 +100,19 @@ export default function AdminRatesPage() {
           <table className={styles.adminTable}>
             <thead>
               <tr>
-                <th>Hébergement</th>
-                <th>Zirigo Direct</th>
+                <th>{t.destination}</th>
+                <th>{t.officialDirect}</th>
                 <th>Booking.com</th>
                 <th>Airbnb</th>
-                <th>Écart / Économie</th>
-                <th>Garantie Meilleur Prix</th>
-                <th style={{ textAlign: "right" }}>Action</th>
+                <th>{t.yourSavings}</th>
+                <th>{t.lowestPriceVerified}</th>
+                <th style={{ textAlign: "right" }}>{t.action}</th>
               </tr>
             </thead>
             <tbody>
               {filteredProperties.length > 0 ? (
                 filteredProperties.map((prop) => {
+                  const loc = localizeProperty(prop, language);
                   const directRate = prop.rates?.find((r) =>
                     r.platformName.toLowerCase().includes("direct")
                   );
@@ -135,7 +135,7 @@ export default function AdminRatesPage() {
                         <div className={styles.propertyRowCell}>
                           <img
                             src={prop.featuredImage}
-                            alt={prop.title}
+                            alt={loc.title}
                             className={styles.propertyThumb}
                           />
                           <div className={styles.propertyRowInfo}>
@@ -143,48 +143,37 @@ export default function AdminRatesPage() {
                               href={`/admin/properties/${prop.id}/edit`}
                               className={styles.propertyRowTitle}
                             >
-                              {prop.title}
+                              {loc.title}
                             </Link>
                             <span className={styles.propertyRowLocation}>
-                              {prop.city}, {prop.country}
+                              {loc.city}, {loc.country}
                             </span>
                           </div>
                         </div>
                       </td>
 
-                      {/* Zirigo Direct */}
                       <td>
                         <div style={{ fontWeight: 800, fontSize: "1rem", color: "var(--brand-primary)" }}>
                           {directPrice} €
                         </div>
-                        <div style={{ fontSize: "0.75rem", color: "var(--deal-green)", fontWeight: 600 }}>
-                          {directRate?.perks?.[0] || "Avantages inclus"}
-                        </div>
                       </td>
 
-                      {/* Booking.com */}
                       <td>
                         {bookingRate ? (
-                          <div>
-                            <span style={{ fontWeight: 700 }}>{bookingRate.pricePerNight} €</span>
-                          </div>
+                          <span style={{ fontWeight: 700 }}>{bookingRate.pricePerNight} €</span>
                         ) : (
                           <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>—</span>
                         )}
                       </td>
 
-                      {/* Airbnb */}
                       <td>
                         {airbnbRate ? (
-                          <div>
-                            <span style={{ fontWeight: 700 }}>{airbnbRate.pricePerNight} €</span>
-                          </div>
+                          <span style={{ fontWeight: 700 }}>{airbnbRate.pricePerNight} €</span>
                         ) : (
                           <span style={{ color: "var(--text-muted)", fontSize: "0.85rem" }}>—</span>
                         )}
                       </td>
 
-                      {/* Diff */}
                       <td>
                         {diff > 0 ? (
                           <div style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", color: "var(--deal-green)", fontWeight: 700 }}>
@@ -192,16 +181,15 @@ export default function AdminRatesPage() {
                             <span>-{diff} € (-{percentSaved}%)</span>
                           </div>
                         ) : diff === 0 ? (
-                          <span style={{ color: "var(--text-muted)" }}>Tarif identique</span>
+                          <span style={{ color: "var(--text-muted)" }}>—</span>
                         ) : (
                           <div style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", color: "var(--alert-red)", fontWeight: 700 }}>
                             <AlertTriangle size={15} />
-                            <span>+{Math.abs(diff)} € plus cher</span>
+                            <span>+{Math.abs(diff)} €</span>
                           </div>
                         )}
                       </td>
 
-                      {/* Status */}
                       <td>
                         {isBest ? (
                           <span
@@ -218,7 +206,7 @@ export default function AdminRatesPage() {
                             }}
                           >
                             <CheckCircle2 size={14} />
-                            <span>Garantie active</span>
+                            <span>{t.lowestPriceVerified}</span>
                           </span>
                         ) : (
                           <span
@@ -235,12 +223,11 @@ export default function AdminRatesPage() {
                             }}
                           >
                             <AlertTriangle size={14} />
-                            <span>À réajuster</span>
+                            <span>!</span>
                           </span>
                         )}
                       </td>
 
-                      {/* Actions */}
                       <td style={{ textAlign: "right" }}>
                         <Link
                           href={`/admin/properties/${prop.id}/edit`}
@@ -248,7 +235,7 @@ export default function AdminRatesPage() {
                           style={{ padding: "0.45rem 0.85rem", fontSize: "0.8rem", display: "inline-flex", alignItems: "center", gap: "0.35rem" }}
                         >
                           <Edit size={14} />
-                          <span>Ajuster</span>
+                          <span>{ext.edit}</span>
                         </Link>
                       </td>
                     </tr>
@@ -257,7 +244,7 @@ export default function AdminRatesPage() {
               ) : (
                 <tr>
                   <td colSpan={7} style={{ textAlign: "center", padding: "2.5rem" }}>
-                    Aucun hébergement trouvé.
+                    {t.noResultsTitle}
                   </td>
                 </tr>
               )}

@@ -1,0 +1,97 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <defs>
+    <filter id="dormShadow" x="-15%" y="-10%" width="130%" height="135%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.16"/>
+    </filter>
+    <linearGradient id="dBaseTop" x1="40" y1="120" x2="216" y2="210" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="dBaseSideL" x1="30" y1="158" x2="128" y2="225" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="dormWallL" x1="60" y1="65" x2="128" y2="175" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fef3c7"/>
+      <stop offset="100%" stop-color="#f5d0a9"/>
+    </linearGradient>
+    <linearGradient id="dormWallR" x1="128" y1="65" x2="190" y2="175" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#e5b887"/>
+      <stop offset="100%" stop-color="#c9935b"/>
+    </linearGradient>
+    <linearGradient id="dormRoof" x1="65" y1="30" x2="185" y2="95" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0d9488"/>
+      <stop offset="100%" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="cozyRoom" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef9c3"/>
+      <stop offset="65%" stop-color="#fde68a"/>
+      <stop offset="100%" stop-color="#f59e0b"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="256" height="256" fill="#ffffff"/>
+
+  <!-- Isometric Rounded Plinth -->
+  <g filter="url(#dormShadow)">
+    <path d="M128 100 L224 155 C231 159 231 169 224 173 L134 225 C130 227 126 227 122 225 L32 173 C25 169 25 159 32 155 Z" fill="url(#dBaseTop)"/>
+    <path d="M27 162 L122 217 C126 219 130 219 134 217 L229 162 L229 170 C229 173 227 175 224 177 L134 229 C130 231 126 231 122 229 L32 177 C29 175 27 173 27 170 Z" fill="url(#dBaseSideL)"/>
+  </g>
+
+  <!-- Paved Courtyard -->
+  <path d="M128 108 L210 155 L128 202 L46 155 Z" fill="#e2e8f0"/>
+
+  <!-- Two-Story Hostel / Dormitory Building -->
+  <path d="M68 68 L128 103 L128 188 L68 153 Z" fill="url(#dormWallL)"/>
+  <path d="M128 103 L188 68 L188 153 L128 188 Z" fill="url(#dormWallR)"/>
+
+  <!-- Sloped Teal Hostel Roof -->
+  <path d="M62 66 L128 28 L194 66 L128 105 Z" fill="url(#dormRoof)"/>
+  <path d="M72 67 L128 35 L184 67 L128 99 Z" fill="#14b8a6" opacity="0.65"/>
+  <!-- Hostel Sign Plaque on Roof Front -->
+  <path d="M90 86 L120 103 L120 113 L90 96 Z" fill="#1e293b"/>
+  <line x1="95" y1="93" x2="115" y2="104.5" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Left Facade Showcase: Two Stacked Dorm Rooms with Bunk Beds -->
+  <!-- Upper Dorm Room Window -->
+  <path d="M76 92 L119 117 L119 144 L76 119 Z" fill="#0f172a"/>
+  <path d="M78 94 L117 117 L117 141 L78 118 Z" fill="url(#cozyRoom)"/>
+  <!-- Bunk Bed Silhouette inside Upper Room -->
+  <path d="M84 114 L106 127" stroke="#78350f" stroke-width="2.6" stroke-linecap="round"/>
+  <path d="M84 104 L106 117" stroke="#78350f" stroke-width="2.6" stroke-linecap="round"/>
+  <line x1="85" y1="101" x2="85" y2="120" stroke="#78350f" stroke-width="2"/>
+  <line x1="105" y1="113" x2="105" y2="132" stroke="#78350f" stroke-width="2"/>
+  <!-- Cute Teal & Coral Blankets / Pillows on Bunk Beds -->
+  <path d="M87 103 L103 112 L103 115 L87 106 Z" fill="#0d9488"/>
+  <path d="M87 113 L103 122 L103 125 L87 116 Z" fill="#ef4444"/>
+
+  <!-- Lower Shared Reception / Entry + Warm Glow -->
+  <path d="M76 130 L119 155 L119 179 L76 154 Z" fill="#0f172a"/>
+  <path d="M78 132 L117 155 L117 176 L78 153 Z" fill="url(#cozyRoom)"/>
+  <!-- Teal Hostel Entrance Awning -->
+  <path d="M73 129 L121 157 L115 162 L67 134 Z" fill="#0d9488"/>
+
+  <!-- Right Facade: Triple Shared Dorm Windows Showing Cozy Bunk Beds -->
+  <path d="M137 109 L179 85 L179 113 L137 137 Z" fill="#0f172a"/>
+  <path d="M139 111 L177 89 L177 111 L139 133 Z" fill="url(#cozyRoom)"/>
+  <!-- Bunk Bed Silhouette in Right Upper Room -->
+  <path d="M145 121 L169 107" stroke="#78350f" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M145 111 L169 97" stroke="#78350f" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="146" y1="107" x2="146" y2="126" stroke="#78350f" stroke-width="2"/>
+  <line x1="168" y1="95" x2="168" y2="114" stroke="#78350f" stroke-width="2"/>
+  <path d="M148 109 L165 99 L165 102 L148 112 Z" fill="#0284c7"/>
+
+  <path d="M137 146 L179 122 L179 149 L137 173 Z" fill="#0f172a"/>
+  <path d="M139 148 L177 126 L177 147 L139 169 Z" fill="url(#cozyRoom)"/>
+  <!-- Bunk Bed in Lower Right Dorm Room -->
+  <path d="M145 158 L169 144" stroke="#78350f" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M145 148 L169 134" stroke="#78350f" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M148 146 L165 136 L165 139 L148 149 Z" fill="#10b981"/>
+
+  <!-- Cute Outdoor Hostel Shrubs & Welcome Lamp -->
+  <circle cx="56" cy="149" r="7" fill="#22c55e"/>
+  <circle cx="62" cy="146" r="4.5" fill="#4ade80"/>
+  <circle cx="198" cy="147" r="7" fill="#16a34a"/>
+  <circle cx="203" cy="144" r="4.5" fill="#4ade80"/>
+</svg>
+

@@ -72,6 +72,130 @@
   border-color: var(--brand-primary);
 }
 
+.moreFiltersBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-muted);
+  border: 1px dashed var(--border-medium);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+}
+
+.moreFiltersBtn:hover {
+  border-color: var(--brand-primary);
+  color: var(--brand-primary);
+  background: rgba(13, 148, 136, 0.08);
+}
+
+.moreFiltersBtnActive {
+  background: var(--brand-primary);
+  color: #ffffff;
+  border-style: solid;
+  border-color: var(--brand-primary);
+}
+
+.moreFiltersBtnActive:hover {
+  background: var(--brand-primary-hover);
+  color: #ffffff;
+}
+
+.moreFiltersCountBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 0.35rem;
+  border-radius: var(--radius-full);
+  background: rgba(15, 23, 42, 0.12);
+  font-size: 0.7rem;
+  font-weight: 800;
+}
+
+.moreFiltersBtnActive .moreFiltersCountBadge {
+  background: rgba(255, 255, 255, 0.24);
+  color: #ffffff;
+}
+
+.moreFiltersPanel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--shadow-md);
+}
+
+.moreFiltersHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.moreFiltersTitle {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.moreFiltersSub {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-top: 0.15rem;
+}
+
+.moreFiltersCloseBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.7rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.moreFiltersCloseBtn:hover {
+  color: var(--text-primary);
+}
+
+.moreFiltersSections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.moreFilterSectionTitle {
+  font-size: 0.76rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 0.55rem;
+}
+
+.moreFilterChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.filterItemCount {
+  font-size: 0.72rem;
+  opacity: 0.75;
+  font-weight: 600;
+}
+
 .rightControls {
   display: flex;
   align-items: center;

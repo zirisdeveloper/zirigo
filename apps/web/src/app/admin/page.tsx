@@ -21,6 +21,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { Property } from "@/lib/types";
+import { useI18n, localizeProperty, translatePropertyType } from "@/lib/i18n";
 import styles from "./admin.module.css";
 
 interface StatsData {
@@ -38,6 +39,9 @@ interface StatsData {
 }
 
 export default function AdminDashboardPage() {
+  const { t, ext, language } = useI18n();
+  const ad = ext.admin;
+
   const [stats, setStats] = useState<StatsData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [toastMessage, setToastMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
@@ -58,7 +62,6 @@ export default function AdminDashboardPage() {
       }
     } catch (err) {
       console.error("Failed to load stats", err);
-      showToast("Erreur lors du chargement des statistiques", "error");
     } finally {
       setIsLoading(false);
     }
@@ -74,11 +77,11 @@ export default function AdminDashboardPage() {
         method: "POST",
       });
       if (res.ok) {
-        showToast("Statut 'En vedette' mis à jour");
+        showToast("✓");
         loadStats();
       }
     } catch {
-      showToast("Erreur lors de la mise à jour", "error");
+      showToast("Error", "error");
     }
   };
 
@@ -89,11 +92,11 @@ export default function AdminDashboardPage() {
       });
       if (res.ok) {
         const created = await res.json();
-        showToast(`Annonce dupliquée avec succès : "${created.title}"`);
+        showToast(`${ext.duplicate}: "${created.title}"`);
         loadStats();
       }
     } catch {
-      showToast("Erreur lors de la duplication", "error");
+      showToast("Error", "error");
     }
   };
 
@@ -104,14 +107,12 @@ export default function AdminDashboardPage() {
         method: "DELETE",
       });
       if (res.ok) {
-        showToast(`L'annonce "${propertyToDelete.title}" a été supprimée`);
+        showToast(`${ext.delete}: "${propertyToDelete.title}"`);
         setPropertyToDelete(null);
         loadStats();
-      } else {
-        showToast("Échec de la suppression", "error");
       }
     } catch {
-      showToast("Erreur réseau lors de la suppression", "error");
+      showToast("Error", "error");
     }
   };
 
@@ -134,7 +135,6 @@ export default function AdminDashboardPage() {
 
   return (
     <div>
-      {/* Toast */}
       {toastMessage && (
         <div className={styles.toastContainer}>
           <div
@@ -152,7 +152,6 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
       {propertyToDelete && (
         <div className={styles.modalBackdrop}>
           <div className={styles.modalBox}>
@@ -172,9 +171,11 @@ export default function AdminDashboardPage() {
                 <Trash2 size={20} />
               </div>
               <div>
-                <h3 style={{ fontSize: "1.1rem", fontWeight: 700 }}>Confirmer la suppression</h3>
+                <h3 style={{ fontSize: "1.1rem", fontWeight: 700 }}>
+                  {ext.espacePerso.confirmDeleteTitle}
+                </h3>
                 <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
-                  Cette action retirera immédiatement le bien du site public.
+                  {ext.espacePerso.confirmDeleteText}
                 </p>
               </div>
             </div>
@@ -200,7 +201,7 @@ export default function AdminDashboardPage() {
                 className="btn btn-secondary"
                 style={{ padding: "0.6rem 1.25rem" }}
               >
-                Annuler
+                {ext.cancel}
               </button>
               <button
                 onClick={confirmDelete}
@@ -214,14 +215,14 @@ export default function AdminDashboardPage() {
                   cursor: "pointer",
                 }}
               >
-                Supprimer définitivement
+                {ext.delete}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Header / Overview */}
+      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -234,10 +235,10 @@ export default function AdminDashboardPage() {
       >
         <div>
           <h1 style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-0.02em" }}>
-            Vue d'ensemble de la plateforme
+            {ad.overviewTitle}
           </h1>
           <p style={{ color: "var(--text-muted)", fontSize: "0.95rem", marginTop: "0.25rem" }}>
-            Supervisez et administrez toutes vos annonces d'hébergements en temps réel.
+            {ad.overviewSub}
           </p>
         </div>
 
@@ -246,14 +247,13 @@ export default function AdminDashboardPage() {
             onClick={loadStats}
             className="btn btn-secondary"
             style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
-            title="Rafraîchir les données"
           >
             <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
-            <span>Actualiser</span>
+            <span>{ext.refresh}</span>
           </button>
           <Link href="/admin/properties/new" className={styles.quickAddBtn}>
             <PlusCircle size={17} />
-            <span>Ajouter une annonce</span>
+            <span>{ad.navAddProperty}</span>
           </Link>
         </div>
       </div>
@@ -269,9 +269,9 @@ export default function AdminDashboardPage() {
           </div>
           <div className={styles.metricInfo}>
             <span className={styles.metricValue}>{stats?.totalProperties ?? 0}</span>
-            <span className={styles.metricLabel}>Total Annonces</span>
+            <span className={styles.metricLabel}>{ad.totalListings}</span>
             <span className={styles.metricSubtext}>
-              {stats?.featuredCount ?? 0} en vedette
+              {stats?.featuredCount ?? 0} {ad.featuredStat.toLowerCase()}
             </span>
           </div>
         </div>
@@ -285,8 +285,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className={styles.metricInfo}>
             <span className={styles.metricValue}>{stats?.featuredCount ?? 0}</span>
-            <span className={styles.metricLabel}>En Vedette</span>
-            <span className={styles.metricSubtext}>Mises en avant sur l'accueil</span>
+            <span className={styles.metricLabel}>{ad.featuredStat}</span>
           </div>
         </div>
 
@@ -299,8 +298,8 @@ export default function AdminDashboardPage() {
           </div>
           <div className={styles.metricInfo}>
             <span className={styles.metricValue}>{stats?.avgPrice ?? 0} €</span>
-            <span className={styles.metricLabel}>Prix moyen / nuit</span>
-            <span className={styles.metricSubtext}>Tarif Zirigo Direct</span>
+            <span className={styles.metricLabel}>{ad.avgPriceStat}</span>
+            <span className={styles.metricSubtext}>{t.officialDirect}</span>
           </div>
         </div>
 
@@ -313,9 +312,9 @@ export default function AdminDashboardPage() {
           </div>
           <div className={styles.metricInfo}>
             <span className={styles.metricValue}>{stats?.avgRating ?? 0} / 5</span>
-            <span className={styles.metricLabel}>Note Moyenne</span>
+            <span className={styles.metricLabel}>{ad.avgRatingStat}</span>
             <span className={styles.metricSubtext}>
-              {stats?.totalReviews ?? 0} avis clients
+              {stats?.totalReviews ?? 0} {ad.reviewsWord}
             </span>
           </div>
         </div>
@@ -329,8 +328,7 @@ export default function AdminDashboardPage() {
           </div>
           <div className={styles.metricInfo}>
             <span className={styles.metricValue}>{stats?.citiesCount ?? 0}</span>
-            <span className={styles.metricLabel}>Destinations</span>
-            <span className={styles.metricSubtext}>Villes et régions actives</span>
+            <span className={styles.metricLabel}>{ad.destinationsStat}</span>
           </div>
         </div>
 
@@ -343,15 +341,15 @@ export default function AdminDashboardPage() {
           </div>
           <div className={styles.metricInfo}>
             <span className={styles.metricValue}>{stats?.totalBookings ?? 0}</span>
-            <span className={styles.metricLabel}>Réservations</span>
+            <span className={styles.metricLabel}>{ad.bookingsStat}</span>
             <span className={styles.metricSubtext}>
-              {stats?.pendingBookings ?? 0} en attente
+              {stats?.pendingBookings ?? 0} {ad.pendingWord}
             </span>
           </div>
         </div>
       </div>
 
-      {/* Breakdown by Type & Quick Navigation */}
+      {/* Breakdown & Quick Actions */}
       <div
         style={{
           display: "grid",
@@ -360,12 +358,11 @@ export default function AdminDashboardPage() {
           marginBottom: "2rem",
         }}
       >
-        {/* Types Distribution Card */}
         <div className={styles.adminCard} style={{ margin: 0 }}>
           <div className={styles.adminCardHeader}>
             <div>
-              <div className={styles.cardTitle}>Répartition par Catégorie</div>
-              <div className={styles.cardSubtitle}>Volume d'annonces par type de logement</div>
+              <div className={styles.cardTitle}>{ad.categoryBreakdown}</div>
+              <div className={styles.cardSubtitle}>{ad.categoryBreakdownSub}</div>
             </div>
           </div>
           <div style={{ padding: "1.5rem" }}>
@@ -384,7 +381,7 @@ export default function AdminDashboardPage() {
                         fontWeight: 600,
                       }}
                     >
-                      <span style={{ textTransform: "capitalize" }}>{type}s</span>
+                      <span>{translatePropertyType(type, language)}</span>
                       <span>
                         {count} ({percent}%)
                       </span>
@@ -420,12 +417,11 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        {/* Quick Actions Card */}
         <div className={styles.adminCard} style={{ margin: 0 }}>
           <div className={styles.adminCardHeader}>
             <div>
-              <div className={styles.cardTitle}>Accès rapides</div>
-              <div className={styles.cardSubtitle}>Actions fréquentes d'administration</div>
+              <div className={styles.cardTitle}>{ad.quickActionsTitle}</div>
+              <div className={styles.cardSubtitle}>{ad.quickActionsSub}</div>
             </div>
           </div>
           <div style={{ padding: "1.5rem", display: "flex", flexDirection: "column", gap: "0.85rem" }}>
@@ -435,7 +431,7 @@ export default function AdminDashboardPage() {
               style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
             >
               <PlusCircle size={18} />
-              <span>Créer une nouvelle annonce</span>
+              <span>{ad.navAddProperty}</span>
             </Link>
 
             <Link
@@ -444,7 +440,9 @@ export default function AdminDashboardPage() {
               style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
             >
               <Building2 size={18} />
-              <span>Gérer toutes les annonces ({stats?.totalProperties || 0})</span>
+              <span>
+                {ad.navProperties} ({stats?.totalProperties || 0})
+              </span>
             </Link>
 
             <Link
@@ -453,7 +451,7 @@ export default function AdminDashboardPage() {
               style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
             >
               <TrendingDown size={18} />
-              <span>Comparateur & Tarifs concurrents</span>
+              <span>{ad.navRates}</span>
             </Link>
 
             <Link
@@ -462,7 +460,9 @@ export default function AdminDashboardPage() {
               style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
             >
               <Users size={18} />
-              <span>Gérer les réservations ({stats?.totalBookings || 0})</span>
+              <span>
+                {ad.navBookings} ({stats?.totalBookings || 0})
+              </span>
             </Link>
           </div>
         </div>
@@ -472,10 +472,8 @@ export default function AdminDashboardPage() {
       <div className={styles.adminCard}>
         <div className={styles.adminCardHeader}>
           <div>
-            <div className={styles.cardTitle}>Dernières annonces répertoriées</div>
-            <div className={styles.cardSubtitle}>
-              Aperçu rapide des annonces du catalogue Zirigo
-            </div>
+            <div className={styles.cardTitle}>{ad.recentListingsTitle}</div>
+            <div className={styles.cardSubtitle}>{ad.recentListingsSub}</div>
           </div>
           <div className={styles.cardActions}>
             <Link
@@ -490,7 +488,7 @@ export default function AdminDashboardPage() {
                 textDecoration: "none",
               }}
             >
-              <span>Voir l'ensemble des annonces</span>
+              <span>{ext.espacePerso.viewAll}</span>
               <ArrowUpRight size={16} />
             </Link>
           </div>
@@ -500,17 +498,18 @@ export default function AdminDashboardPage() {
           <table className={styles.adminTable}>
             <thead>
               <tr>
-                <th>Hébergement</th>
-                <th>Catégorie</th>
-                <th>Note & Étoiles</th>
-                <th>Tarif Direct</th>
-                <th>Vedette</th>
-                <th style={{ textAlign: "right" }}>Actions</th>
+                <th>{t.destination}</th>
+                <th>{t.specType}</th>
+                <th>★</th>
+                <th>{t.officialDirect}</th>
+                <th>{t.featured}</th>
+                <th style={{ textAlign: "right" }}>{t.action}</th>
               </tr>
             </thead>
             <tbody>
               {stats?.recentProperties && stats.recentProperties.length > 0 ? (
                 stats.recentProperties.map((prop) => {
+                  const loc = localizeProperty(prop, language);
                   const directRate =
                     prop.rates?.find((r) => r.platformName.toLowerCase().includes("direct"))
                       ?.pricePerNight ||
@@ -524,7 +523,7 @@ export default function AdminDashboardPage() {
                         <div className={styles.propertyRowCell}>
                           <img
                             src={prop.featuredImage}
-                            alt={prop.title}
+                            alt={loc.title}
                             className={styles.propertyThumb}
                           />
                           <div className={styles.propertyRowInfo}>
@@ -532,17 +531,17 @@ export default function AdminDashboardPage() {
                               href={`/admin/properties/${prop.id}/edit`}
                               className={styles.propertyRowTitle}
                             >
-                              {prop.title}
+                              {loc.title}
                             </Link>
                             <span className={styles.propertyRowLocation}>
-                              {prop.city}, {prop.country}
+                              {loc.city}, {loc.country}
                             </span>
                           </div>
                         </div>
                       </td>
                       <td>
                         <span className={`${styles.typeBadge} ${getTypeBadgeClass(prop.type)}`}>
-                          {prop.type}
+                          {translatePropertyType(prop.type, language)}
                         </span>
                       </td>
                       <td>
@@ -557,15 +556,9 @@ export default function AdminDashboardPage() {
                       <td>
                         <div style={{ fontWeight: 800, color: "var(--brand-primary)" }}>
                           {directRate} €
-                          <span
-                            style={{
-                              fontSize: "0.75rem",
-                              color: "var(--text-muted)",
-                              fontWeight: 400,
-                            }}
-                          >
+                          <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 400 }}>
                             {" "}
-                            / nuit
+                            {t.night}
                           </span>
                         </div>
                       </td>
@@ -575,11 +568,6 @@ export default function AdminDashboardPage() {
                           className={`${styles.featuredToggleBtn} ${
                             prop.isFeatured ? styles.featuredActive : styles.featuredInactive
                           }`}
-                          title={
-                            prop.isFeatured
-                              ? "Retirer de la mise en vedette"
-                              : "Mettre en vedette"
-                          }
                         >
                           <Star size={18} fill={prop.isFeatured ? "currentColor" : "none"} />
                         </button>
@@ -590,28 +578,28 @@ export default function AdminDashboardPage() {
                             href={`/properties/${prop.slug}`}
                             target="_blank"
                             className={styles.actionIconBtn}
-                            title="Voir sur le site public"
+                            title={ext.view}
                           >
                             <Eye size={15} />
                           </Link>
                           <Link
                             href={`/admin/properties/${prop.id}/edit`}
                             className={styles.actionIconBtn}
-                            title="Modifier l'annonce"
+                            title={ext.edit}
                           >
                             <Edit size={15} />
                           </Link>
                           <button
                             onClick={() => handleDuplicate(prop.id)}
                             className={styles.actionIconBtn}
-                            title="Dupliquer"
+                            title={ext.duplicate}
                           >
                             <Copy size={15} />
                           </button>
                           <button
                             onClick={() => setPropertyToDelete(prop)}
                             className={`${styles.actionIconBtn} ${styles.actionDeleteBtn}`}
-                            title="Supprimer"
+                            title={ext.delete}
                           >
                             <Trash2 size={15} />
                           </button>
@@ -623,7 +611,7 @@ export default function AdminDashboardPage() {
               ) : (
                 <tr>
                   <td colSpan={6} style={{ textAlign: "center", padding: "2.5rem" }}>
-                    Aucune annonce trouvée.
+                    {t.noResultsTitle}
                   </td>
                 </tr>
               )}

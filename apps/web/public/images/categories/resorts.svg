@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <defs>
+    <filter id="resortShadow" x="-15%" y="-10%" width="130%" height="135%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.16"/>
+    </filter>
+    <linearGradient id="rBaseTop" x1="40" y1="120" x2="216" y2="210" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="rBaseSideL" x1="30" y1="158" x2="128" y2="225" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="lagoonGrad" x1="55" y1="130" x2="195" y2="205" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#5eead4"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="thatchL" x1="65" y1="45" x2="115" y2="95" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="thatchR" x1="115" y1="45" x2="165" y2="95" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#92400e"/>
+    </linearGradient>
+    <linearGradient id="spaGlow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="65%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="resortPalm" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="256" height="256" fill="#ffffff"/>
+
+  <!-- Isometric Rounded Plinth -->
+  <g filter="url(#resortShadow)">
+    <path d="M128 100 L224 155 C231 159 231 169 224 173 L134 225 C130 227 126 227 122 225 L32 173 C25 169 25 159 32 155 Z" fill="url(#rBaseTop)"/>
+    <path d="M27 162 L122 217 C126 219 130 219 134 217 L229 162 L229 170 C229 173 227 175 224 177 L134 229 C130 231 126 231 122 229 L32 177 C29 175 27 173 27 170 Z" fill="url(#rBaseSideL)"/>
+  </g>
+
+  <!-- Sandy & Teak Resort Deck -->
+  <path d="M128 107 L213 155 L128 204 L43 155 Z" fill="#fef3c7"/>
+
+  <!-- Turquoise Lagoon Pool -->
+  <path d="M128 124 L198 164 L128 202 L58 162 Z" fill="#e2e8f0"/>
+  <path d="M128 127 L193 164 L128 199 L63 162 Z" fill="url(#lagoonGrad)"/>
+  <path d="M104 158 C118 152 135 160 149 154" stroke="#ccfbf1" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+  <path d="M114 173 C128 168 142 175 155 169" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Wooden Walkway Bridge Deck across Pool -->
+  <path d="M98 134 L144 160 L132 167 L86 141 Z" fill="#b45309"/>
+  <path d="M98 134 L144 160" stroke="#fde68a" stroke-width="1.2" opacity="0.6"/>
+
+  <!-- Main Spa Resort Pavilion (Back Center) -->
+  <!-- Stone Pillars & Warm Spa Interior -->
+  <path d="M74 96 L120 122 L120 148 L74 122 Z" fill="#fff7ed"/>
+  <path d="M120 122 L166 96 L166 122 L120 148 Z" fill="#fed7aa"/>
+  <path d="M84 104 L112 120 L112 140 L84 124 Z" fill="url(#spaGlow)"/>
+  <path d="M128 120 L156 104 L156 124 L128 140 Z" fill="url(#spaGlow)"/>
+  <!-- Pavilion Posts -->
+  <line x1="76" y1="95" x2="76" y2="123" stroke="#78350f" stroke-width="3"/>
+  <line x1="120" y1="121" x2="120" y2="149" stroke="#78350f" stroke-width="3.5"/>
+  <line x1="164" y1="95" x2="164" y2="123" stroke="#78350f" stroke-width="3"/>
+
+  <!-- Curved Pyramid Tropical Resort Roof -->
+  <polygon points="120,44 64,92 120,124" fill="url(#thatchL)"/>
+  <polygon points="120,44 120,124 176,92" fill="url(#thatchR)"/>
+  <path d="M64 92 L120 124 L176 92" stroke="#fef3c7" stroke-width="2" stroke-linejoin="round"/>
+  <circle cx="120" cy="44" r="3.5" fill="#78350f"/>
+
+  <!-- Secondary Spa Lounge Cabana (Right) -->
+  <path d="M162 126 L192 143 L192 161 L162 144 Z" fill="#f8fafc" opacity="0.9"/>
+  <polygon points="177,108 156,128 198,128" fill="#0d9488"/>
+
+  <!-- Poolside Umbrella & Sun Loungers (Front) -->
+  <path d="M100 175 L118 185 L112 189 L94 179 Z" fill="#ffffff"/>
+  <path d="M132 186 L150 176 L156 180 L138 190 Z" fill="#ffffff"/>
+  <line x1="126" y1="176" x2="126" y2="156" stroke="#78350f" stroke-width="2.2"/>
+  <path d="M111 158 Q126 146 141 158 Z" fill="#f97316"/>
+
+  <!-- Tropical Palm Trees Framing the Resort -->
+  <path d="M56 146 Q52 120 58 96" stroke="#92400e" stroke-width="4" stroke-linecap="round"/>
+  <g fill="url(#resortPalm)">
+    <path d="M58 97 Q40 88 32 100 Q46 98 58 97 Z"/>
+    <path d="M58 97 Q45 77 49 70 Q55 83 58 97 Z"/>
+    <path d="M58 97 Q72 80 80 90 Q69 94 58 97 Z"/>
+    <path d="M58 97 Q76 97 78 109 Q66 103 58 97 Z"/>
+  </g>
+
+  <path d="M198 142 Q203 118 196 96" stroke="#92400e" stroke-width="3.5" stroke-linecap="round"/>
+  <g fill="url(#resortPalm)">
+    <path d="M196 97 Q179 88 172 99 Q184 97 196 97 Z"/>
+    <path d="M196 97 Q195 76 202 72 Q200 84 196 97 Z"/>
+    <path d="M196 97 Q213 88 220 99 Q208 97 196 97 Z"/>
+  </g>
+</svg>
+

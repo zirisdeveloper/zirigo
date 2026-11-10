@@ -1,7 +1,14 @@
 import fs from "fs";
 import path from "path";
-import { Property, RoomUnit, PlatformRate } from "./types";
+import { Property, RoomUnit, PlatformRate, AvailabilityBlock } from "./types";
 import { PROPERTIES } from "./data";
+import { triggerNotificationsForProperty } from "./userStore";
+import {
+  ensureAvailabilityInitialized,
+  findConflictingBlock,
+  normalizeDateRange,
+  syncBookingAvailabilityBlock,
+} from "./availabilityStore";
 
 export interface BookingRecord {
   id: string;
@@ -258,6 +265,9 @@ export function createProperty(data: Partial<Property>): Property {
     checkInTime: data.checkInTime || "15:00",
     checkOutTime: data.checkOutTime || "11:00",
     isFeatured: !!data.isFeatured,
+    ownerId: data.ownerId,
+    ownerName: data.ownerName,
+    ownerEmail: data.ownerEmail,
     rooms: data.rooms && data.rooms.length > 0 ? data.rooms : defaultRooms,
     rates: data.rates && data.rates.length > 0 ? data.rates : defaultRates,
     reviews: data.reviews || [],
@@ -265,6 +275,7 @@ export function createProperty(data: Partial<Property>): Property {
 
   const updatedList = [newProperty, ...list];
   saveAllProperties(updatedList);
+  triggerNotificationsForProperty(newProperty);
   return newProperty;
 }
 
@@ -337,22 +348,29 @@ export function resetPropertiesToDefault(): Property[] {
 
 // Bookings store
 export function getAllBookings(): BookingRecord[] {
+  let list = memoryBookings;
   try {
     const filePath = getBookingsFilePath();
     if (!fs.existsSync(filePath)) {
       saveAllBookings(INITIAL_BOOKINGS);
-      return INITIAL_BOOKINGS;
-    }
-    const raw = fs.readFileSync(filePath, "utf-8");
-    const parsed = JSON.parse(raw);
-    if (Array.isArray(parsed)) {
-      memoryBookings = parsed;
-      return parsed;
+      list = INITIAL_BOOKINGS;
+    } else {
+      const raw = fs.readFileSync(filePath, "utf-8");
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        memoryBookings = parsed;
+        list = parsed;
+      }
     }
   } catch (err) {
     console.error("Error reading bookings.json:", err);
   }
-  return memoryBookings;
+  ensureAvailabilityInitialized(list);
+  return list;
+}
+
+export function getBookingById(id: string): BookingRecord | undefined {
+  return getAllBookings().find((b) => b.id === id);
 }
 
 export function saveAllBookings(bookingsList: BookingRecord[]): boolean {
@@ -371,26 +389,73 @@ export function saveAllBookings(bookingsList: BookingRecord[]): boolean {
   }
 }
 
-export function createBooking(data: Omit<BookingRecord, "id" | "bookingReference" | "createdAt">): BookingRecord {
+export function createBooking(
+  data: Omit<BookingRecord, "id" | "bookingReference" | "createdAt">
+): { booking?: BookingRecord; conflict?: AvailabilityBlock; error?: string } {
+  const range = normalizeDateRange(data.checkInDate, data.checkOutDate, false);
+  if (!range) {
+    return { error: "Dates de séjour invalides (la date de départ doit suivre la date d'arrivée)." };
+  }
+
   const list = getAllBookings();
+  const conflict = findConflictingBlock(data.propertyId, range.start, range.end);
+  if (conflict) {
+    return {
+      conflict,
+      error: `Ces dates sont déjà bloquées ou réservées (${conflict.startDate} → ${conflict.endDate}).`,
+    };
+  }
+
   const newBooking: BookingRecord = {
     ...data,
+    checkInDate: range.start,
+    checkOutDate: range.end,
     id: `book-${Date.now()}`,
     bookingReference: `ZIR-${Math.floor(100000 + Math.random() * 900000)}`,
     createdAt: new Date().toISOString(),
   };
+
+  if (newBooking.status === "confirmed") {
+    const prop = getPropertyById(newBooking.propertyId);
+    syncBookingAvailabilityBlock(newBooking, prop?.autoBlockOnAccept !== false);
+  }
+
   const updated = [newBooking, ...list];
   saveAllBookings(updated);
-  return newBooking;
+  return { booking: newBooking };
 }
 
-export function updateBookingStatus(id: string, status: "pending" | "confirmed" | "cancelled"): BookingRecord | null {
+export function updateBookingStatus(
+  id: string,
+  status: "pending" | "confirmed" | "cancelled"
+): {
+  booking?: BookingRecord;
+  conflict?: AvailabilityBlock;
+  availabilityAction?: "blocked" | "released" | "skipped" | "conflict";
+  notFound?: boolean;
+} {
   const list = getAllBookings();
   const index = list.findIndex((b) => b.id === id);
-  if (index === -1) return null;
-  list[index].status = status;
+  if (index === -1) return { notFound: true };
+
+  const target = { ...list[index], status };
+  const property = getPropertyById(target.propertyId);
+  const autoBlockEnabled = property?.autoBlockOnAccept !== false;
+
+  const syncResult = syncBookingAvailabilityBlock(target, autoBlockEnabled);
+  if (!syncResult.ok && syncResult.conflict) {
+    return {
+      conflict: syncResult.conflict,
+      availabilityAction: "conflict",
+    };
+  }
+
+  list[index] = target;
   saveAllBookings(list);
-  return list[index];
+  return {
+    booking: target,
+    availabilityAction: syncResult.action,
+  };
 }
 
 // Admin Statistics
@@ -451,3 +516,4 @@ export function getAdminStats() {
     recentProperties: properties.slice(0, 5),
   };
 }
+

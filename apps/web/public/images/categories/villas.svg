@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <defs>
+    <filter id="softShadow" x="-15%" y="-10%" width="130%" height="135%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.16"/>
+    </filter>
+    <linearGradient id="baseTop" x1="40" y1="120" x2="216" y2="210" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="baseSideL" x1="30" y1="158" x2="128" y2="225" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="baseSideR" x1="128" y1="225" x2="226" y2="158" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#94a3b8"/>
+      <stop offset="100%" stop-color="#64748b"/>
+    </linearGradient>
+    <linearGradient id="poolWater" x1="90" y1="138" x2="176" y2="190" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#2dd4bf"/>
+      <stop offset="55%" stop-color="#0ea5e9"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="wallLight" x1="45" y1="75" x2="120" y2="145" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fffaf0"/>
+      <stop offset="100%" stop-color="#f3e3cc"/>
+    </linearGradient>
+    <linearGradient id="wallShade" x1="115" y1="80" x2="188" y2="140" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#e2cbb0"/>
+      <stop offset="100%" stop-color="#c9ad8d"/>
+    </linearGradient>
+    <linearGradient id="terracottaL" x1="42" y1="52" x2="112" y2="92" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="terracottaR" x1="96" y1="42" x2="176" y2="85" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#9a3412"/>
+    </linearGradient>
+    <linearGradient id="warmGlass" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="60%" stop-color="#fbbf24"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="coolGlass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7dd3fc"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+    <linearGradient id="palmGreen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#4ade80"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Pure White Studio Background -->
+  <rect width="256" height="256" fill="#ffffff"/>
+
+  <!-- Isometric Rounded Plinth -->
+  <g filter="url(#softShadow)">
+    <path d="M128 100 L224 155 C231 159 231 169 224 173 L134 225 C130 227 126 227 122 225 L32 173 C25 169 25 159 32 155 Z" fill="url(#baseTop)"/>
+    <!-- Plinth thickness -->
+    <path d="M27 162 L122 217 C126 219 130 219 134 217 L229 162 L229 170 C229 173 227 175 224 177 L134 229 C130 231 126 231 122 229 L32 177 C29 175 27 173 27 170 Z" fill="url(#baseSideL)"/>
+    <path d="M128 218 L229 162 L229 170 C229 173 227 175 224 177 L134 229 C131 230 129 231 128 231 Z" fill="url(#baseSideR)" opacity="0.65"/>
+  </g>
+
+  <!-- Stone Courtyard Deck -->
+  <path d="M128 106 L214 155 L128 205 L42 155 Z" fill="#fef3c7" opacity="0.72"/>
+  <path d="M128 112 L204 155 L128 199 L52 155 Z" fill="#f5e6cf"/>
+
+  <!-- Garden Lawn Strip (Left edge) -->
+  <path d="M44 155 L88 180 L114 165 L70 140 Z" fill="#86efac"/>
+  <path d="M44 155 L88 180 L88 184 L44 159 Z" fill="#22c55e"/>
+
+  <!-- Swimming Pool on Front-Right Courtyard Terrace (Cleanly in front of wall edge) -->
+  <path d="M164 146 L206 170 L160 197 L118 173 Z" fill="#e2e8f0"/>
+  <path d="M164 149 L201 170 L160 194 L123 173 Z" fill="url(#poolWater)"/>
+  <!-- Pool Inner Wall Depth & Shimmer -->
+  <path d="M164 149 L201 170 L198 172 L164 153 L126 175 L123 173 Z" fill="#0284c7" opacity="0.5"/>
+  <path d="M148 167 C157 162 169 167 179 162" stroke="#bae6fd" stroke-width="2" stroke-linecap="round" opacity="0.8"/>
+  <path d="M142 175 C154 171 164 176 174 171" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  <!-- Mini Turquoise Pool Lounger -->
+  <path d="M174 188 L190 179 L196 182 L180 191 Z" fill="#ffffff"/>
+  <path d="M174 188 L180 191 L180 194 L174 191 Z" fill="#0d9488"/>
+
+  <!-- Main Villa Lower Structure -->
+  <!-- Left Front Wall -->
+  <path d="M58 100 L114 132 L114 168 L58 136 Z" fill="url(#wallLight)"/>
+  <!-- Right Front Wall -->
+  <path d="M114 132 L176 96 L176 132 L114 168 Z" fill="url(#wallShade)"/>
+
+  <!-- Upper Second Story Wing (Left Back) -->
+  <path d="M56 66 L108 96 L108 130 L56 100 Z" fill="url(#wallLight)"/>
+  <path d="M108 96 L160 66 L160 100 L108 130 Z" fill="url(#wallShade)"/>
+
+  <!-- Ground Floor Arched Patio Doors & Warm Glow -->
+  <path d="M68 114 L96 130 L96 156 L68 140 Z" fill="url(#warmGlass)"/>
+  <path d="M68 114 L96 130" stroke="#7c2d12" stroke-width="2"/>
+  <line x1="82" y1="122" x2="82" y2="148" stroke="#92400e" stroke-width="2"/>
+  <!-- Teal Shutters flanking door -->
+  <path d="M62 110 L68 114 L68 140 L62 136 Z" fill="#0d9488"/>
+  <path d="M96 130 L102 133 L102 159 L96 156 Z" fill="#0d9488"/>
+
+  <!-- Right Wall Panoramic Glass Slider + Pergola Balcony -->
+  <path d="M126 130 L166 107 L166 129 L126 152 Z" fill="url(#warmGlass)"/>
+  <line x1="146" y1="118.5" x2="146" y2="140.5" stroke="#92400e" stroke-width="1.8"/>
+  <!-- Right Wall Upper Pergola Canopy -->
+  <path d="M114 114 L178 77 L186 82 L122 119 Z" fill="#78350f"/>
+  <path d="M120 116 L182 80" stroke="#fed7aa" stroke-width="1.5" stroke-dasharray="4 4"/>
+
+  <!-- Upper Story Balcony Glass Railing & Windows -->
+  <path d="M114 118 L174 84 L174 96 L114 130 Z" fill="#bae6fd" opacity="0.55"/>
+  <path d="M114 118 L174 84" stroke="#0f172a" stroke-width="2" opacity="0.5"/>
+  <path d="M68 78 L92 92 L92 108 L68 94 Z" fill="url(#warmGlass)"/>
+  <path d="M122 93 L146 79 L146 95 L122 109 Z" fill="url(#coolGlass)"/>
+
+  <!-- Terracotta Pitched Roofs (Iconic Mediterranean Villa Look) -->
+  <!-- Roof Left Slope -->
+  <path d="M46 66 L108 30 L108 98 L46 66 Z" fill="url(#terracottaL)" opacity="0"/>
+  <path d="M48 68 L108 34 L168 68 L108 102 Z" fill="url(#terracottaL)"/>
+  <!-- Roof Ridge Highlight & Shaded Side -->
+  <polygon points="108,34 168,68 108,102 108,58" fill="url(#terracottaR)"/>
+  <polygon points="48,68 108,34 108,58 108,102" fill="url(#terracottaL)"/>
+  <!-- Peaked Roof Hip Lines -->
+  <path d="M48 68 L108 42 L168 68" stroke="#fed7aa" stroke-width="1.5" opacity="0.65"/>
+  <line x1="108" y1="42" x2="108" y2="102" stroke="#9a3412" stroke-width="2"/>
+  <!-- Roof Rim Trim -->
+  <path d="M48 68 L108 102 L168 68" stroke="#fff7ed" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Lower Right Extension Terracotta Roof -->
+  <path d="M108 128 L176 89 L186 95 L114 137 Z" fill="#ea580c"/>
+
+  <!-- Palm Tree on Left Corner -->
+  <path d="M62 152 Q66 132 60 112" stroke="#92400e" stroke-width="4" stroke-linecap="round"/>
+  <g fill="url(#palmGreen)">
+    <path d="M60 113 Q44 104 36 116 Q48 114 60 113 Z"/>
+    <path d="M60 113 Q46 94 48 86 Q56 98 60 113 Z"/>
+    <path d="M60 113 Q74 96 82 106 Q70 110 60 113 Z"/>
+    <path d="M60 113 Q78 112 80 125 Q68 119 60 113 Z"/>
+  </g>
+
+  <!-- Shrubbery & Bougainvillea Accents -->
+  <circle cx="96" cy="172" r="7" fill="#22c55e"/>
+  <circle cx="103" cy="168" r="5" fill="#4ade80"/>
+  <circle cx="72" cy="160" r="6" fill="#16a34a"/>
+  <circle cx="182" cy="128" r="7" fill="#22c55e"/>
+  <circle cx="188" cy="125" r="4.5" fill="#ec4899"/>
+  <circle cx="182" cy="123" r="3.5" fill="#f472b6"/>
+</svg>

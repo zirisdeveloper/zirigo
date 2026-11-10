@@ -5,7 +5,12 @@ import Link from "next/link";
 import { Star, MapPin, Heart, Scale, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 import { Property } from "../lib/types";
 import { formatCurrency } from "../lib/data";
-import { useI18n } from "../lib/i18n";
+import {
+  useI18n,
+  localizeProperty,
+  translatePropertyType,
+  translateAmenity,
+} from "../lib/i18n";
 import styles from "./PropertyCard.module.css";
 
 interface PropertyCardProps {
@@ -27,7 +32,8 @@ export function PropertyCard({
   onToggleCompare,
   onOpenBookingModal,
 }: PropertyCardProps) {
-  const { t, isRTL } = useI18n();
+  const { t, ext, language, isRTL } = useI18n();
+  const localized = localizeProperty(property, language);
   const sortedRates = [...property.rates].sort((a, b) => a.pricePerNight - b.pricePerNight);
   const bestRate = sortedRates[0];
   const highestRate = sortedRates[sortedRates.length - 1];
@@ -39,14 +45,16 @@ export function PropertyCard({
       <div className={styles.imageContainer}>
         <img
           src={property.featuredImage}
-          alt={property.title}
+          alt={localized.title}
           className={styles.image}
           loading="lazy"
         />
 
         {/* Top Badges */}
         <div className={styles.topBadges}>
-          <span className={`badge badge-type ${styles.typeBadge}`}>{property.type}</span>
+          <span className={`badge badge-type ${styles.typeBadge}`}>
+            {translatePropertyType(property.type, language)}
+          </span>
           {property.isFeatured && (
             <span className={`badge badge-featured`}>
               <Sparkles size={12} />
@@ -96,20 +104,20 @@ export function PropertyCard({
         <div className={styles.locationRow}>
           <MapPin size={14} className={styles.locationIcon} />
           <span>
-            {property.city}, {property.country}
+            {localized.city}, {localized.country}
           </span>
         </div>
 
         {/* Title */}
         <Link href={`/properties/${property.slug}`} className={styles.titleLink}>
-          <h3 className={styles.title}>{property.title}</h3>
+          <h3 className={styles.title}>{localized.title}</h3>
         </Link>
 
         {/* Key Amenities */}
         <div className={styles.amenitiesRow}>
           {property.amenities.slice(0, 3).map((a) => (
             <span key={a} className={styles.amenityChip}>
-              {a.replace("_", " ")}
+              {translateAmenity(a, language)}
             </span>
           ))}
           {property.amenities.length > 3 && (
@@ -129,7 +137,7 @@ export function PropertyCard({
             </div>
             {savings > 0 && (
               <div className={styles.savingsTag}>
-                {t.saveVs} {formatCurrency(savings, currency)} vs {highestRate.platformName}
+                {t.saveVs} {formatCurrency(savings, currency)} {ext.versus} {highestRate.platformName}
               </div>
             )}
           </div>

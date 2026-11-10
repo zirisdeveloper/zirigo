@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import {
-  CalendarCheck,
   Search,
   CheckCircle2,
   Clock,
@@ -11,13 +9,16 @@ import {
   RefreshCw,
   Mail,
   Phone,
-  User,
   AlertCircle,
 } from "lucide-react";
 import { BookingRecord } from "@/lib/serverStore";
+import { useI18n } from "@/lib/i18n";
 import styles from "../admin.module.css";
 
 export default function AdminBookingsPage() {
+  const { t, ext } = useI18n();
+  const ad = ext.admin;
+
   const [bookings, setBookings] = useState<BookingRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -39,7 +40,6 @@ export default function AdminBookingsPage() {
       }
     } catch (err) {
       console.error(err);
-      showToast("Erreur de chargement des réservations", "error");
     } finally {
       setIsLoading(false);
     }
@@ -56,14 +56,21 @@ export default function AdminBookingsPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
       });
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        showToast(`Statut de la réservation mis à jour : ${status}`);
+        const msg =
+          data.availabilityAction === "blocked"
+            ? ext.availability.acceptAndBlockBtn
+            : data.availabilityAction === "released"
+            ? ext.availability.cancelAndUnblockBtn
+            : status;
+        showToast(msg);
         loadBookings();
       } else {
-        showToast("Échec de la mise à jour", "error");
+        showToast(data.error || "Erreur", "error");
       }
     } catch {
-      showToast("Erreur réseau", "error");
+      showToast("Error", "error");
     }
   };
 
@@ -83,13 +90,11 @@ export default function AdminBookingsPage() {
 
   return (
     <div>
-      {/* Toast Alert */}
       {toastMessage && (
         <div className={styles.toastContainer}>
           <div
-            className={`${styles.toast} ${
-              toastMessage.type === "success" ? styles.toastSuccess : styles.toastError
-            }`}
+            className={`${styles.toast} ${toastMessage.type === "success" ? styles.toastSuccess : styles.toastError
+              }`}
           >
             {toastMessage.type === "success" ? (
               <CheckCircle2 size={18} style={{ color: "var(--deal-green)" }} />
@@ -101,7 +106,6 @@ export default function AdminBookingsPage() {
         </div>
       )}
 
-      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -114,10 +118,10 @@ export default function AdminBookingsPage() {
       >
         <div>
           <h1 style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-0.02em" }}>
-            Gestion des Réservations
+            {ad.bookingsTitle}
           </h1>
           <p style={{ color: "var(--text-muted)", fontSize: "0.95rem", marginTop: "0.25rem" }}>
-            Suivi des demandes de réservation et statuts de confirmation.
+            {ad.bookingsSub}
           </p>
         </div>
 
@@ -127,18 +131,17 @@ export default function AdminBookingsPage() {
           style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
         >
           <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
-          <span>Actualiser</span>
+          <span>{ext.refresh}</span>
         </button>
       </div>
 
-      {/* Main card */}
       <div className={styles.adminCard}>
         <div className={styles.filterBar}>
           <div className={styles.searchBox}>
             <Search size={18} style={{ color: "var(--text-muted)" }} />
             <input
               type="text"
-              placeholder="Rechercher par référence, client, email..."
+              placeholder={ext.searchPlaceholder}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={styles.searchInput}
@@ -151,10 +154,10 @@ export default function AdminBookingsPage() {
               onChange={(e) => setStatusFilter(e.target.value)}
               className={styles.filterSelect}
             >
-              <option value="all">Tous les statuts</option>
-              <option value="confirmed">Confirmées</option>
-              <option value="pending">En attente</option>
-              <option value="cancelled">Annulées</option>
+              <option value="all">{ad.allStatuses}</option>
+              <option value="confirmed">{ad.confirmed}</option>
+              <option value="pending">{ad.pending}</option>
+              <option value="cancelled">{ad.cancelled}</option>
             </select>
           </div>
         </div>
@@ -163,13 +166,13 @@ export default function AdminBookingsPage() {
           <table className={styles.adminTable}>
             <thead>
               <tr>
-                <th>Référence</th>
-                <th>Client</th>
-                <th>Hébergement & Unité</th>
-                <th>Dates & Séjour</th>
-                <th>Montant</th>
-                <th>Statut</th>
-                <th style={{ textAlign: "right" }}>Changer le statut</th>
+                <th>#</th>
+                <th>{t.fullName}</th>
+                <th>{t.destination}</th>
+                <th>{t.dates}</th>
+                <th>{t.totalAmount}</th>
+                <th>Status</th>
+                <th style={{ textAlign: "right" }}>{t.action}</th>
               </tr>
             </thead>
             <tbody>
@@ -191,7 +194,7 @@ export default function AdminBookingsPage() {
                         {b.bookingReference}
                       </span>
                       <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginTop: "0.25rem" }}>
-                        {new Date(b.createdAt).toLocaleDateString("fr-FR")}
+                        {new Date(b.createdAt).toLocaleDateString()}
                       </div>
                     </td>
 
@@ -223,7 +226,7 @@ export default function AdminBookingsPage() {
                         {b.checkInDate} → {b.checkOutDate}
                       </div>
                       <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                        {b.guestsCount} voyageur(s)
+                        {b.guestsCount} {t.guests}
                       </div>
                     </td>
 
@@ -247,14 +250,14 @@ export default function AdminBookingsPage() {
                             b.status === "confirmed"
                               ? "var(--deal-green-bg)"
                               : b.status === "pending"
-                              ? "rgba(245, 158, 11, 0.12)"
-                              : "var(--alert-red-bg)",
+                                ? "rgba(245, 158, 11, 0.12)"
+                                : "var(--alert-red-bg)",
                           color:
                             b.status === "confirmed"
                               ? "var(--deal-green)"
                               : b.status === "pending"
-                              ? "#d97706"
-                              : "var(--alert-red)",
+                                ? "#d97706"
+                                : "var(--alert-red)",
                         }}
                       >
                         {b.status === "confirmed" && <CheckCircle2 size={13} />}
@@ -262,10 +265,10 @@ export default function AdminBookingsPage() {
                         {b.status === "cancelled" && <XCircle size={13} />}
                         <span>
                           {b.status === "confirmed"
-                            ? "Confirmée"
+                            ? ad.confirmed
                             : b.status === "pending"
-                            ? "En attente"
-                            : "Annulée"}
+                              ? ad.pending
+                              : ad.cancelled}
                         </span>
                       </span>
                     </td>
@@ -277,9 +280,8 @@ export default function AdminBookingsPage() {
                             onClick={() => handleUpdateStatus(b.id, "confirmed")}
                             className="btn btn-secondary"
                             style={{ padding: "0.35rem 0.65rem", fontSize: "0.75rem", color: "var(--deal-green)" }}
-                            title="Confirmer la réservation"
                           >
-                            Confirmer
+                            {ad.confirmAction}
                           </button>
                         )}
                         {b.status !== "cancelled" && (
@@ -287,9 +289,8 @@ export default function AdminBookingsPage() {
                             onClick={() => handleUpdateStatus(b.id, "cancelled")}
                             className="btn btn-secondary"
                             style={{ padding: "0.35rem 0.65rem", fontSize: "0.75rem", color: "var(--alert-red)" }}
-                            title="Annuler la réservation"
                           >
-                            Annuler
+                            {ad.cancelAction}
                           </button>
                         )}
                       </div>
@@ -299,7 +300,7 @@ export default function AdminBookingsPage() {
               ) : (
                 <tr>
                   <td colSpan={7} style={{ textAlign: "center", padding: "2.5rem" }}>
-                    Aucune réservation trouvée.
+                    {t.noResultsTitle}
                   </td>
                 </tr>
               )}

@@ -1,4 +1,22 @@
-[
+﻿[
+  {
+    "propertyId": "prop-1",
+    "propertyTitle": "Villa Luminescence & Infinity Pool",
+    "roomTitle": "Master Sea-View Suite",
+    "guestName": "chc",
+    "guestEmail": "fdg@df.com",
+    "guestPhone": "",
+    "checkInDate": "2026-06-15",
+    "checkOutDate": "2026-06-18",
+    "guestsCount": 2,
+    "totalAmount": 1227,
+    "currency": "EUR",
+    "status": "confirmed",
+    "specialRequests": "",
+    "id": "book-1794229661418",
+    "bookingReference": "ZIR-409403",
+    "createdAt": "2026-11-09T13:07:41.418Z"
+  },
   {
     "id": "book-1",
     "bookingReference": "ZIR-849201",

@@ -9,7 +9,13 @@ import { BookingModal } from "../../../components/BookingModal";
 import { Footer } from "../../../components/Footer";
 import { getPropertyBySlug, formatCurrency } from "../../../lib/data";
 import { Property, RoomUnit, PropertyReview } from "../../../lib/types";
-import { useI18n } from "../../../lib/i18n";
+import {
+  useI18n,
+  localizeProperty,
+  translatePropertyType,
+  translateAmenity,
+} from "../../../lib/i18n";
+import { usePreferences } from "../../../lib/preferencesContext";
 import {
   Star,
   MapPin,
@@ -52,8 +58,8 @@ export default function PropertyDetailPage({ params }: PageProps) {
       .finally(() => setIsLoading(false));
   }, [resolvedParams.slug]);
 
-  const { t, isRTL } = useI18n();
-  const [currency, setCurrency] = useState("EUR");
+  const { t, ext, language, isRTL } = useI18n();
+  const { currency, setCurrency } = usePreferences();
   const [isFavorite, setIsFavorite] = useState(false);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
@@ -69,7 +75,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
           onCurrencyChange={setCurrency}
         />
         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh", fontSize: "1.1rem", color: "var(--text-muted)" }}>
-          Chargement de l'hébergement...
+          {ext.loadingProperty}
         </div>
       </main>
     );
@@ -79,6 +85,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
     notFound();
   }
 
+  const localized = localizeProperty(property, language);
   const bestRate = [...property.rates].sort((a, b) => a.pricePerNight - b.pricePerNight)[0];
 
   return (
@@ -97,18 +104,20 @@ export default function PropertyDetailPage({ params }: PageProps) {
         <nav className={styles.breadcrumb}>
           <Link href="/">{t.home}</Link>
           <ChevronRight size={14} className={isRTL ? "rtl-flip" : ""} />
-          <span>{property.country}</span>
+          <span>{localized.country}</span>
           <ChevronRight size={14} className={isRTL ? "rtl-flip" : ""} />
-          <span>{property.city}</span>
+          <span>{localized.city}</span>
           <ChevronRight size={14} className={isRTL ? "rtl-flip" : ""} />
-          <span className={styles.activeBreadcrumb}>{property.title}</span>
+          <span className={styles.activeBreadcrumb}>{localized.title}</span>
         </nav>
 
         {/* Title & Header Actions */}
         <div className={styles.titleHeader}>
           <div className={styles.titleGroup}>
             <div className={styles.badgesRow}>
-              <span className={`badge badge-type`}>{property.type}</span>
+              <span className={`badge badge-type`}>
+                {translatePropertyType(property.type, language)}
+              </span>
               <span className={styles.starsWrapper}>
                 {Array.from({ length: property.stars }).map((_, i) => (
                   <Star key={i} size={14} fill="#f59e0b" color="#f59e0b" />
@@ -119,7 +128,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
               </span>
             </div>
 
-            <h1 className={styles.propertyTitle}>{property.title}</h1>
+            <h1 className={styles.propertyTitle}>{localized.title}</h1>
 
             <div className={styles.locationText}>
               <MapPin size={16} className={styles.locationIcon} />
@@ -216,7 +225,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
             {/* About / Description */}
             <section className={styles.sectionBlock}>
               <h2 className={styles.sectionHeading}>{t.aboutProperty}</h2>
-              <p className={styles.descriptionText}>{property.description}</p>
+              <p className={styles.descriptionText}>{localized.description}</p>
             </section>
 
             {/* Room Options & Layouts */}
@@ -265,7 +274,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
                 {property.amenities.map((am: string) => (
                   <div key={am} className={styles.amenityItem}>
                     <CheckCircle2 size={18} className={styles.amenityCheck} />
-                    <span>{am.replace(/_/g, " ")}</span>
+                    <span>{translateAmenity(am, language)}</span>
                   </div>
                 ))}
               </div>
@@ -328,11 +337,21 @@ export default function PropertyDetailPage({ params }: PageProps) {
               <div className={styles.quickDateBox}>
                 <div className={styles.dateCell}>
                   <label>{t.checkIn.toUpperCase()}</label>
-                  <span>15 Jun 2026</span>
+                  <span>
+                    {new Intl.DateTimeFormat(
+                      language === "ar" ? "ar-DZ" : language === "fr" ? "fr-FR" : "en-US",
+                      { day: "2-digit", month: "short", year: "numeric" }
+                    ).format(new Date("2026-06-15"))}
+                  </span>
                 </div>
                 <div className={styles.dateCell}>
                   <label>{t.checkOut.toUpperCase()}</label>
-                  <span>18 Jun 2026</span>
+                  <span>
+                    {new Intl.DateTimeFormat(
+                      language === "ar" ? "ar-DZ" : language === "fr" ? "fr-FR" : "en-US",
+                      { day: "2-digit", month: "short", year: "numeric" }
+                    ).format(new Date("2026-06-18"))}
+                  </span>
                 </div>
               </div>
 
@@ -369,7 +388,7 @@ export default function PropertyDetailPage({ params }: PageProps) {
 
       {/* Booking Modal */}
       <BookingModal
-        property={isBookingOpen ? property : null}
+        property={isBookingOpen ? localized : null}
         currency={currency}
         onClose={() => setIsBookingOpen(false)}
       />

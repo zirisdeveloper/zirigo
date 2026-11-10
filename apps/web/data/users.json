@@ -1,0 +1,33 @@
+[
+  {
+    "id": "usr-1794305741023",
+    "name": "Sophie Laurent",
+    "email": "sophie.laurent@gmail.com",
+    "role": "user",
+    "provider": "google",
+    "isVerified": true,
+    "createdAt": "2026-11-10T10:15:41.023Z"
+  },
+  {
+    "id": "usr-admin-1",
+    "name": "Administrateur Zirigo",
+    "email": "admin@zirigo.com",
+    "role": "admin",
+    "provider": "email",
+    "isVerified": true,
+    "passwordHash": "dc72f3c96b139c30b69b93a70e57073a:d0631b60184a9b7ed5de6a543b4180867be92b009648d65d629f984eda461eaa6c5481c321dd1bc3198b28d8ece59e957e1b992df7a70aa2e0203b1d88229d1f",
+    "createdAt": "2026-11-10T09:31:10.332Z",
+    "preferredCurrency": "DZD",
+    "preferredLanguage": "fr",
+    "preferredTheme": "light"
+  },
+  {
+    "id": "usr-1794302681659",
+    "name": "Karim Benali",
+    "email": "karim.benali@gmail.com",
+    "role": "user",
+    "provider": "google",
+    "isVerified": true,
+    "createdAt": "2026-11-10T09:24:41.659Z"
+  }
+]

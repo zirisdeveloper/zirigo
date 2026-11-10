@@ -20,11 +20,13 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { Property, RoomUnit, PlatformRate } from "@/lib/types";
+import { useI18n, translateAmenity, translatePropertyType, translateCancellation } from "@/lib/i18n";
 import styles from "../../app/admin/admin.module.css";
 
 interface PropertyFormProps {
   initialData?: Property;
   isEdit?: boolean;
+  mode?: "admin" | "user";
 }
 
 const PRESET_AMENITIES = [
@@ -64,8 +66,13 @@ const SAMPLE_UNSPLASH_IMAGES = [
   "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
 ];
 
-export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps) {
+export function PropertyForm({ initialData, isEdit = false, mode = "admin" }: PropertyFormProps) {
   const router = useRouter();
+  const { t, ext, language } = useI18n();
+  const ad = ext.admin;
+  const isUserMode = mode === "user";
+  const backPath = isUserMode ? "/espace-perso/annonces" : "/admin/properties";
+  const apiBase = isUserMode ? "/api/espace-perso/properties" : "/api/properties";
 
   // General fields
   const [title, setTitle] = useState(initialData?.title || "");
@@ -311,7 +318,7 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
     };
 
     try {
-      const url = isEdit ? `/api/properties/${initialData?.id}` : "/api/properties";
+      const url = isEdit ? `${apiBase}/${initialData?.id}` : apiBase;
       const method = isEdit ? "PUT" : "POST";
 
       const res = await fetch(url, {
@@ -323,7 +330,7 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
       if (res.ok) {
         showToast(isEdit ? "Annonce mise à jour avec succès !" : "Annonce créée avec succès !");
         setTimeout(() => {
-          router.push("/admin/properties");
+          router.push(backPath);
           router.refresh();
         }, 800);
       } else {
@@ -370,24 +377,24 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-          <Link href="/admin/properties" className={styles.actionIconBtn} title="Retour à la liste">
+          <Link href={backPath} className={styles.actionIconBtn} title={ext.cancel}>
             <ArrowLeft size={18} />
           </Link>
           <div>
             <h1 style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-0.02em" }}>
-              {isEdit ? "Modifier l'annonce" : "Créer une nouvelle annonce"}
+              {isEdit ? ad.formEditTitle : ad.formCreateTitle}
             </h1>
             <p style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>
               {isEdit
-                ? `Identifiant: ${initialData?.id} • Slug: ${initialData?.slug}`
-                : "Remplissez les détails pour publier un nouvel hébergement sur Zirigo"}
+                ? `ID: ${initialData?.id} • Slug: ${initialData?.slug}`
+                : ad.formCreateSub}
             </p>
           </div>
         </div>
 
         <div style={{ display: "flex", gap: "0.75rem" }}>
-          <Link href="/admin/properties" className="btn btn-secondary" style={{ padding: "0.65rem 1.25rem" }}>
-            Annuler
+          <Link href={backPath} className="btn btn-secondary" style={{ padding: "0.65rem 1.25rem" }}>
+            {ext.cancel}
           </Link>
           <button
             type="submit"
@@ -396,38 +403,36 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
             style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.65rem 1.5rem" }}
           >
             <Save size={17} />
-            <span>{isSubmitting ? "Enregistrement..." : isEdit ? "Mettre à jour" : "Publier l'annonce"}</span>
+            <span>{isSubmitting ? ext.saving : isEdit ? ad.formUpdateBtn : ad.formPublishBtn}</span>
           </button>
         </div>
       </div>
 
-      {/* SECTION 1: Informations Générales */}
+      {/* SECTION 1: General Info */}
       <div className={styles.formSection}>
         <div className={styles.sectionHeader}>
           <div className={styles.sectionTitle}>
             <Building size={20} style={{ color: "var(--brand-primary)" }} />
-            <span>1. Informations Générales</span>
+            <span>{ad.sec1Title}</span>
           </div>
-          <div className={styles.sectionDesc}>
-            Identité du logement, catégorie, classification et mise en avant.
-          </div>
+          <div className={styles.sectionDesc}>{ad.sec1Sub}</div>
         </div>
 
         <div className={styles.formGrid}>
           <div className={styles.formGroupFull}>
-            <label className={styles.formLabel}>Titre de l'annonce *</label>
+            <label className={styles.formLabel}>{ad.titleField}</label>
             <input
               type="text"
               required
               value={title}
               onChange={(e) => handleTitleChange(e.target.value)}
-              placeholder="Ex: Villa Luminescence & Infinity Pool"
+              placeholder="Villa Luminescence & Infinity Pool"
               className={styles.formInput}
             />
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Slug URL (identifiant unique dans l'adresse web)</label>
+            <label className={styles.formLabel}>{ad.slugField}</label>
             <input
               type="text"
               required
@@ -439,22 +444,23 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Type d'hébergement</label>
+            <label className={styles.formLabel}>{t.specType}</label>
             <select
               value={type}
               onChange={(e) => setType(e.target.value as any)}
               className={styles.formSelect}
             >
-              <option value="villa">Villa de luxe</option>
-              <option value="hotel">Hôtel & Boutique Hôtel</option>
-              <option value="apartment">Appartement / Loft</option>
-              <option value="chalet">Chalet de montagne</option>
-              <option value="resort">Resort & Spa</option>
+              <option value="villa">{translatePropertyType("villa", language)}</option>
+              <option value="hotel">{translatePropertyType("hotel", language)}</option>
+              <option value="apartment">{translatePropertyType("apartment", language)}</option>
+              <option value="chalet">{translatePropertyType("chalet", language)}</option>
+              <option value="resort">{translatePropertyType("resort", language)}</option>
+              <option value="dormitory">{translatePropertyType("dormitory", language)}</option>
             </select>
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Étoiles (1 à 5)</label>
+            <label className={styles.formLabel}>{ad.starsField}</label>
             <input
               type="number"
               min={1}
@@ -465,83 +471,84 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
             />
           </div>
 
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Note initiale (sur 5.0)</label>
-            <input
-              type="number"
-              step="0.01"
-              min={1}
-              max={5}
-              value={rating}
-              onChange={(e) => setRating(Number(e.target.value))}
-              className={styles.formInput}
-            />
-          </div>
+          {!isUserMode && (
+            <>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>{ad.ratingField}</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min={1}
+                  max={5}
+                  value={rating}
+                  onChange={(e) => setRating(Number(e.target.value))}
+                  className={styles.formInput}
+                />
+              </div>
 
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Nombre d'avis clients</label>
-            <input
-              type="number"
-              min={0}
-              value={reviewCount}
-              onChange={(e) => setReviewCount(Number(e.target.value))}
-              className={styles.formInput}
-            />
-          </div>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>{ad.reviewsCountField}</label>
+                <input
+                  type="number"
+                  min={0}
+                  value={reviewCount}
+                  onChange={(e) => setReviewCount(Number(e.target.value))}
+                  className={styles.formInput}
+                />
+              </div>
 
-          <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Mise en avant sur l'accueil</label>
-            <label
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "0.6rem",
-                marginTop: "0.5rem",
-                cursor: "pointer",
-                fontWeight: 600,
-                fontSize: "0.9rem",
-              }}
-            >
-              <input
-                type="checkbox"
-                checked={isFeatured}
-                onChange={(e) => setIsFeatured(e.target.checked)}
-                style={{ width: 18, height: 18, accentColor: "var(--brand-primary)" }}
-              />
-              <span>Mettre cette annonce en vedette (Featured badge)</span>
-            </label>
-          </div>
+              <div className={styles.formGroup}>
+                <label className={styles.formLabel}>{t.featured}</label>
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.6rem",
+                    marginTop: "0.5rem",
+                    cursor: "pointer",
+                    fontWeight: 600,
+                    fontSize: "0.9rem",
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    checked={isFeatured}
+                    onChange={(e) => setIsFeatured(e.target.checked)}
+                    style={{ width: 18, height: 18, accentColor: "var(--brand-primary)" }}
+                  />
+                  <span>{ad.featuredCheckboxLabel}</span>
+                </label>
+              </div>
+            </>
+          )}
 
           <div className={styles.formGroupFull}>
-            <label className={styles.formLabel}>Description complète de la propriété *</label>
+            <label className={styles.formLabel}>{ad.descField}</label>
             <textarea
               required
               rows={4}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Décrivez l'hébergement, son style, ses vues, son ambiance et ses atouts..."
               className={styles.formTextarea}
             />
           </div>
         </div>
       </div>
 
-      {/* SECTION 2: Localisation */}
+      {/* SECTION 2: Location */}
       <div className={styles.formSection}>
         <div className={styles.sectionHeader}>
           <div className={styles.sectionTitle}>
             <MapPin size={20} style={{ color: "var(--brand-primary)" }} />
-            <span>2. Localisation & Coordonnées Géographiques</span>
+            <span>{ad.sec2Title}</span>
           </div>
-          <div className={styles.sectionDesc}>
-            Indiquez l'adresse pour situer la propriété sur la carte et dans les filtres de recherche.
-          </div>
+          <div className={styles.sectionDesc}>{ad.sec2Sub}</div>
         </div>
 
         {/* Quick location presets */}
         <div style={{ marginBottom: "1.25rem" }}>
           <span style={{ fontSize: "0.8rem", color: "var(--text-muted)", fontWeight: 600 }}>
-            Suggestions rapides de destinations :
+            {ad.quickCitiesLabel}
           </span>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "0.4rem" }}>
             {PRESET_LOCATIONS.map((loc) => (
@@ -573,37 +580,37 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
 
         <div className={styles.formGrid}>
           <div className={styles.formGroupFull}>
-            <label className={styles.formLabel}>Adresse complète *</label>
+            <label className={styles.formLabel}>{ad.addressField}</label>
             <input
               type="text"
               required
               value={address}
               onChange={(e) => setAddress(e.target.value)}
-              placeholder="Ex: Route des Crêtes, 13260 Cassis"
+              placeholder="Route des Crêtes, 13260 Cassis"
               className={styles.formInput}
             />
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Ville *</label>
+            <label className={styles.formLabel}>{ad.cityField}</label>
             <input
               type="text"
               required
               value={city}
               onChange={(e) => setCity(e.target.value)}
-              placeholder="Ex: Cassis"
+              placeholder="Cassis"
               className={styles.formInput}
             />
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Pays *</label>
+            <label className={styles.formLabel}>{ad.countryField}</label>
             <input
               type="text"
               required
               value={country}
               onChange={(e) => setCountry(e.target.value)}
-              placeholder="Ex: France"
+              placeholder="France"
               className={styles.formInput}
             />
           </div>
@@ -634,20 +641,18 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
         </div>
       </div>
 
-      {/* SECTION 3: Médias & Galerie Photos */}
+      {/* SECTION 3: Media & Gallery */}
       <div className={styles.formSection}>
         <div className={styles.sectionHeader}>
           <div className={styles.sectionTitle}>
             <ImageIcon size={20} style={{ color: "var(--brand-primary)" }} />
-            <span>3. Photos & Galerie Multimédia</span>
+            <span>{ad.sec3Title}</span>
           </div>
-          <div className={styles.sectionDesc}>
-            Une image principale pour les cartes de résultat et une galerie complète pour la page détaillée.
-          </div>
+          <div className={styles.sectionDesc}>{ad.sec3Sub}</div>
         </div>
 
         <div className={styles.formGroupFull} style={{ marginBottom: "1.5rem" }}>
-          <label className={styles.formLabel}>Image Principale (URL) *</label>
+          <label className={styles.formLabel}>{ad.mainImageField}</label>
           <div style={{ display: "flex", gap: "0.75rem" }}>
             <input
               type="url"
@@ -663,7 +668,7 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
             <div style={{ marginTop: "0.75rem", display: "flex", alignItems: "center", gap: "1rem" }}>
               <img
                 src={featuredImage}
-                alt="Aperçu principal"
+                alt="Preview"
                 style={{
                   width: 140,
                   height: 90,
@@ -672,21 +677,18 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
                   border: "2px solid var(--brand-primary)",
                 }}
               />
-              <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-                Aperçu de l'image de couverture
-              </span>
             </div>
           )}
         </div>
 
         <div className={styles.formGroupFull}>
-          <label className={styles.formLabel}>Galerie de photos supplémentaires</label>
+          <label className={styles.formLabel}>{ad.galleryField}</label>
           <div style={{ display: "flex", gap: "0.75rem" }}>
             <input
               type="url"
               value={newImageUrl}
               onChange={(e) => setNewImageUrl(e.target.value)}
-              placeholder="Coller l'URL d'une nouvelle photo..."
+              placeholder={ad.addImagePlaceholder}
               className={styles.formInput}
               style={{ flex: 1 }}
             />
@@ -697,15 +699,11 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
               style={{ padding: "0.6rem 1.25rem", display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
             >
               <Plus size={16} />
-              <span>Ajouter</span>
+              <span>{ad.addBtn}</span>
             </button>
           </div>
 
-          {/* Quick suggestions from presets */}
           <div style={{ marginTop: "0.75rem" }}>
-            <span style={{ fontSize: "0.775rem", color: "var(--text-muted)", fontWeight: 600 }}>
-              Exemples d'images HD Unsplash à ajouter en 1 clic :
-            </span>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem", marginTop: "0.35rem" }}>
               {SAMPLE_UNSPLASH_IMAGES.slice(0, 5).map((sampleUrl, idx) => (
                 <button
@@ -728,7 +726,6 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
             </div>
           </div>
 
-          {/* Grid of gallery images */}
           <div className={styles.imagePreviewGrid}>
             {images.map((url, idx) => (
               <div key={idx} className={styles.imagePreviewCard}>
@@ -737,7 +734,7 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
                   type="button"
                   onClick={() => removeImage(idx)}
                   className={styles.imageRemoveBtn}
-                  title="Supprimer la photo"
+                  title={ext.delete}
                 >
                   <Trash2 size={13} />
                 </button>
@@ -747,16 +744,14 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
         </div>
       </div>
 
-      {/* SECTION 4: Équipements (Amenities) */}
+      {/* SECTION 4: Amenities */}
       <div className={styles.formSection}>
         <div className={styles.sectionHeader}>
           <div className={styles.sectionTitle}>
             <Sparkles size={20} style={{ color: "var(--brand-primary)" }} />
-            <span>4. Équipements & Prestations Incluses</span>
+            <span>{ad.sec4Title}</span>
           </div>
-          <div className={styles.sectionDesc}>
-            Cochez les prestations disponibles pour faciliter le filtrage des voyageurs.
-          </div>
+          <div className={styles.sectionDesc}>{ad.sec4Sub}</div>
         </div>
 
         <div className={styles.amenityGrid} style={{ marginBottom: "1.25rem" }}>
@@ -786,19 +781,18 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
                 >
                   {isChecked && <Check size={13} strokeWidth={3} />}
                 </div>
-                <span style={{ fontSize: "0.85rem" }}>{item.label}</span>
+                <span style={{ fontSize: "0.85rem" }}>{translateAmenity(item.id, language)}</span>
               </div>
             );
           })}
         </div>
 
-        {/* Custom amenity input */}
         <div style={{ display: "flex", gap: "0.75rem", maxWidth: "420px" }}>
           <input
             type="text"
             value={customAmenity}
             onChange={(e) => setCustomAmenity(e.target.value)}
-            placeholder="Ajouter un équipement personnalisé..."
+            placeholder={ad.customAmenityPlaceholder}
             className={styles.formInput}
           />
           <button
@@ -807,23 +801,23 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
             className="btn btn-secondary"
             style={{ padding: "0.55rem 1rem" }}
           >
-            Ajouter
+            {ad.addBtn}
           </button>
         </div>
       </div>
 
-      {/* SECTION 5: Conditions d'accueil */}
+      {/* SECTION 5: Check-in / Check-out */}
       <div className={styles.formSection}>
         <div className={styles.sectionHeader}>
           <div className={styles.sectionTitle}>
             <Sparkles size={20} style={{ color: "var(--brand-primary)" }} />
-            <span>5. Horaires & Conditions d'Annulation</span>
+            <span>{ad.sec5Title}</span>
           </div>
         </div>
 
         <div className={styles.formGrid}>
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Heure d'arrivée (Check-in)</label>
+            <label className={styles.formLabel}>{ad.checkInField}</label>
             <input
               type="text"
               value={checkInTime}
@@ -834,7 +828,7 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Heure de départ (Check-out)</label>
+            <label className={styles.formLabel}>{ad.checkOutField}</label>
             <input
               type="text"
               value={checkOutTime}
@@ -845,31 +839,29 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.formLabel}>Politique d'annulation</label>
+            <label className={styles.formLabel}>{ad.cancellationField}</label>
             <select
               value={cancellationPolicy}
               onChange={(e) => setCancellationPolicy(e.target.value as any)}
               className={styles.formSelect}
             >
-              <option value="flexible">Flexible (Remboursement intégral jusqu'à 48h)</option>
-              <option value="moderate">Modérée (Remboursement jusqu'à 5 jours)</option>
-              <option value="strict">Stricte (Non remboursable sous 14 jours)</option>
+              <option value="flexible">{translateCancellation("flexible", language)}</option>
+              <option value="moderate">{translateCancellation("moderate", language)}</option>
+              <option value="strict">{translateCancellation("strict", language)}</option>
             </select>
           </div>
         </div>
       </div>
 
-      {/* SECTION 6: Gestion des Chambres & Unités */}
+      {/* SECTION 6: Rooms */}
       <div className={styles.formSection}>
         <div className={styles.sectionHeader} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <div className={styles.sectionTitle}>
               <Bed size={20} style={{ color: "var(--brand-primary)" }} />
-              <span>6. Chambres & Unités d'Hébergement ({rooms.length})</span>
+              <span>{ad.sec6Title} ({rooms.length})</span>
             </div>
-            <div className={styles.sectionDesc}>
-              Ajoutez et configurez chaque typologie de chambre ou suite proposée.
-            </div>
+            <div className={styles.sectionDesc}>{ad.sec6Sub}</div>
           </div>
           <button
             type="button"
@@ -878,7 +870,7 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
             style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
           >
             <Plus size={16} />
-            <span>Ajouter une chambre</span>
+            <span>{ad.addRoomBtn}</span>
           </button>
         </div>
 
@@ -1001,17 +993,15 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
         ))}
       </div>
 
-      {/* SECTION 7: Grille du Comparateur de Prix */}
+      {/* SECTION 7: Price Comparison Matrix */}
       <div className={styles.formSection}>
         <div className={styles.sectionHeader} style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <div>
             <div className={styles.sectionTitle}>
               <TrendingDown size={20} style={{ color: "var(--brand-primary)" }} />
-              <span>7. Grille du Comparateur de Prix Multi-Plateformes</span>
+              <span>{ad.sec7Title}</span>
             </div>
-            <div className={styles.sectionDesc}>
-              Fixez le tarif Zirigo Direct et comparez les prix avec Booking, Airbnb, Agoda, etc.
-            </div>
+            <div className={styles.sectionDesc}>{ad.sec7Sub}</div>
           </div>
           <button
             type="button"
@@ -1020,14 +1010,14 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
             style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem" }}
           >
             <Plus size={16} />
-            <span>Ajouter une plateforme</span>
+            <span>{ad.addPlatformBtn}</span>
           </button>
         </div>
 
         {rates.map((rate, index) => (
           <div key={index} className={styles.subItemCard}>
             <div className={styles.subItemHeader}>
-              <span className={styles.subItemTitle}>Plateforme : {rate.platformName}</span>
+              <span className={styles.subItemTitle}>{rate.platformName}</span>
               <button
                 type="button"
                 onClick={() => removeRate(index)}
@@ -1044,25 +1034,25 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
                 }}
               >
                 <Trash2 size={15} />
-                <span>Retirer</span>
+                <span>{ext.delete}</span>
               </button>
             </div>
 
             <div className={styles.formGrid}>
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Nom de la plateforme *</label>
+                <label className={styles.formLabel}>Platform *</label>
                 <input
                   type="text"
                   required
                   value={rate.platformName}
                   onChange={(e) => updateRate(index, { platformName: e.target.value })}
-                  placeholder="Ex: Zirigo Direct, Booking.com, Airbnb..."
+                  placeholder="Zirigo Direct, Booking.com, Airbnb..."
                   className={styles.formInput}
                 />
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Prix par nuit (€) *</label>
+                <label className={styles.formLabel}>€/night *</label>
                 <input
                   type="number"
                   min={1}
@@ -1074,7 +1064,7 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Lien de réservation (URL)</label>
+                <label className={styles.formLabel}>URL</label>
                 <input
                   type="text"
                   value={rate.bookingUrl}
@@ -1085,7 +1075,7 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
               </div>
 
               <div className={styles.formGroup}>
-                <label className={styles.formLabel}>Statut Meilleur Prix</label>
+                <label className={styles.formLabel}>{t.lowestPriceVerified}</label>
                 <label
                   style={{
                     display: "flex",
@@ -1103,12 +1093,12 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
                     onChange={(e) => updateRate(index, { isBestPrice: e.target.checked })}
                     style={{ width: 17, height: 17, accentColor: "var(--brand-primary)" }}
                   />
-                  <span>Badge « Meilleur Prix »</span>
+                  <span>{t.lowestPriceVerified}</span>
                 </label>
               </div>
 
               <div className={styles.formGroupFull}>
-                <label className={styles.formLabel}>Avantages inclus (séparés par des virgules)</label>
+                <label className={styles.formLabel}>Perks (comma-separated)</label>
                 <input
                   type="text"
                   value={rate.perks.join(", ")}
@@ -1120,7 +1110,6 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
                         .filter(Boolean),
                     })
                   }
-                  placeholder="Ex: Petit-déjeuner inclus, Annulation gratuite, Surclassement"
                   className={styles.formInput}
                 />
               </div>
@@ -1141,8 +1130,8 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
           borderTop: "1px solid var(--border-subtle)",
         }}
       >
-        <Link href="/admin/properties" className="btn btn-secondary" style={{ padding: "0.75rem 1.75rem" }}>
-          Annuler
+        <Link href={backPath} className="btn btn-secondary" style={{ padding: "0.75rem 1.75rem" }}>
+          {ext.cancel}
         </Link>
         <button
           type="submit"
@@ -1157,9 +1146,10 @@ export function PropertyForm({ initialData, isEdit = false }: PropertyFormProps)
           }}
         >
           <Save size={18} />
-          <span>{isSubmitting ? "Enregistrement en cours..." : isEdit ? "Enregistrer les modifications" : "Créer et publier l'annonce"}</span>
+          <span>{isSubmitting ? ext.saving : isEdit ? ad.formUpdateBtn : ad.formPublishBtn}</span>
         </button>
       </div>
     </form>
   );
 }
+

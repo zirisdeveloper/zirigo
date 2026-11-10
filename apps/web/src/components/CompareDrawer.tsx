@@ -4,7 +4,12 @@ import React, { useState } from "react";
 import { Scale, X, ArrowRight, Check, Minus, Zap } from "lucide-react";
 import { Property } from "../lib/types";
 import { formatCurrency } from "../lib/data";
-import { useI18n } from "../lib/i18n";
+import {
+  useI18n,
+  translatePropertyType,
+  translateCancellation,
+  localizeProperty,
+} from "../lib/i18n";
 import styles from "./CompareDrawer.module.css";
 
 interface CompareDrawerProps {
@@ -22,7 +27,7 @@ export function CompareDrawer({
   onClear,
   onSelectDirectBooking,
 }: CompareDrawerProps) {
-  const { t, isRTL } = useI18n();
+  const { t, language, isRTL } = useI18n();
   const [isOpenModal, setIsOpenModal] = useState(false);
 
   if (properties.length === 0) return null;
@@ -107,24 +112,27 @@ export function CompareDrawer({
                 <thead>
                   <tr>
                     <th className={styles.featureColHeader}>{t.feature}</th>
-                    {properties.map((p) => (
-                      <th key={p.id} className={styles.propColHeader}>
-                        <div className={styles.headerPropCard}>
-                          <img
-                            src={p.featuredImage}
-                            alt={p.title}
-                            className={styles.headerPropImg}
-                          />
-                          <div className={styles.headerPropTitle}>{p.title}</div>
-                          <div className={styles.headerPropLocation}>
-                            {p.city}, {p.country}
+                    {properties.map((p) => {
+                      const loc = localizeProperty(p, language);
+                      return (
+                        <th key={p.id} className={styles.propColHeader}>
+                          <div className={styles.headerPropCard}>
+                            <img
+                              src={p.featuredImage}
+                              alt={loc.title}
+                              className={styles.headerPropImg}
+                            />
+                            <div className={styles.headerPropTitle}>{loc.title}</div>
+                            <div className={styles.headerPropLocation}>
+                              {loc.city}, {loc.country}
+                            </div>
+                            <div className={styles.headerRating}>
+                              ★ {p.rating.toFixed(2)} ({p.reviewCount} {t.reviews})
+                            </div>
                           </div>
-                          <div className={styles.headerRating}>
-                            ★ {p.rating.toFixed(2)} ({p.reviewCount} {t.reviews})
-                          </div>
-                        </div>
-                      </th>
-                    ))}
+                        </th>
+                      );
+                    })}
                   </tr>
                 </thead>
                 <tbody>
@@ -197,7 +205,7 @@ export function CompareDrawer({
                     <td className={styles.featureLabel}>{t.specType}</td>
                     {properties.map((p) => (
                       <td key={p.id} style={{ textTransform: "capitalize" }}>
-                        {p.type}
+                        {translatePropertyType(p.type, language)}
                       </td>
                     ))}
                   </tr>
@@ -206,7 +214,7 @@ export function CompareDrawer({
                     <td className={styles.featureLabel}>{t.specCancellation}</td>
                     {properties.map((p) => (
                       <td key={p.id} style={{ textTransform: "capitalize" }}>
-                        {p.cancellationPolicy}
+                        {translateCancellation(p.cancellationPolicy, language)}
                       </td>
                     ))}
                   </tr>

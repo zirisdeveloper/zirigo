@@ -1,6 +1,23 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import {
+  EXTENDED_TRANSLATIONS,
+  ExtendedSiteTranslations,
+  translatePropertyType,
+  translateAmenity,
+  translateCancellation,
+  translateRatePerk,
+  localizeProperty,
+} from "./i18nSite";
+
+export {
+  translatePropertyType,
+  translateAmenity,
+  translateCancellation,
+  translateRatePerk,
+  localizeProperty,
+};
 
 export type Language = "en" | "fr" | "ar";
 
@@ -38,6 +55,7 @@ export interface Translations {
   typeApartment: string;
   typeChalet: string;
   typeResort: string;
+  typeDormitory: string;
 
   // Filters & Sorting
   filters: string;
@@ -188,8 +206,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     themeToggle: "Toggle theme",
 
     heroPromo: "Real-Time Multi-Platform Comparison Engine",
-    heroTitle1: "Compare Prices Everywhere.",
-    heroTitle2: "Book Direct for the Best Rate.",
+    heroTitle1: "",
+    heroTitle2: "Book at the Best Rate.",
     heroSubtitle: "Zirigo scans Booking.com, Airbnb, Agoda, and Expedia simultaneously to guarantee you the lowest price, exclusive host perks, and zero hidden service fees.",
     destination: "Destination",
     whereGoing: "Where are you going?",
@@ -207,10 +225,11 @@ export const TRANSLATIONS: Record<Language, Translations> = {
 
     typeAll: "All Stays",
     typeVilla: "Luxury Villas",
-    typeHotel: "Boutique Hotels",
-    typeApartment: "City Lofts",
-    typeChalet: "Alpine Chalets",
-    typeResort: "Spa Resorts",
+    typeHotel: "Hotels",
+    typeApartment: "Apartments",
+    typeChalet: "Chalets",
+    typeResort: "Resorts & Spa",
+    typeDormitory: "Dormitories",
 
     filters: "Filters:",
     amenityPool: "Pool",
@@ -351,8 +370,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     themeToggle: "Changer de thème",
 
     heroPromo: "Moteur de Comparaison Multi-Plateformes en Temps Réel",
-    heroTitle1: "Comparez les Prix Partout.",
-    heroTitle2: "Réservez en Direct au Meilleur Tarif.",
+    heroTitle1: "",
+    heroTitle2: "Réservez au Meilleur Tarif.",
     heroSubtitle: "Zirigo scanne Booking.com, Airbnb, Agoda et Expedia simultanément pour vous garantir le prix le plus bas, des avantages hôte exclusifs et aucun frais de service caché.",
     destination: "Destination",
     whereGoing: "Où souhaitez-vous aller ?",
@@ -370,10 +389,11 @@ export const TRANSLATIONS: Record<Language, Translations> = {
 
     typeAll: "Tous les séjours",
     typeVilla: "Villas d'exception",
-    typeHotel: "Hôtels de charme",
-    typeApartment: "Lofts urbains",
-    typeChalet: "Chalets alpins",
+    typeHotel: "Hôtels",
+    typeApartment: "Appartements",
+    typeChalet: "Chalets",
     typeResort: "Resorts & Spa",
+    typeDormitory: "Dortoirs",
 
     filters: "Filtres :",
     amenityPool: "Piscine",
@@ -514,8 +534,8 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     themeToggle: "تبديل المظهر",
 
     heroPromo: "محرك مقارنة متعدد المنصات في الوقت الفعلي",
-    heroTitle1: "قارن الأسعار في كل مكان.",
-    heroTitle2: "احجز مباشرة للحصول على أفضل سعر.",
+    heroTitle1: "",
+    heroTitle2: "احجز بأفضل سعر.",
     heroSubtitle: "يقوم زيريغو (Zirigo) بمسح منصات بوكينج وإير بي إن بي وأجودا وإكسبيديا في نفس اللحظة ليضمن لك أدنى سعر ممكن ومزايا حصرية وبدون رسوم خدمة مخفية.",
     destination: "الوجهة",
     whereGoing: "إلى أين تريد الذهاب؟",
@@ -533,10 +553,11 @@ export const TRANSLATIONS: Record<Language, Translations> = {
 
     typeAll: "جميع الإقامات",
     typeVilla: "فيلات فاخرة",
-    typeHotel: "فنادق بوتيك",
-    typeApartment: "شقق فندقية",
-    typeChalet: "شاليهات جبلية",
+    typeHotel: "فنادق",
+    typeApartment: "شقق",
+    typeChalet: "شاليهات",
     typeResort: "منتجعات وسبا",
+    typeDormitory: "مهاجع ونزل",
 
     filters: "تصفية حسب:",
     amenityPool: "مسبح",
@@ -675,6 +696,7 @@ interface I18nContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: Translations;
+  ext: ExtendedSiteTranslations;
   dir: "ltr" | "rtl";
   isRTL: boolean;
 }
@@ -683,6 +705,7 @@ const I18nContext = createContext<I18nContextType>({
   language: "fr",
   setLanguage: () => {},
   t: TRANSLATIONS.fr,
+  ext: EXTENDED_TRANSLATIONS.fr,
   dir: "ltr",
   isRTL: false,
 });
@@ -721,9 +744,10 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   const isRTL = language === "ar";
   const dir = isRTL ? "rtl" : "ltr";
   const t = TRANSLATIONS[language];
+  const ext = EXTENDED_TRANSLATIONS[language];
 
   return (
-    <I18nContext.Provider value={{ language, setLanguage, t, dir, isRTL }}>
+    <I18nContext.Provider value={{ language, setLanguage, t, ext, dir, isRTL }}>
       {children}
     </I18nContext.Provider>
   );

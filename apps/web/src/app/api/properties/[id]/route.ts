@@ -53,3 +53,4 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ error: "Failed to delete property" }, { status: 500 });
   }
 }
+

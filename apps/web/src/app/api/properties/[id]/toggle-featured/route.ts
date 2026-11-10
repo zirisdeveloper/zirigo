@@ -20,3 +20,4 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ error: "Failed to toggle featured" }, { status: 500 });
   }
 }
+

@@ -1,0 +1,26 @@
+[
+  {
+    "id": "alert-1794304109246",
+    "userId": "usr-1794302681659",
+    "name": "appt",
+    "query": "bejaia",
+    "propertyType": "all",
+    "amenities": [],
+    "frequency": "instant",
+    "channel": "both",
+    "isActive": true,
+    "createdAt": "2026-11-10T09:48:29.246Z"
+  },
+  {
+    "id": "alert-1794304094521",
+    "userId": "usr-1794302681659",
+    "name": "villa",
+    "query": "bejaia",
+    "propertyType": "all",
+    "amenities": [],
+    "frequency": "instant",
+    "channel": "both",
+    "isActive": true,
+    "createdAt": "2026-11-10T09:48:14.521Z"
+  }
+]

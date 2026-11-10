@@ -1,4 +1,5 @@
 import { Property } from "./types";
+import { matchesPropertyQuery, matchesPropertyCategory } from "./searchUtils";
 
 export const PROPERTIES: Property[] = [
   {
@@ -483,7 +484,7 @@ export const PROPERTIES: Property[] = [
 
 export function getProperties(filter?: {
   query?: string;
-  type?: string;
+  type?: string | string[];
   minPrice?: number;
   maxPrice?: number;
   minRating?: number;
@@ -493,18 +494,11 @@ export function getProperties(filter?: {
   let list = [...PROPERTIES];
 
   if (filter?.query && filter.query.trim().length > 0) {
-    const q = filter.query.toLowerCase().trim();
-    list = list.filter(
-      (p) =>
-        p.title.toLowerCase().includes(q) ||
-        p.city.toLowerCase().includes(q) ||
-        p.country.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q)
-    );
+    list = list.filter((p) => matchesPropertyQuery(p, filter.query!));
   }
 
-  if (filter?.type && filter.type !== "all") {
-    list = list.filter((p) => p.type === filter.type);
+  if (filter?.type) {
+    list = list.filter((p) => matchesPropertyCategory(p, filter.type!));
   }
 
   if (filter?.minPrice !== undefined) {
@@ -583,13 +577,16 @@ export const EXCHANGE_RATES: Record<string, number> = {
   GBP: 0.85,
 };
 
-export function formatCurrency(amount: number, currency: string = "EUR"): string {
+export const DEFAULT_CURRENCY = "DZD";
+
+export function formatCurrency(amount: number, currency: string = DEFAULT_CURRENCY): string {
   const rate = EXCHANGE_RATES[currency] || 1.0;
   const converted = Math.round(amount * rate);
+  const formattedNumber = converted.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   const symbol = CURRENCY_SYMBOLS[currency] || "€";
 
   if (currency === "DZD") {
-    return `${converted.toLocaleString()} DZD`;
+    return `${formattedNumber} DZD`;
   }
-  return `${symbol}${converted.toLocaleString()}`;
+  return `${symbol}${formattedNumber}`;
 }

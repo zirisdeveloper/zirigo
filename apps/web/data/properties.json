@@ -1,78 +1,83 @@
 [
   {
-    "id": "prop-1794219133119",
-    "slug": "palais-de-la-baie-d-alger",
-    "title": "Palais de la Baie d'Alger",
-    "description": "Magnifique palais d'architecte surplombant la baie d'Alger avec piscine � d�bordement et vue panoramique.",
+    "id": "prop-1794302879213",
+    "slug": "villa",
+    "title": "villa",
+    "description": "villa à bouji",
     "type": "villa",
-    "stars": 5,
-    "rating": 4.95,
-    "reviewCount": 18,
-    "city": "Alger",
-    "country": "Alg�rie",
-    "address": "Boulevard des Martyrs, Alger",
+    "stars": 4,
+    "rating": 4.85,
+    "reviewCount": 12,
+    "city": "bejaia",
+    "country": "Algerie",
+    "address": "bejaia",
     "latitude": 48.8566,
     "longitude": 2.3522,
     "featuredImage": "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
     "images": [
-      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80"
+      "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=1200&q=80"
     ],
     "amenities": [
       "wifi",
-      "air_conditioning"
+      "pool",
+      "bbq"
     ],
     "cancellationPolicy": "flexible",
     "checkInTime": "15:00",
     "checkOutTime": "11:00",
-    "isFeatured": true,
+    "isFeatured": false,
+    "ownerId": "usr-1794302681659",
+    "ownerName": "Karim Benali",
+    "ownerEmail": "karim.benali@gmail.com",
     "rooms": [
       {
-        "id": "room-1794219133120-1",
-        "title": "Suite Principale",
-        "description": "Chambre avec lit Queen Size et salle de bain privative.",
+        "id": "room-1794302694359-1",
+        "title": "Suite Prestige",
+        "description": "Chambre avec lit King Size et vue dégagée.",
         "capacityGuests": 2,
         "capacityBedrooms": 1,
         "capacityBeds": 1,
         "capacityBathrooms": 1,
-        "basePricePerNight": 150,
-        "cleaningFee": 30,
+        "basePricePerNight": 220,
+        "cleaningFee": 40,
         "images": [
           "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&w=1200&q=80"
         ],
         "amenities": [
-          "Lit Queen",
+          "Lit King",
           "Salle de bain privée",
-          "Wifi"
+          "Climatisation"
         ]
       }
     ],
     "rates": [
       {
         "platformName": "Zirigo Direct",
-        "pricePerNight": 150,
+        "pricePerNight": 220,
         "perks": [
           "Meilleur tarif garanti",
-          "Annulation flexible",
-          "Service VIP"
+          "Annulation gratuite",
+          "Petit-déjeuner offert"
         ],
         "isBestPrice": true,
         "bookingUrl": ""
       },
       {
         "platformName": "Booking.com",
-        "pricePerNight": 185,
+        "pricePerNight": 260,
         "perks": [
-          "Tarif standard",
-          "Paiement sur place"
+          "Tarif standard"
         ],
         "isBestPrice": false,
         "bookingUrl": "https://booking.com"
       },
       {
         "platformName": "Airbnb",
-        "pricePerNight": 195,
+        "pricePerNight": 275,
         "perks": [
-          "Frais de service inclus"
+          "Frais de ménage en sus"
         ],
         "isBestPrice": false,
         "bookingUrl": "https://airbnb.com"
@@ -255,7 +260,7 @@
     "cancellationPolicy": "flexible",
     "checkInTime": "15:00",
     "checkOutTime": "11:00",
-    "isFeatured": true,
+    "isFeatured": false,
     "rooms": [
       {
         "id": "room-2-1",
@@ -318,7 +323,8 @@
         "comment": "Idéal pour un week-end parisien raffiné. Tout est à deux pas des galeries et cafés. Literie d'un confort absolu.",
         "date": "Juin 2026"
       }
-    ]
+    ],
+    "autoBlockOnAccept": true
   },
   {
     "id": "prop-3",
@@ -353,7 +359,7 @@
     "cancellationPolicy": "moderate",
     "checkInTime": "16:00",
     "checkOutTime": "10:00",
-    "isFeatured": true,
+    "isFeatured": false,
     "rooms": [
       {
         "id": "room-3-1",
@@ -547,7 +553,7 @@
     "cancellationPolicy": "moderate",
     "checkInTime": "15:00",
     "checkOutTime": "11:00",
-    "isFeatured": true,
+    "isFeatured": false,
     "rooms": [
       {
         "id": "room-5-1",
@@ -643,7 +649,7 @@
     "cancellationPolicy": "flexible",
     "checkInTime": "14:00",
     "checkOutTime": "12:00",
-    "isFeatured": true,
+    "isFeatured": false,
     "rooms": [
       {
         "id": "room-6-1",

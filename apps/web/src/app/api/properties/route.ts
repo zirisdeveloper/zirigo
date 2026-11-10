@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllProperties, createProperty } from "@/lib/serverStore";
+import { getAllProperties, getAllBookings, createProperty } from "@/lib/serverStore";
+import { findConflictingBlock, isValidIsoDate } from "@/lib/availabilityStore";
+import { matchesPropertyQuery, matchesPropertyCategory } from "@/lib/searchUtils";
 
 export async function GET(request: NextRequest) {
   try {
@@ -8,22 +10,33 @@ export async function GET(request: NextRequest) {
     const type = searchParams.get("type");
     const featured = searchParams.get("featured");
     const city = searchParams.get("city")?.toLowerCase();
+    const dateMode = searchParams.get("dateMode");
+    const checkIn = searchParams.get("checkIn") || "";
+    const checkOut = searchParams.get("checkOut") || "";
     const sortBy = searchParams.get("sortBy");
 
     let list = getAllProperties();
 
+    if (
+      dateMode === "fixed" &&
+      isValidIsoDate(checkIn) &&
+      isValidIsoDate(checkOut) &&
+      checkIn < checkOut
+    ) {
+      getAllBookings();
+      list = list.filter((p) => !findConflictingBlock(p.id, checkIn, checkOut));
+    }
+
     if (search) {
-      list = list.filter(
-        (p) =>
-          p.title.toLowerCase().includes(search) ||
-          p.city.toLowerCase().includes(search) ||
-          p.country.toLowerCase().includes(search) ||
-          p.description.toLowerCase().includes(search)
-      );
+      list = list.filter((p) => matchesPropertyQuery(p, search));
     }
 
     if (type && type !== "all") {
-      list = list.filter((p) => p.type === type);
+      const typesList = type
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean);
+      list = list.filter((p) => matchesPropertyCategory(p, typesList));
     }
 
     if (city) {
@@ -81,3 +94,4 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Failed to create property" }, { status: 500 });
   }
 }
+

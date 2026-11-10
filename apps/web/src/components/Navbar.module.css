@@ -17,9 +17,18 @@
 
 .navbarInner {
   height: 100%;
+  max-width: 1400px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 1.25rem;
+}
+
+.brandGroup {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
 }
 
 /* Logo */
@@ -28,6 +37,7 @@
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
+  flex-shrink: 0;
 }
 
 .logoIconWrapper {
@@ -69,17 +79,23 @@
 
 .tagline {
   display: none;
+  flex: 1;
+  text-align: center;
   font-size: 0.75rem;
   color: var(--text-muted);
   font-weight: 500;
-  padding-left: 0.75rem;
+  padding: 0 0.85rem;
+  margin: 0 0.75rem;
   border-left: 1px solid var(--border-subtle);
-  margin-left: 0.25rem;
+  border-right: 1px solid var(--border-subtle);
+  line-height: 1.25;
 }
 
-@media (min-width: 900px) {
+@media (min-width: 1200px) {
   .tagline {
-    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -87,13 +103,15 @@
 .navActions {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.6rem;
+  flex-shrink: 0;
 }
 
 .actionBtn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
+  justify-content: center;
+  gap: 0.45rem;
   padding: 0.55rem 0.85rem;
   border-radius: var(--radius-md);
   color: var(--text-secondary);
@@ -101,8 +119,20 @@
   border: 1px solid var(--border-subtle);
   font-size: 0.875rem;
   font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
   transition: all 0.2s ease;
   position: relative;
+}
+
+.personalSpaceBtn {
+  padding: 0.55rem 1.05rem;
+}
+
+@media (min-width: 640px) {
+  .personalSpaceBtn {
+    min-width: 165px;
+  }
 }
 
 .actionBtn:hover {
@@ -119,6 +149,7 @@
 
 .actionLabel {
   display: none;
+  white-space: nowrap;
 }
 
 @media (min-width: 640px) {
@@ -176,7 +207,8 @@
   padding: 0.55rem 2rem 0.55rem 0.75rem;
 }
 
-.languageSelect:hover, .languageSelect:focus {
+.languageSelect:hover,
+.languageSelect:focus {
   border-color: var(--brand-primary);
 }
 
@@ -197,7 +229,8 @@
   transition: border-color 0.2s ease;
 }
 
-.currencySelect:hover, .currencySelect:focus {
+.currencySelect:hover,
+.currencySelect:focus {
   border-color: var(--brand-primary);
 }
 
@@ -222,10 +255,49 @@
 
 .listPropertyBtn {
   display: none;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 @media (min-width: 768px) {
   .listPropertyBtn {
     display: inline-flex;
+  }
+}
+
+/* Arabic (RTL): Compact tagline column & wider action buttons filling available space */
+@media (min-width: 1024px) {
+  [dir="rtl"] .brandGroup {
+    flex: 0 0 auto;
+  }
+
+  [dir="rtl"] .tagline {
+    flex: 0 0 auto;
+    max-width: 175px;
+    padding: 0 0.65rem;
+    margin: 0 0.6rem;
+    font-size: 0.72rem;
+  }
+
+  [dir="rtl"] .navActions {
+    flex: 1;
+    justify-content: flex-end;
+    gap: 0.65rem;
+  }
+
+  [dir="rtl"] .actionBtn,
+  [dir="rtl"] .listPropertyBtn {
+    flex: 1 1 auto;
+    justify-content: center;
+    padding: 0.58rem 1.05rem;
+  }
+
+  [dir="rtl"] .personalSpaceBtn {
+    flex: 1.25 1 auto;
+    min-width: 170px;
+  }
+
+  [dir="rtl"] .themeToggleBtn {
+    flex: 0 0 42px;
   }
 }

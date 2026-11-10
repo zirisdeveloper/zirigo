@@ -6,24 +6,25 @@ import {
   Building2,
   PlusCircle,
   Search,
-  Filter,
   Eye,
   Edit,
   Trash2,
   Copy,
   Star,
-  Sparkles,
   RefreshCw,
   CheckCircle2,
   AlertCircle,
-  ExternalLink,
   MapPin,
-  SlidersHorizontal,
+  CalendarRange,
 } from "lucide-react";
 import { Property } from "@/lib/types";
+import { useI18n, localizeProperty, translatePropertyType } from "@/lib/i18n";
 import styles from "../admin.module.css";
 
 export default function AdminPropertiesPage() {
+  const { t, ext, language } = useI18n();
+  const ad = ext.admin;
+
   const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,7 +49,6 @@ export default function AdminPropertiesPage() {
       }
     } catch (err) {
       console.error(err);
-      showToast("Erreur de chargement des annonces", "error");
     } finally {
       setIsLoading(false);
     }
@@ -64,11 +64,11 @@ export default function AdminPropertiesPage() {
         method: "POST",
       });
       if (res.ok) {
-        showToast("Statut 'En vedette' mis à jour");
+        showToast("✓");
         loadProperties();
       }
     } catch {
-      showToast("Erreur lors de la mise à jour", "error");
+      showToast("Error", "error");
     }
   };
 
@@ -79,11 +79,11 @@ export default function AdminPropertiesPage() {
       });
       if (res.ok) {
         const created = await res.json();
-        showToast(`Annonce dupliquée : "${created.title}"`);
+        showToast(`${ext.duplicate}: "${created.title}"`);
         loadProperties();
       }
     } catch {
-      showToast("Erreur lors de la duplication", "error");
+      showToast("Error", "error");
     }
   };
 
@@ -94,22 +94,18 @@ export default function AdminPropertiesPage() {
         method: "DELETE",
       });
       if (res.ok) {
-        showToast(`L'annonce "${propertyToDelete.title}" a été supprimée`);
+        showToast(`${ext.delete}: "${propertyToDelete.title}"`);
         setPropertyToDelete(null);
         loadProperties();
-      } else {
-        showToast("Échec de la suppression", "error");
       }
     } catch {
-      showToast("Erreur réseau lors de la suppression", "error");
+      showToast("Error", "error");
     }
   };
 
-  // Filtered & sorted properties
   const filteredProperties = useMemo(() => {
     return properties
       .filter((prop) => {
-        // Search filter
         if (searchTerm) {
           const s = searchTerm.toLowerCase();
           const matchTitle = prop.title.toLowerCase().includes(s);
@@ -120,20 +116,9 @@ export default function AdminPropertiesPage() {
             return false;
           }
         }
-
-        // Type filter
-        if (selectedType !== "all" && prop.type !== selectedType) {
-          return false;
-        }
-
-        // Featured filter
-        if (selectedFeatured === "featured" && !prop.isFeatured) {
-          return false;
-        }
-        if (selectedFeatured === "standard" && prop.isFeatured) {
-          return false;
-        }
-
+        if (selectedType !== "all" && prop.type !== selectedType) return false;
+        if (selectedFeatured === "featured" && !prop.isFeatured) return false;
+        if (selectedFeatured === "standard" && prop.isFeatured) return false;
         return true;
       })
       .sort((a, b) => {
@@ -180,7 +165,6 @@ export default function AdminPropertiesPage() {
 
   return (
     <div>
-      {/* Toast Alert */}
       {toastMessage && (
         <div className={styles.toastContainer}>
           <div
@@ -198,7 +182,6 @@ export default function AdminPropertiesPage() {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
       {propertyToDelete && (
         <div className={styles.modalBackdrop}>
           <div className={styles.modalBox}>
@@ -218,9 +201,11 @@ export default function AdminPropertiesPage() {
                 <Trash2 size={20} />
               </div>
               <div>
-                <h3 style={{ fontSize: "1.1rem", fontWeight: 700 }}>Confirmer la suppression</h3>
+                <h3 style={{ fontSize: "1.1rem", fontWeight: 700 }}>
+                  {ext.espacePerso.confirmDeleteTitle}
+                </h3>
                 <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
-                  Êtes-vous sûr de vouloir supprimer cette annonce ?
+                  {ext.espacePerso.confirmDeleteText}
                 </p>
               </div>
             </div>
@@ -246,7 +231,7 @@ export default function AdminPropertiesPage() {
                 className="btn btn-secondary"
                 style={{ padding: "0.6rem 1.25rem" }}
               >
-                Annuler
+                {ext.cancel}
               </button>
               <button
                 onClick={confirmDelete}
@@ -260,14 +245,14 @@ export default function AdminPropertiesPage() {
                   cursor: "pointer",
                 }}
               >
-                Supprimer
+                {ext.delete}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Page Header */}
+      {/* Header */}
       <div
         style={{
           display: "flex",
@@ -280,10 +265,10 @@ export default function AdminPropertiesPage() {
       >
         <div>
           <h1 style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-0.02em" }}>
-            Gestion des Annonces
+            {ad.manageListingsTitle}
           </h1>
           <p style={{ color: "var(--text-muted)", fontSize: "0.95rem", marginTop: "0.25rem" }}>
-            {properties.length} hébergements répertoriés dans le catalogue
+            {properties.length} {ad.listingsInCatalog}
           </p>
         </div>
 
@@ -292,27 +277,24 @@ export default function AdminPropertiesPage() {
             onClick={loadProperties}
             className="btn btn-secondary"
             style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
-            title="Rafraîchir la liste"
           >
             <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
-            <span>Actualiser</span>
+            <span>{ext.refresh}</span>
           </button>
           <Link href="/admin/properties/new" className={styles.quickAddBtn}>
             <PlusCircle size={17} />
-            <span>Ajouter une annonce</span>
+            <span>{ad.navAddProperty}</span>
           </Link>
         </div>
       </div>
 
-      {/* Main Card */}
       <div className={styles.adminCard}>
-        {/* Filter Toolbar */}
         <div className={styles.filterBar}>
           <div className={styles.searchBox}>
             <Search size={18} style={{ color: "var(--text-muted)" }} />
             <input
               type="text"
-              placeholder="Rechercher par titre, ville, pays..."
+              placeholder={ext.searchPlaceholder}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={styles.searchInput}
@@ -325,12 +307,13 @@ export default function AdminPropertiesPage() {
               onChange={(e) => setSelectedType(e.target.value)}
               className={styles.filterSelect}
             >
-              <option value="all">Tous les types</option>
-              <option value="villa">Villas</option>
-              <option value="hotel">Hôtels</option>
-              <option value="apartment">Appartements</option>
-              <option value="chalet">Chalets</option>
-              <option value="resort">Resorts</option>
+              <option value="all">{ad.allTypes}</option>
+              <option value="villa">{translatePropertyType("villa", language)}</option>
+              <option value="hotel">{translatePropertyType("hotel", language)}</option>
+              <option value="apartment">{translatePropertyType("apartment", language)}</option>
+              <option value="chalet">{translatePropertyType("chalet", language)}</option>
+              <option value="resort">{translatePropertyType("resort", language)}</option>
+              <option value="dormitory">{translatePropertyType("dormitory", language)}</option>
             </select>
 
             <select
@@ -338,9 +321,9 @@ export default function AdminPropertiesPage() {
               onChange={(e) => setSelectedFeatured(e.target.value)}
               className={styles.filterSelect}
             >
-              <option value="all">Toutes les annonces</option>
-              <option value="featured">En vedette uniquement</option>
-              <option value="standard">Standard uniquement</option>
+              <option value="all">{ad.allListingsFilter}</option>
+              <option value="featured">{ad.featuredOnly}</option>
+              <option value="standard">{ad.standardOnly}</option>
             </select>
 
             <select
@@ -348,32 +331,32 @@ export default function AdminPropertiesPage() {
               onChange={(e) => setSortBy(e.target.value)}
               className={styles.filterSelect}
             >
-              <option value="default">Tri par défaut</option>
-              <option value="price_asc">Prix croissant</option>
-              <option value="price_desc">Prix décroissant</option>
-              <option value="rating">Meilleures notes</option>
-              <option value="reviews">Nombre d'avis</option>
+              <option value="default">{ad.sortDefault}</option>
+              <option value="price_asc">{ad.sortPriceAsc}</option>
+              <option value="price_desc">{ad.sortPriceDesc}</option>
+              <option value="rating">{ad.sortBestRated}</option>
+              <option value="reviews">{ad.sortMostReviewed}</option>
             </select>
           </div>
         </div>
 
-        {/* Properties Table */}
         <div className={styles.tableResponsive}>
           <table className={styles.adminTable}>
             <thead>
               <tr>
-                <th>Hébergement</th>
-                <th>Catégorie</th>
-                <th>Note / Étoiles</th>
-                <th>Tarif Zirigo</th>
-                <th>Chambres</th>
-                <th>Vedette</th>
-                <th style={{ textAlign: "right" }}>Actions</th>
+                <th>{t.destination}</th>
+                <th>{t.specType}</th>
+                <th>★</th>
+                <th>{t.officialDirect}</th>
+                <th>{t.availableRooms}</th>
+                <th>{t.featured}</th>
+                <th style={{ textAlign: "right" }}>{t.action}</th>
               </tr>
             </thead>
             <tbody>
               {filteredProperties.length > 0 ? (
                 filteredProperties.map((prop) => {
+                  const loc = localizeProperty(prop, language);
                   const directRate =
                     prop.rates?.find((r) => r.platformName.toLowerCase().includes("direct"))
                       ?.pricePerNight ||
@@ -387,7 +370,7 @@ export default function AdminPropertiesPage() {
                         <div className={styles.propertyRowCell}>
                           <img
                             src={prop.featuredImage}
-                            alt={prop.title}
+                            alt={loc.title}
                             className={styles.propertyThumb}
                           />
                           <div className={styles.propertyRowInfo}>
@@ -395,18 +378,23 @@ export default function AdminPropertiesPage() {
                               href={`/admin/properties/${prop.id}/edit`}
                               className={styles.propertyRowTitle}
                             >
-                              {prop.title}
+                              {loc.title}
                             </Link>
                             <span className={styles.propertyRowLocation}>
                               <MapPin size={12} />
-                              {prop.city}, {prop.country}
+                              {loc.city}, {loc.country}
                             </span>
+                            {prop.ownerName && (
+                              <span style={{ fontSize: "0.73rem", color: "var(--brand-primary)", fontWeight: 600 }}>
+                                {ad.publishedBy} {prop.ownerName}
+                              </span>
+                            )}
                           </div>
                         </div>
                       </td>
                       <td>
                         <span className={`${styles.typeBadge} ${getTypeBadgeClass(prop.type)}`}>
-                          {prop.type}
+                          {translatePropertyType(prop.type, language)}
                         </span>
                       </td>
                       <td>
@@ -421,21 +409,15 @@ export default function AdminPropertiesPage() {
                       <td>
                         <div style={{ fontWeight: 800, color: "var(--brand-primary)" }}>
                           {directRate} €
-                          <span
-                            style={{
-                              fontSize: "0.75rem",
-                              color: "var(--text-muted)",
-                              fontWeight: 400,
-                            }}
-                          >
+                          <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 400 }}>
                             {" "}
-                            / nuit
+                            {t.night}
                           </span>
                         </div>
                       </td>
                       <td>
                         <span style={{ fontWeight: 600 }}>
-                          {prop.rooms?.length || 0} unité(s)
+                          {prop.rooms?.length || 0}
                         </span>
                       </td>
                       <td>
@@ -444,11 +426,6 @@ export default function AdminPropertiesPage() {
                           className={`${styles.featuredToggleBtn} ${
                             prop.isFeatured ? styles.featuredActive : styles.featuredInactive
                           }`}
-                          title={
-                            prop.isFeatured
-                              ? "Retirer de la mise en vedette"
-                              : "Mettre en vedette"
-                          }
                         >
                           <Star size={18} fill={prop.isFeatured ? "currentColor" : "none"} />
                         </button>
@@ -459,28 +436,35 @@ export default function AdminPropertiesPage() {
                             href={`/properties/${prop.slug}`}
                             target="_blank"
                             className={styles.actionIconBtn}
-                            title="Voir sur le site public"
+                            title={ext.view}
                           >
                             <Eye size={15} />
                           </Link>
                           <Link
+                            href={`/admin/disponibilites?propertyId=${prop.id}`}
+                            className={styles.actionIconBtn}
+                            title={ad.navAvailability}
+                          >
+                            <CalendarRange size={15} />
+                          </Link>
+                          <Link
                             href={`/admin/properties/${prop.id}/edit`}
                             className={styles.actionIconBtn}
-                            title="Modifier"
+                            title={ext.edit}
                           >
                             <Edit size={15} />
                           </Link>
                           <button
                             onClick={() => handleDuplicate(prop.id)}
                             className={styles.actionIconBtn}
-                            title="Dupliquer l'annonce"
+                            title={ext.duplicate}
                           >
                             <Copy size={15} />
                           </button>
                           <button
                             onClick={() => setPropertyToDelete(prop)}
                             className={`${styles.actionIconBtn} ${styles.actionDeleteBtn}`}
-                            title="Supprimer l'annonce"
+                            title={ext.delete}
                           >
                             <Trash2 size={15} />
                           </button>
@@ -494,9 +478,9 @@ export default function AdminPropertiesPage() {
                   <td colSpan={7} style={{ textAlign: "center", padding: "3rem 1.5rem" }}>
                     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
                       <Building2 size={40} style={{ color: "var(--text-muted)", opacity: 0.5 }} />
-                      <div style={{ fontSize: "1.1rem", fontWeight: 700 }}>Aucune annonce trouvée</div>
+                      <div style={{ fontSize: "1.1rem", fontWeight: 700 }}>{t.noResultsTitle}</div>
                       <p style={{ fontSize: "0.875rem", color: "var(--text-muted)" }}>
-                        Aucun résultat ne correspond à vos critères de recherche.
+                        {t.noResultsSub}
                       </p>
                       <button
                         onClick={() => {
@@ -508,7 +492,7 @@ export default function AdminPropertiesPage() {
                         className="btn btn-secondary"
                         style={{ marginTop: "0.5rem" }}
                       >
-                        Réinitialiser les filtres
+                        {t.resetFilters}
                       </button>
                     </div>
                   </td>

@@ -2,19 +2,19 @@
 
 import React, { useState } from "react";
 import {
-  Settings,
   Download,
   RotateCcw,
   CheckCircle2,
   AlertCircle,
-  Database,
-  ShieldCheck,
   Server,
-  Layers,
 } from "lucide-react";
+import { useI18n } from "@/lib/i18n";
 import styles from "../admin.module.css";
 
 export default function AdminSettingsPage() {
+  const { ext } = useI18n();
+  const ad = ext.admin;
+
   const [toastMessage, setToastMessage] = useState<{ text: string; type: "success" | "error" } | null>(null);
   const [isResetting, setIsResetting] = useState(false);
   const [showResetModal, setShowResetModal] = useState(false);
@@ -38,10 +38,10 @@ export default function AdminSettingsPage() {
         document.body.appendChild(downloadAnchor);
         downloadAnchor.click();
         downloadAnchor.remove();
-        showToast("Catalogue d'annonces exporté avec succès !");
+        showToast("✓");
       }
     } catch {
-      showToast("Échec de l'exportation", "error");
+      showToast("Error", "error");
     }
   };
 
@@ -52,13 +52,11 @@ export default function AdminSettingsPage() {
         method: "POST",
       });
       if (res.ok) {
-        showToast("Toutes les données ont été réinitialisées aux valeurs démo d'origine !");
+        showToast("✓");
         setShowResetModal(false);
-      } else {
-        showToast("Échec de la réinitialisation", "error");
       }
     } catch {
-      showToast("Erreur lors de la réinitialisation", "error");
+      showToast("Error", "error");
     } finally {
       setIsResetting(false);
     }
@@ -66,7 +64,6 @@ export default function AdminSettingsPage() {
 
   return (
     <div>
-      {/* Toast Alert */}
       {toastMessage && (
         <div className={styles.toastContainer}>
           <div
@@ -84,7 +81,6 @@ export default function AdminSettingsPage() {
         </div>
       )}
 
-      {/* Confirmation Modal */}
       {showResetModal && (
         <div className={styles.modalBackdrop}>
           <div className={styles.modalBox}>
@@ -104,10 +100,8 @@ export default function AdminSettingsPage() {
                 <RotateCcw size={20} />
               </div>
               <div>
-                <h3 style={{ fontSize: "1.1rem", fontWeight: 700 }}>Confirmer la réinitialisation</h3>
-                <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>
-                  Cette action remplacera toutes les annonces actuelles par les 6 hébergements d'origine.
-                </p>
+                <h3 style={{ fontSize: "1.1rem", fontWeight: 700 }}>{ad.resetTitle}</h3>
+                <p style={{ fontSize: "0.85rem", color: "var(--text-muted)" }}>{ad.resetDesc}</p>
               </div>
             </div>
 
@@ -117,7 +111,7 @@ export default function AdminSettingsPage() {
                 className="btn btn-secondary"
                 style={{ padding: "0.6rem 1.25rem" }}
               >
-                Annuler
+                {ext.cancel}
               </button>
               <button
                 onClick={handleResetData}
@@ -132,35 +126,33 @@ export default function AdminSettingsPage() {
                   cursor: "pointer",
                 }}
               >
-                {isResetting ? "Réinitialisation..." : "Réinitialiser les données"}
+                {ad.resetBtn}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* Page Header */}
       <div style={{ marginBottom: "2rem" }}>
         <h1 style={{ fontSize: "1.75rem", fontWeight: 800, letterSpacing: "-0.02em" }}>
-          Paramètres & Gestion des Données
+          {ad.settingsTitle}
         </h1>
         <p style={{ color: "var(--text-muted)", fontSize: "0.95rem", marginTop: "0.25rem" }}>
-          Sauvegardez vos données, gérez la persistance et configurez la plateforme.
+          {ad.settingsSub}
         </p>
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "1.5rem" }}>
-        {/* Backup & Export */}
         <div className={styles.adminCard}>
           <div className={styles.adminCardHeader}>
             <div className={styles.cardTitle}>
               <Download size={20} style={{ color: "var(--brand-primary)" }} />
-              <span>Export & Sauvegarde JSON</span>
+              <span>{ad.exportTitle}</span>
             </div>
           </div>
           <div style={{ padding: "1.5rem" }}>
             <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "1.25rem", lineHeight: 1.5 }}>
-              Téléchargez l'intégralité du catalogue des annonces d'hébergement au format JSON pour vos sauvegardes ou intégrations tierces.
+              {ad.exportDesc}
             </p>
             <button
               onClick={handleExportJSON}
@@ -168,22 +160,21 @@ export default function AdminSettingsPage() {
               style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem" }}
             >
               <Download size={16} />
-              <span>Télécharger le catalogue (.json)</span>
+              <span>{ad.downloadJson}</span>
             </button>
           </div>
         </div>
 
-        {/* Reset */}
         <div className={styles.adminCard}>
           <div className={styles.adminCardHeader}>
             <div className={styles.cardTitle}>
               <RotateCcw size={20} style={{ color: "var(--alert-red)" }} />
-              <span>Réinitialisation d'usine</span>
+              <span>{ad.resetTitle}</span>
             </div>
           </div>
           <div style={{ padding: "1.5rem" }}>
             <p style={{ fontSize: "0.9rem", color: "var(--text-secondary)", marginBottom: "1.25rem", lineHeight: 1.5 }}>
-              Restaurez les 6 annonces de démonstration initiales (Villa Cassis, Loft Le Marais, Chalet Chamonix, etc.).
+              {ad.resetDesc}
             </p>
             <button
               onClick={() => setShowResetModal(true)}
@@ -197,47 +188,39 @@ export default function AdminSettingsPage() {
               }}
             >
               <RotateCcw size={16} />
-              <span>Réinitialiser les données démo</span>
+              <span>{ad.resetBtn}</span>
             </button>
           </div>
         </div>
 
-        {/* System info */}
         <div className={styles.adminCard} style={{ gridColumn: "1 / -1" }}>
           <div className={styles.adminCardHeader}>
             <div className={styles.cardTitle}>
               <Server size={20} style={{ color: "var(--brand-primary)" }} />
-              <span>Architecture & Stockage Dynamique</span>
+              <span>{ad.architectureTitle}</span>
             </div>
           </div>
           <div style={{ padding: "1.5rem" }}>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: "1rem" }}>
               <div style={{ backgroundColor: "var(--bg-muted)", padding: "1rem", borderRadius: "var(--radius-md)" }}>
                 <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase" }}>
-                  Moteur Serveur
+                  Framework
                 </div>
                 <div style={{ fontSize: "1rem", fontWeight: 700, marginTop: "0.25rem" }}>Next.js 15 App Router</div>
               </div>
 
               <div style={{ backgroundColor: "var(--bg-muted)", padding: "1rem", borderRadius: "var(--radius-md)" }}>
                 <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase" }}>
-                  Stockage Persistant
+                  Storage
                 </div>
                 <div style={{ fontSize: "1rem", fontWeight: 700, marginTop: "0.25rem" }}>JSON Store + Drizzle Schema</div>
               </div>
 
               <div style={{ backgroundColor: "var(--bg-muted)", padding: "1rem", borderRadius: "var(--radius-md)" }}>
                 <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase" }}>
-                  Mode de Rendu
+                  Role
                 </div>
-                <div style={{ fontSize: "1rem", fontWeight: 700, marginTop: "0.25rem" }}>Hybride SSR / Client Dynamique</div>
-              </div>
-
-              <div style={{ backgroundColor: "var(--bg-muted)", padding: "1rem", borderRadius: "var(--radius-md)" }}>
-                <div style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontWeight: 700, textTransform: "uppercase" }}>
-                  Sécurité & Rôles
-                </div>
-                <div style={{ fontSize: "1rem", fontWeight: 700, marginTop: "0.25rem" }}>Super Admin Actif</div>
+                <div style={{ fontSize: "1rem", fontWeight: 700, marginTop: "0.25rem" }}>{ad.superAdminRole}</div>
               </div>
             </div>
           </div>

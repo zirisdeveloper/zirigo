@@ -1,0 +1,55 @@
+[
+  {
+    "id": "blk-seed-book-1794229661418",
+    "propertyId": "prop-1",
+    "startDate": "2026-06-15",
+    "endDate": "2026-06-18",
+    "reason": "accepted_booking",
+    "source": "zirigo_booking",
+    "bookingId": "book-1794229661418",
+    "note": "chc (ZIR-409403)",
+    "createdAt": "2026-11-10T14:44:08.254Z"
+  },
+  {
+    "id": "blk-seed-book-1",
+    "propertyId": "prop-1",
+    "startDate": "2026-07-10",
+    "endDate": "2026-07-17",
+    "reason": "accepted_booking",
+    "source": "zirigo_booking",
+    "bookingId": "book-1",
+    "note": "Sophie Martin (ZIR-849201)",
+    "createdAt": "2026-11-10T14:44:08.254Z"
+  },
+  {
+    "id": "blk-seed-book-3",
+    "propertyId": "prop-3",
+    "startDate": "2026-12-22",
+    "endDate": "2026-12-29",
+    "reason": "accepted_booking",
+    "source": "zirigo_booking",
+    "bookingId": "book-3",
+    "note": "Sarah Alami (ZIR-658291)",
+    "createdAt": "2026-11-10T14:44:08.254Z"
+  },
+  {
+    "id": "blk-1794321931706-539",
+    "propertyId": "prop-1794302879213",
+    "startDate": "2026-06-22",
+    "endDate": "2026-06-25",
+    "reason": "external_offer",
+    "source": "manual_owner",
+    "createdBy": "usr-1794302681659",
+    "createdAt": "2026-11-10T14:45:31.706Z"
+  },
+  {
+    "id": "blk-1794322344414-95",
+    "propertyId": "prop-1794302879213",
+    "startDate": "2026-06-08",
+    "endDate": "2026-06-13",
+    "reason": "external_offer",
+    "source": "manual_admin",
+    "createdBy": "usr-admin-1",
+    "createdAt": "2026-11-10T14:52:24.414Z"
+  }
+]
