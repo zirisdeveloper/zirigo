@@ -37,7 +37,7 @@ export default function HomePage() {
 
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [dateMode, setDateMode] = useState<SearchDateMode>("flexible");
+  const [dateMode, setDateMode] = useState<SearchDateMode>("fixed");
   const [searchDates, setSearchDates] = useState<{ checkIn: string; checkOut: string }>({
     checkIn: "2026-06-15",
     checkOut: "2026-06-16",
@@ -176,7 +176,7 @@ export default function HomePage() {
   const handleResetAllFilters = () => {
     setSearchQuery("");
     setSelectedTypes([]);
-    setDateMode("flexible");
+    setDateMode("fixed");
     setSelectedAmenities([]);
     setSelectedStars([]);
     setSelectedCancellations([]);
@@ -639,7 +639,7 @@ export default function HomePage() {
             </Link>
 
             {(searchQuery ||
-              dateMode === "fixed" ||
+              dateMode === "flexible" ||
               selectedAmenities.length > 0 ||
               selectedStars.length > 0 ||
               selectedCancellations.length > 0 ||

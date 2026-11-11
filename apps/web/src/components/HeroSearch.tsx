@@ -7,7 +7,7 @@ import { addDaysIso, isValidIsoDate } from "../lib/dateUtils";
 import { DisplaySettings } from "../lib/types";
 import styles from "./HeroSearch.module.css";
 
-export type SearchDateMode = "flexible" | "fixed";
+export type SearchDateMode = "fixed" | "flexible";
 
 interface HeroSearchProps {
   searchQuery?: string;
@@ -69,7 +69,7 @@ export function HeroSearch({
   const { t, ext, language, isRTL } = useI18n();
   const av = ext.availability;
   const [query, setQuery] = useState(searchQuery || "");
-  const [dateMode, setDateMode] = useState<SearchDateMode>(externalDateMode || "flexible");
+  const [dateMode, setDateMode] = useState<SearchDateMode>(externalDateMode || "fixed");
   const [checkIn, setCheckIn] = useState(externalDates?.checkIn || "2026-06-15");
   const [checkOut, setCheckOut] = useState(externalDates?.checkOut || "2026-06-16");
   const [guests, setGuests] = useState(2);
@@ -246,19 +246,9 @@ export function HeroSearch({
           </div>
         )}
 
-        {/* Date Flexibility Switch (Flexible vs Fixed Dates) */}
+        {/* Date Flexibility Switch (Fixed vs Flexible Dates) */}
         <div className={styles.dateModeRow}>
           <div className={styles.dateModeGroup} role="group" aria-label="Date mode">
-            <button
-              type="button"
-              onClick={() => handleDateModeChange("flexible")}
-              className={`${styles.dateModeBtn} ${
-                dateMode === "flexible" ? styles.dateModeBtnActive : ""
-              }`}
-            >
-              <Calendar size={14} />
-              <span>{av.flexibleDates}</span>
-            </button>
             <button
               type="button"
               onClick={() => handleDateModeChange("fixed")}
@@ -268,6 +258,16 @@ export function HeroSearch({
             >
               <CalendarCheck2 size={14} />
               <span>{av.fixedDates}</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDateModeChange("flexible")}
+              className={`${styles.dateModeBtn} ${
+                dateMode === "flexible" ? styles.dateModeBtnActive : ""
+              }`}
+            >
+              <Calendar size={14} />
+              <span>{av.flexibleDates}</span>
             </button>
           </div>
           <span className={styles.dateModeHint}>
