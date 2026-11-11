@@ -11,6 +11,7 @@ import { BookingModal } from "../components/BookingModal";
 import { Footer } from "../components/Footer";
 import { PROPERTIES, getProperties } from "../lib/data";
 import { AvailabilityBlock, Property } from "../lib/types";
+import { useDisplaySettings } from "../lib/displaySettingsContext";
 import { matchesPropertyQuery, matchesPropertyCategory } from "../lib/searchUtils";
 import { datesOverlap, isValidIsoDate } from "../lib/dateUtils";
 import { useI18n, localizeProperty, translateAmenity, translateCancellation } from "../lib/i18n";
@@ -50,9 +51,10 @@ export default function HomePage() {
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const { currency, setCurrency } = usePreferences();
 
-  // Dynamic properties & blocked date ranges loaded from store / API
+  // Dynamic properties, display settings & blocked date ranges loaded from store / API
   const [propertiesList, setPropertiesList] = useState<Property[]>(PROPERTIES);
   const [allBlockedRanges, setAllBlockedRanges] = useState<AvailabilityBlock[]>([]);
+  const { displaySettings } = useDisplaySettings();
 
   const loadAvailabilitySnapshot = () => {
     fetch("/api/availability")
@@ -81,6 +83,32 @@ export default function HomePage() {
       .catch((err) => console.error("Error fetching live properties:", err));
 
     loadAvailabilitySnapshot();
+
+    const params = new URLSearchParams(window.location.search);
+    const typeParam = params.get("type");
+    if (
+      typeParam &&
+      ["hotel", "apartment", "villa", "chalet", "resort", "dorm"].includes(typeParam)
+    ) {
+      setSelectedTypes([typeParam]);
+    }
+
+    const handleSelectCategory = (event: Event) => {
+      const customEvent = event as CustomEvent<{ type?: string }>;
+      const type = customEvent.detail?.type;
+      if (
+        type &&
+        ["hotel", "apartment", "villa", "chalet", "resort", "dorm"].includes(type)
+      ) {
+        setSelectedTypes([type]);
+        document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" });
+      }
+    };
+
+    window.addEventListener("zirigo:select-category", handleSelectCategory);
+    return () => {
+      window.removeEventListener("zirigo:select-category", handleSelectCategory);
+    };
   }, []);
 
   // Interaction State
@@ -356,6 +384,7 @@ export default function HomePage() {
         onClearCategories={() => setSelectedTypes([])}
         onSelectAdCategory={(type) => setSelectedTypes([type])}
         matchedCount={filteredProperties.length}
+        displaySettings={displaySettings}
       />
 
       {/* Hero & Search Engine */}
@@ -363,6 +392,7 @@ export default function HomePage() {
         searchQuery={searchQuery}
         dateMode={dateMode}
         dates={searchDates}
+        displaySettings={displaySettings}
         selectedTypes={selectedTypes}
         onToggleType={handleToggleType}
         onDateFilterChange={(mode, dates) => {
@@ -405,9 +435,8 @@ export default function HomePage() {
               type="button"
               onClick={() => setShowMoreFilters((prev) => !prev)}
               aria-expanded={showMoreFilters}
-              className={`${styles.moreFiltersBtn} ${
-                showMoreFilters || extraActiveFiltersCount > 0 ? styles.moreFiltersBtnActive : ""
-              }`}
+              className={`${styles.moreFiltersBtn} ${showMoreFilters || extraActiveFiltersCount > 0 ? styles.moreFiltersBtnActive : ""
+                }`}
             >
               <Plus
                 size={14}
@@ -496,9 +525,8 @@ export default function HomePage() {
                           key={am.id}
                           type="button"
                           onClick={() => handleToggleAmenity(am.id)}
-                          className={`${styles.amenityFilterBtn} ${
-                            active ? styles.amenityFilterActive : ""
-                          }`}
+                          className={`${styles.amenityFilterBtn} ${active ? styles.amenityFilterActive : ""
+                            }`}
                         >
                           {active && <Check size={12} />}
                           <span>{am.label}</span>
@@ -522,9 +550,8 @@ export default function HomePage() {
                           key={st.value}
                           type="button"
                           onClick={() => handleToggleStar(st.value)}
-                          className={`${styles.amenityFilterBtn} ${
-                            active ? styles.amenityFilterActive : ""
-                          }`}
+                          className={`${styles.amenityFilterBtn} ${active ? styles.amenityFilterActive : ""
+                            }`}
                         >
                           {active && <Check size={12} />}
                           <Star size={12} fill="currentColor" />
@@ -549,9 +576,8 @@ export default function HomePage() {
                           key={pol.id}
                           type="button"
                           onClick={() => handleToggleCancellation(pol.id)}
-                          className={`${styles.amenityFilterBtn} ${
-                            active ? styles.amenityFilterActive : ""
-                          }`}
+                          className={`${styles.amenityFilterBtn} ${active ? styles.amenityFilterActive : ""
+                            }`}
                         >
                           {active && <Check size={12} />}
                           <span>{pol.label}</span>
@@ -574,9 +600,8 @@ export default function HomePage() {
                         key={score}
                         type="button"
                         onClick={() => setMinRating(score)}
-                        className={`${styles.amenityFilterBtn} ${
-                          active ? styles.amenityFilterActive : ""
-                        }`}
+                        className={`${styles.amenityFilterBtn} ${active ? styles.amenityFilterActive : ""
+                          }`}
                       >
                         {active && <Check size={12} />}
                         <span>{score === 0 ? ext.all : `${score}+ ★`}</span>
@@ -620,10 +645,10 @@ export default function HomePage() {
               selectedCancellations.length > 0 ||
               minRating > 0 ||
               selectedTypes.length > 0) && (
-              <button onClick={handleResetAllFilters} className={styles.resetFiltersBtn}>
-                {t.resetFilters}
-              </button>
-            )}
+                <button onClick={handleResetAllFilters} className={styles.resetFiltersBtn}>
+                  {t.resetFilters}
+                </button>
+              )}
           </div>
         </div>
 

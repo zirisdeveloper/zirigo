@@ -27,8 +27,32 @@
 .brandGroup {
   display: flex;
   align-items: center;
+  gap: 0.75rem;
   flex: 1;
   min-width: 0;
+}
+
+/* Header Left Menu Trigger Button */
+.menuTriggerBtn {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-primary);
+  box-shadow: var(--shadow-sm);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.menuTriggerBtn:hover {
+  border-color: var(--brand-primary);
+  background: rgba(13, 148, 136, 0.08);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(13, 148, 136, 0.16);
 }
 
 /* Logo */
@@ -300,4 +324,177 @@
   [dir="rtl"] .themeToggleBtn {
     flex: 0 0 42px;
   }
+}
+
+/* Slide-Over Navigation Drawer */
+.drawerBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: flex-start;
+  animation: fadeInBackdrop 0.18s ease-out;
+}
+
+@keyframes fadeInBackdrop {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.drawerPanel {
+  width: min(320px, 88vw);
+  height: 100%;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-xl);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  animation: slideInDrawer 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:global([dir="rtl"]) .drawerPanel {
+  border-right: none;
+  border-left: 1px solid var(--border-subtle);
+}
+
+@keyframes slideInDrawer {
+  from {
+    transform: translateX(-24px);
+    opacity: 0.7;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.05rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+  position: sticky;
+  top: 0;
+  background: var(--bg-surface);
+  z-index: 2;
+}
+
+.drawerCloseBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  background: var(--bg-muted);
+  color: var(--text-secondary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.drawerCloseBtn:hover {
+  color: var(--text-primary);
+  background: var(--border-subtle);
+}
+
+.drawerBody {
+  flex: 1;
+  padding: 0.75rem 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.drawerSection {
+  padding: 0.65rem 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.drawerSection:last-of-type {
+  border-bottom: none;
+}
+
+.drawerSectionTitle {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 0.45rem;
+  padding: 0 0.35rem;
+}
+
+.drawerList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.drawerLink {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.62rem 0.6rem;
+  border-radius: var(--radius-md);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: left;
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+:global([dir="rtl"]) .drawerLink {
+  text-align: right;
+}
+
+.drawerLink:hover {
+  background: var(--bg-muted);
+  color: var(--brand-primary);
+}
+
+.drawerLinkIcon {
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.drawerLink:hover .drawerLinkIcon {
+  color: var(--brand-primary);
+}
+
+.drawerSocialRow {
+  padding: 1rem 1.25rem 1.35rem;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: auto;
+}
+
+.drawerSocialLink {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--bg-muted);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.drawerSocialLink:hover {
+  background: var(--brand-primary);
+  color: #ffffff;
+  border-color: var(--brand-primary);
+  transform: translateY(-2px);
 }

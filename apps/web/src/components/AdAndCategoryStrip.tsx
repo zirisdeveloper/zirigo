@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, ArrowRight, Sparkles, Tag, Store, X, Check } from "lucide-react";
-import { AdBanner } from "../lib/types";
+import { AdBanner, DisplaySettings } from "../lib/types";
 import { useI18n } from "../lib/i18n";
 import styles from "./AdAndCategoryStrip.module.css";
 
@@ -13,6 +13,7 @@ interface AdAndCategoryStripProps {
   onClearCategories: () => void;
   onSelectAdCategory?: (type: string) => void;
   matchedCount?: number;
+  displaySettings?: DisplaySettings;
 }
 
 const FALLBACK_ADS: AdBanner[] = [
@@ -91,6 +92,7 @@ export function AdAndCategoryStrip({
   onClearCategories,
   onSelectAdCategory,
   matchedCount,
+  displaySettings,
 }: AdAndCategoryStripProps) {
   const { ext, language, isRTL } = useI18n();
   const [ads, setAds] = useState<AdBanner[]>(FALLBACK_ADS);
@@ -180,11 +182,19 @@ export function AdAndCategoryStrip({
     }
   };
 
+  const showAds = displaySettings?.showAdsSection ?? true;
+  const showCategoryIcons = displaySettings?.showCategoryIconsSection ?? true;
+
+  if (!showAds && !showCategoryIcons) {
+    return null;
+  }
+
   return (
     <section className={styles.showcaseBand} aria-label={ext.adSponsoredBadge}>
       <div className={`container ${styles.showcaseContainer}`}>
         {/* 1. Asymmetric Advertising Row (Main Carousel + Companion Partner Slot) */}
-        <div className={styles.adsGrid}>
+        {showAds && (
+          <div className={styles.adsGrid}>
           {/* Main Ad Carousel */}
           <div
             className={styles.mainBannerWrapper}
@@ -335,10 +345,12 @@ export function AdAndCategoryStrip({
               )}
             </Link>
           </div>
-        </div>
+          </div>
+        )}
 
         {/* 2. Illustrated Circular Category Strip (Multi-select) */}
-        <div className={styles.categoriesRowWrapper}>
+        {showCategoryIcons && (
+          <div className={styles.categoriesRowWrapper}>
           <div className={styles.categoriesRow} role="group" aria-label="Accommodation categories">
             {categories.map((cat) => {
               const isSelected = selectedTypes.includes(cat.id);
@@ -396,7 +408,8 @@ export function AdAndCategoryStrip({
               </button>
             </div>
           )}
-        </div>
+          </div>
+        )}
       </div>
     </section>
   );

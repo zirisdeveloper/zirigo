@@ -9,6 +9,7 @@ import {
   Server,
 } from "lucide-react";
 import { useI18n } from "@/lib/i18n";
+import { SocialLinksCard } from "@/components/admin/SocialLinksCard";
 import styles from "../admin.module.css";
 
 export default function AdminSettingsPage() {
@@ -192,6 +193,8 @@ export default function AdminSettingsPage() {
             </button>
           </div>
         </div>
+
+        <SocialLinksCard onNotify={showToast} />
 
         <div className={styles.adminCard} style={{ gridColumn: "1 / -1" }}>
           <div className={styles.adminCardHeader}>

@@ -177,3 +177,71 @@ export interface AdBanner {
   order: number;
   createdAt: string;
 }
+
+export interface DisplaySettings {
+  showHeaderMenuButton: boolean;
+  showAdsSection: boolean;
+  showCategoryIconsSection: boolean;
+  showHeroHeader: boolean;
+  showTypeTabs: boolean;
+  showTrustBanner: boolean;
+  heroPromoText: LocalizedText;
+  heroTitleText: LocalizedText;
+  heroSubtitleText: LocalizedText;
+  trustItem1Text: LocalizedText;
+  trustItem2Text: LocalizedText;
+  trustItem3Text: LocalizedText;
+  socialFacebookUrl: string;
+  socialInstagramUrl: string;
+  socialLinkedInUrl: string;
+  updatedAt: string;
+}
+
+export type ContactMapProvider = "openstreetmap" | "google";
+
+export interface ContactPageSettings {
+  // Header
+  badgeText: LocalizedText;
+  pageTitle: LocalizedText;
+  pageSubtitle: LocalizedText;
+
+  // Direct coordinates section
+  directTitle: LocalizedText;
+  phoneLabel: LocalizedText;
+  phoneValue: string;
+  emailLabel: LocalizedText;
+  emailValue: string;
+  addressLabel: LocalizedText;
+  addressValue: LocalizedText;
+  hoursLabel: LocalizedText;
+  hoursValue: LocalizedText;
+
+  // Map inside direct coordinates section
+  showMap: boolean;
+  mapProvider: ContactMapProvider;
+  mapTitle: LocalizedText;
+  mapAddressQuery: string;
+  mapLat: number;
+  mapLng: number;
+  mapZoom: number;
+  mapExternalUrl: string;
+  openInMapsLabel: LocalizedText;
+
+  // Contact form texts
+  formTitle: LocalizedText;
+  nameLabel: LocalizedText;
+  namePlaceholder: LocalizedText;
+  emailFieldLabel: LocalizedText;
+  emailPlaceholder: LocalizedText;
+  subjectLabel: LocalizedText;
+  subjectPlaceholder: LocalizedText;
+  messageLabel: LocalizedText;
+  messagePlaceholder: LocalizedText;
+  sendBtnText: LocalizedText;
+  sendingBtnText: LocalizedText;
+  successTitle: LocalizedText;
+  successDesc: LocalizedText;
+  sendAnotherBtnText: LocalizedText;
+
+  updatedAt: string;
+}

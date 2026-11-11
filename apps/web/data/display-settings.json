@@ -1,0 +1,42 @@
+{
+  "showHeaderMenuButton": true,
+  "showAdsSection": true,
+  "showCategoryIconsSection": true,
+  "showHeroHeader": true,
+  "showTypeTabs": true,
+  "showTrustBanner": true,
+  "heroPromoText": {
+    "fr": "Moteur de Comparaison Multi-Plateformes en Temps Réel",
+    "en": "Real-Time Multi-Platform Comparison Engine",
+    "ar": "محرك مقارنة متعدد المنصات في الوقت الفعلي"
+  },
+  "heroTitleText": {
+    "fr": "Réservez au Meilleur Tarif.",
+    "en": "Book at the Best Rate.",
+    "ar": "احجز بأفضل سعر."
+  },
+  "heroSubtitleText": {
+    "fr": "Zirigo scanne Booking.com, Airbnb, Agoda et Expedia simultanément pour vous garantir le prix le plus bas, des avantages hôte exclusifs et aucun frais de service caché.",
+    "en": "Zirigo scans Booking.com, Airbnb, Agoda, and Expedia simultaneously to guarantee you the lowest price, exclusive host perks, and zero hidden service fees.",
+    "ar": "يقوم زيريغو (Zirigo) بمسح منصات بوكينج وإير بي إن بي وأجودا وإكسبيديا في نفس اللحظة ليضمن لك أدنى سعر ممكن ومزايا حصرية وبدون رسوم خدمة مخفية."
+  },
+  "trustItem1Text": {
+    "fr": "18% d'économie en moyenne vs les grandes agences en ligne",
+    "en": "Average 18% Savings vs major OTA portals",
+    "ar": "توفير 18% في المتوسط مقارنة بالمنصات التقليدية"
+  },
+  "trustItem2Text": {
+    "fr": "Comparaison transparente : 4+ plateformes auditées",
+    "en": "Transparent Comparison: 4+ platforms audited",
+    "ar": "مقارنة شفافة وموثوقة: تدقيق أكثر من 4 منصات"
+  },
+  "trustItem3Text": {
+    "fr": "Avantages Directs : Petit-déjeuner offert, vin d'accueil & pass",
+    "en": "Direct Host Perks: Free breakfast, welcome wine & passes",
+    "ar": "مزايا الحجز المباشر: فطور مجاني، هدايا ترحيبية ودخول ميسر"
+  },
+  "socialFacebookUrl": "https://facebook.com",
+  "socialInstagramUrl": "https://instagram.com",
+  "socialLinkedInUrl": "https://linkedin.com",
+  "updatedAt": "2026-11-11T08:44:23.539Z"
+}

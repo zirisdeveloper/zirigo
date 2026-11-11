@@ -221,3 +221,35 @@ export const availabilityBlocksRelations = relations(availabilityBlocks, ({ one 
     references: [bookings.id],
   }),
 }));
+
+// 8. Site Homepage Display Settings Table
+export const siteDisplaySettings = pgTable("site_display_settings", {
+  id: varchar("id", { length: 50 }).default("default").primaryKey(),
+  showHeaderMenuButton: boolean("show_header_menu_button").default(true).notNull(),
+  showAdsSection: boolean("show_ads_section").default(true).notNull(),
+  showCategoryIconsSection: boolean("show_category_icons_section").default(true).notNull(),
+  showHeroHeader: boolean("show_hero_header").default(true).notNull(),
+  showTypeTabs: boolean("show_type_tabs").default(true).notNull(),
+  showTrustBanner: boolean("show_trust_banner").default(true).notNull(),
+  socialFacebookUrl: varchar("social_facebook_url", { length: 500 }).default("https://facebook.com").notNull(),
+  socialInstagramUrl: varchar("social_instagram_url", { length: 500 }).default("https://instagram.com").notNull(),
+  socialLinkedInUrl: varchar("social_linkedin_url", { length: 500 }).default("https://linkedin.com").notNull(),
+  customTextsJson: jsonb("custom_texts_json"),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// 9. Site Contact Page Settings Table
+export const siteContactSettings = pgTable("site_contact_settings", {
+  id: varchar("id", { length: 50 }).default("default").primaryKey(),
+  phoneValue: varchar("phone_value", { length: 100 }).notNull(),
+  emailValue: varchar("email_value", { length: 150 }).notNull(),
+  showMap: boolean("show_map").default(true).notNull(),
+  mapProvider: varchar("map_provider", { length: 30 }).default("openstreetmap").notNull(),
+  mapAddressQuery: varchar("map_address_query", { length: 255 }).notNull(),
+  mapLat: doublePrecision("map_lat").notNull(),
+  mapLng: doublePrecision("map_lng").notNull(),
+  mapZoom: integer("map_zoom").default(14).notNull(),
+  mapExternalUrl: text("map_external_url").default("").notNull(),
+  customTextsJson: jsonb("custom_texts_json"),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});

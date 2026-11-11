@@ -540,6 +540,8 @@ export interface ExtendedSiteTranslations {
     navBookings: string;
     navAvailability: string;
     navAds: string;
+    navDisplay: string;
+    navContact: string;
     navSettings: string;
     overviewTitle: string;
     overviewSub: string;
@@ -871,6 +873,8 @@ export const EXTENDED_TRANSLATIONS: Record<Language, ExtendedSiteTranslations> =
       navBookings: "Réservations",
       navAvailability: "Disponibilités",
       navAds: "Publicités & Bannières",
+      navDisplay: "Affichage",
+      navContact: "Page Contact",
       navSettings: "Paramètres & Données",
       overviewTitle: "Vue d'ensemble de la plateforme",
       overviewSub: "Supervisez et administrez toutes vos annonces d'hébergements en temps réel.",
@@ -1200,6 +1204,8 @@ export const EXTENDED_TRANSLATIONS: Record<Language, ExtendedSiteTranslations> =
       navBookings: "Bookings",
       navAvailability: "Availability",
       navAds: "Ads & Banners",
+      navDisplay: "Display",
+      navContact: "Contact Page",
       navSettings: "Settings & Data",
       overviewTitle: "Platform Overview",
       overviewSub: "Monitor and manage all accommodation listings in real time.",
@@ -1529,6 +1535,8 @@ export const EXTENDED_TRANSLATIONS: Record<Language, ExtendedSiteTranslations> =
       navBookings: "الحجوزات",
       navAvailability: "التوفر والتواريخ",
       navAds: "الإعلانات والبنرات",
+      navDisplay: "إدارة العرض",
+      navContact: "صفحة اتصل بنا",
       navSettings: "الإعدادات والبيانات",
       overviewTitle: "نظرة عامة على المنصة",
       overviewSub: "راقب وأدر جميع إعلانات الإقامة في الوقت الفعلي.",

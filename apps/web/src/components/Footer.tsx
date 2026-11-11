@@ -4,10 +4,13 @@ import React from "react";
 import Link from "next/link";
 import { Compass, ShieldCheck } from "lucide-react";
 import { useI18n } from "../lib/i18n";
+import { SocialLinksRow } from "./SocialLinksRow";
 import styles from "./Footer.module.css";
 
 export function Footer() {
-  const { t, ext } = useI18n();
+  const { t, ext, language } = useI18n();
+  const contactLabel =
+    language === "ar" ? "اتصل بنا" : language === "en" ? "Contact Us" : "Contactez-nous";
 
   return (
     <footer className={styles.footer}>
@@ -28,6 +31,7 @@ export function Footer() {
               <ShieldCheck size={18} className={styles.trustBadgeIcon} />
               <span>{t.footerGuarantee}</span>
             </div>
+            <SocialLinksRow />
           </div>
 
           {/* Nav links */}
@@ -70,9 +74,17 @@ export function Footer() {
             © {new Date().getFullYear()} {t.copyright}
           </div>
           <div className={styles.socialRow}>
-            <span>{t.terms}</span>
+            <Link href="/contact" style={{ color: "inherit", textDecoration: "none" }}>
+              {contactLabel}
+            </Link>
             <span>•</span>
-            <span>{t.privacy}</span>
+            <Link href="/conditions-utilisation" style={{ color: "inherit", textDecoration: "none" }}>
+              {t.terms}
+            </Link>
+            <span>•</span>
+            <Link href="/politique-confidentialite" style={{ color: "inherit", textDecoration: "none" }}>
+              {t.privacy}
+            </Link>
             <span>•</span>
             <span>{t.cookies}</span>
           </div>

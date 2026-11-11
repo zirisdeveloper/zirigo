@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Search, MapPin, Calendar, CalendarCheck2, Users, CheckCircle2, X, Check } from "lucide-react";
 import { useI18n, Language } from "../lib/i18n";
 import { addDaysIso, isValidIsoDate } from "../lib/dateUtils";
+import { DisplaySettings } from "../lib/types";
 import styles from "./HeroSearch.module.css";
 
 export type SearchDateMode = "flexible" | "fixed";
@@ -12,6 +13,7 @@ interface HeroSearchProps {
   searchQuery?: string;
   dateMode?: SearchDateMode;
   dates?: { checkIn: string; checkOut: string };
+  displaySettings?: DisplaySettings;
   onSearch: (params: {
     query: string;
     types: string[];
@@ -58,6 +60,7 @@ export function HeroSearch({
   searchQuery,
   dateMode: externalDateMode,
   dates: externalDates,
+  displaySettings,
   onSearch,
   onDateFilterChange,
   selectedTypes,
@@ -179,48 +182,69 @@ export function HeroSearch({
   };
 
   const destinations = POPULAR_DESTINATIONS[language] || POPULAR_DESTINATIONS.fr;
+  const showHeroHeader = displaySettings?.showHeroHeader ?? true;
+  const showTypeTabs = displaySettings?.showTypeTabs ?? true;
+  const showTrustBanner = displaySettings?.showTrustBanner ?? true;
+
+  const promoText = displaySettings?.heroPromoText?.[language] ?? t.heroPromo;
+  const titleText = displaySettings?.heroTitleText?.[language] ?? t.heroTitle2;
+  const subtitleText = displaySettings?.heroSubtitleText?.[language] ?? t.heroSubtitle;
+
+  const trustItems = [
+    displaySettings?.trustItem1Text?.[language] ?? t.trustSavings,
+    displaySettings?.trustItem2Text?.[language] ?? t.trustMultiPlatform,
+    displaySettings?.trustItem3Text?.[language] ?? t.trustDirectPerks,
+  ].filter((item) => Boolean(item && item.trim().length > 0));
 
   return (
     <section className={styles.heroSection}>
       <div className={`container ${styles.heroContainer}`}>
         {/* Title & Value Proposition */}
-        <div className={styles.heroHeader}>
-          <div className={styles.badgePromo}>
-            <span className={styles.badgePulse} />
-            <span>{t.heroPromo}</span>
-          </div>
-          <h1 className={styles.heroTitle}>
-            {t.heroTitle1 && (
-              <>
-                {t.heroTitle1} <br />
-              </>
+        {showHeroHeader && (
+          <div className={styles.heroHeader}>
+            {promoText && promoText.trim().length > 0 && (
+              <div className={styles.badgePromo}>
+                <span className={styles.badgePulse} />
+                <span>{promoText}</span>
+              </div>
             )}
-            <span className={styles.gradientText}>{t.heroTitle2}</span>
-          </h1>
-          <p className={styles.heroSubtitle}>{t.heroSubtitle}</p>
-        </div>
+            <h1 className={styles.heroTitle}>
+              {t.heroTitle1 && (
+                <>
+                  {t.heroTitle1} <br />
+                </>
+              )}
+              <span className={styles.gradientText}>{titleText}</span>
+            </h1>
+            {subtitleText && subtitleText.trim().length > 0 && (
+              <p className={styles.heroSubtitle}>{subtitleText}</p>
+            )}
+          </div>
+        )}
 
         {/* Accommodation Type Filter Tabs (Multi-select) */}
-        <div className={styles.typeTabs}>
-          {PROPERTY_TYPES.map((type) => {
-            const isSelected =
-              type.id === "all"
-                ? selectedTypes.length === 0
-                : selectedTypes.includes(type.id);
-            return (
-              <button
-                key={type.id}
-                type="button"
-                aria-pressed={isSelected}
-                onClick={() => onToggleType(type.id)}
-                className={`${styles.typeTab} ${isSelected ? styles.typeTabActive : ""}`}
-              >
-                {isSelected && type.id !== "all" && <Check size={14} />}
-                <span>{type.label}</span>
-              </button>
-            );
-          })}
-        </div>
+        {showTypeTabs && (
+          <div className={styles.typeTabs}>
+            {PROPERTY_TYPES.map((type) => {
+              const isSelected =
+                type.id === "all"
+                  ? selectedTypes.length === 0
+                  : selectedTypes.includes(type.id);
+              return (
+                <button
+                  key={type.id}
+                  type="button"
+                  aria-pressed={isSelected}
+                  onClick={() => onToggleType(type.id)}
+                  className={`${styles.typeTab} ${isSelected ? styles.typeTabActive : ""}`}
+                >
+                  {isSelected && type.id !== "all" && <Check size={14} />}
+                  <span>{type.label}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
 
         {/* Date Flexibility Switch (Flexible vs Fixed Dates) */}
         <div className={styles.dateModeRow}>
@@ -369,20 +393,16 @@ export function HeroSearch({
         </form>
 
         {/* Live Trust Metrics */}
-        <div className={styles.trustBanner}>
-          <div className={styles.trustItem}>
-            <CheckCircle2 size={16} className={styles.trustIcon} />
-            <span>{t.trustSavings}</span>
+        {showTrustBanner && trustItems.length > 0 && (
+          <div className={styles.trustBanner}>
+            {trustItems.map((itemText, idx) => (
+              <div key={idx} className={styles.trustItem}>
+                <CheckCircle2 size={16} className={styles.trustIcon} />
+                <span>{itemText}</span>
+              </div>
+            ))}
           </div>
-          <div className={styles.trustItem}>
-            <CheckCircle2 size={16} className={styles.trustIcon} />
-            <span>{t.trustMultiPlatform}</span>
-          </div>
-          <div className={styles.trustItem}>
-            <CheckCircle2 size={16} className={styles.trustIcon} />
-            <span>{t.trustDirectPerks}</span>
-          </div>
-        </div>
+        )}
       </div>
     </section>
   );

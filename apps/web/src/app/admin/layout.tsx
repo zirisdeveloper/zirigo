@@ -12,6 +12,7 @@ import {
   CalendarCheck,
   CalendarRange,
   Megaphone,
+  Monitor,
   Settings,
   ExternalLink,
   Sun,
@@ -92,6 +93,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { label: ad.navBookings, href: "/admin/bookings", icon: CalendarCheck, exact: false },
     { label: ad.navAvailability, href: "/admin/disponibilites", icon: CalendarRange, exact: false },
     { label: ad.navAds, href: "/admin/ads", icon: Megaphone, exact: false },
+    { label: ad.navDisplay, href: "/admin/affichage", icon: Monitor, exact: false },
+    { label: ad.navContact, href: "/admin/contact", icon: Mail, exact: false },
     { label: ad.navSettings, href: "/admin/settings", icon: Settings, exact: false },
   ];
 
