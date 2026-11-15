@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Star, MapPin, Heart, Scale, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 import { Property } from "../lib/types";
 import { formatCurrency } from "../lib/data";
@@ -32,6 +33,7 @@ export function PropertyCard({
   onToggleCompare,
   onOpenBookingModal,
 }: PropertyCardProps) {
+  const router = useRouter();
   const { t, ext, language, isRTL } = useI18n();
   const localized = localizeProperty(property, language);
   const sortedRates = [...property.rates].sort((a, b) => a.pricePerNight - b.pricePerNight);
@@ -39,8 +41,32 @@ export function PropertyCard({
   const highestRate = sortedRates[sortedRates.length - 1];
   const savings = highestRate.pricePerNight - bestRate.pricePerNight;
 
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // If the click originated from an interactive element (button or link), let it handle its own event
+    const target = e.target as HTMLElement | null;
+    if (target?.closest("button") || target?.closest("a")) {
+      return;
+    }
+    if (e.metaKey || e.ctrlKey) {
+      window.open(`/properties/${property.slug}`, "_blank");
+    } else {
+      router.push(`/properties/${property.slug}`);
+    }
+  };
+
   return (
-    <div className={styles.card}>
+    <div
+      className={styles.card}
+      onClick={handleCardClick}
+      role="link"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" && e.target === e.currentTarget) {
+          router.push(`/properties/${property.slug}`);
+        }
+      }}
+      aria-label={localized.title}
+    >
       {/* Image Thumbnail Container */}
       <div className={styles.imageContainer}>
         <img
@@ -66,8 +92,10 @@ export function PropertyCard({
         {/* Favorite & Compare Quick Actions */}
         <div className={styles.floatingActions}>
           <button
+            type="button"
             onClick={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               onToggleFavorite(property.id);
             }}
             className={`${styles.iconBtn} ${isFavorite ? styles.favorited : ""}`}
@@ -78,8 +106,10 @@ export function PropertyCard({
           </button>
 
           <button
+            type="button"
             onClick={(e) => {
               e.preventDefault();
+              e.stopPropagation();
               onToggleCompare(property.id);
             }}
             className={`${styles.iconBtn} ${isCompared ? styles.compared : ""}`}
@@ -152,13 +182,18 @@ export function PropertyCard({
         <div className={styles.cardActions}>
           <Link
             href={`/properties/${property.slug}`}
+            onClick={(e) => e.stopPropagation()}
             className={`btn btn-secondary ${styles.detailsBtn}`}
           >
             <span>{t.compareRates}</span>
             <ArrowRight size={14} className={isRTL ? "rtl-flip" : ""} />
           </Link>
           <button
-            onClick={() => onOpenBookingModal(property)}
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onOpenBookingModal(property);
+            }}
             className={`btn btn-primary ${styles.bookBtn}`}
           >
             <span>{t.instantBook}</span>

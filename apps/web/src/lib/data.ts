@@ -479,6 +479,81 @@ export const PROPERTIES: Property[] = [
         date: "Août 2026"
       }
     ]
+  },
+  {
+    id: "prop-7",
+    slug: "complexe-touristique-andalouses",
+    title: "Complexe Touristique & Balnéaire Les Andalouses",
+    description: "Vaste complexe touristique en bord de mer méditerranéenne avec parcs aquatiques, bungalows privés, hôtel 4 étoiles, marina de loisirs et accès plage de sable fin.",
+    type: "complex",
+    stars: 4,
+    rating: 4.88,
+    reviewCount: 245,
+    city: "Oran",
+    country: "Algeria",
+    address: "Plage des Andalouses, El Ançor, 31000 Oran",
+    latitude: 35.733,
+    longitude: -0.871,
+    featuredImage: "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+    images: [
+      "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1200&q=80",
+      "https://images.unsplash.com/photo-1584132967334-10e028bd69f7?auto=format&fit=crop&w=1200&q=80"
+    ],
+    amenities: ["pool", "ocean_view", "beach_access", "restaurant", "breakfast", "spa", "wifi", "free_parking", "air_conditioning"],
+    cancellationPolicy: "flexible",
+    checkInTime: "14:00",
+    checkOutTime: "12:00",
+    isFeatured: true,
+    rooms: [
+      {
+        id: "room-7-1",
+        title: "Bungalow Familial Vue Mer",
+        description: "Bungalow spacieux indépendant de 3 pièces les pieds dans l'eau avec terrasse panoramique.",
+        capacityGuests: 6,
+        capacityBedrooms: 2,
+        capacityBeds: 4,
+        capacityBathrooms: 1,
+        basePricePerNight: 160,
+        cleaningFee: 0,
+        images: ["https://images.unsplash.com/photo-1571896349842-33c89424de2d?auto=format&fit=crop&w=1000&q=80"],
+        amenities: ["Terrasse Mer", "Cuisine Équipée", "Accès Plage"]
+      }
+    ],
+    rates: [
+      {
+        platformName: "Zirigo Direct",
+        pricePerNight: 160,
+        perks: ["Meilleur Prix Garanti", "Accès Illimité Parc Aquatique", "Petit-déjeuner Offert"],
+        isBestPrice: true,
+        bookingUrl: "#book"
+      },
+      {
+        platformName: "Booking.com",
+        pricePerNight: 185,
+        perks: ["Chambre seule"],
+        isBestPrice: false,
+        bookingUrl: "https://booking.com"
+      },
+      {
+        platformName: "Airbnb",
+        pricePerNight: 192,
+        perks: ["Frais de service voyageur inclus"],
+        isBestPrice: false,
+        bookingUrl: "https://airbnb.com"
+      }
+    ],
+    reviews: [
+      {
+        id: "rev-8",
+        authorName: "Yacine Belkacem",
+        authorAvatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80",
+        authorCountry: "Algérie",
+        rating: 5,
+        comment: "Séjour inoubliable en famille dans ce complexe balnéaire. Réservation instantanée sans frais sur Zirigo avec le pass aquapark offert !",
+        date: "Septembre 2026"
+      }
+    ]
   }
 ];
 

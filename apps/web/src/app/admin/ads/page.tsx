@@ -385,6 +385,7 @@ export default function AdminAdsPage() {
                   <option value="chalet">Chalets (chalet)</option>
                   <option value="resort">Resorts & Spa (resort)</option>
                   <option value="dormitory">Dortoirs (dormitory)</option>
+                  <option value="complex">Complexes (complex)</option>
                 </select>
               </div>
 

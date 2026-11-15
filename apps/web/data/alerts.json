@@ -1,5 +1,18 @@
 [
   {
+    "id": "alert-1794751252164",
+    "userId": "usr-1794302681659",
+    "name": "complexe",
+    "query": "complexe",
+    "propertyType": "all",
+    "minGuests": 1,
+    "amenities": [],
+    "frequency": "instant",
+    "channel": "both",
+    "isActive": true,
+    "createdAt": "2026-11-15T14:00:52.164Z"
+  },
+  {
     "id": "alert-1794304109246",
     "userId": "usr-1794302681659",
     "name": "appt",

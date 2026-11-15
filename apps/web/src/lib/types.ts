@@ -30,7 +30,7 @@ export interface PropertyReview {
   date: string;
 }
 
-export type PropertyType = "hotel" | "apartment" | "villa" | "chalet" | "resort" | "dormitory";
+export type PropertyType = "hotel" | "apartment" | "villa" | "chalet" | "resort" | "dormitory" | "complex";
 
 export interface Property {
   id: string;
@@ -178,6 +178,16 @@ export interface AdBanner {
   createdAt: string;
 }
 
+export interface EnabledPropertyTypes {
+  hotel: boolean;
+  apartment: boolean;
+  villa: boolean;
+  chalet: boolean;
+  resort: boolean;
+  dormitory: boolean;
+  complex: boolean;
+}
+
 export interface DisplaySettings {
   showHeaderMenuButton: boolean;
   showAdsSection: boolean;
@@ -185,6 +195,7 @@ export interface DisplaySettings {
   showHeroHeader: boolean;
   showTypeTabs: boolean;
   showTrustBanner: boolean;
+  enabledPropertyTypes: EnabledPropertyTypes;
   heroPromoText: LocalizedText;
   heroTitleText: LocalizedText;
   heroSubtitleText: LocalizedText;

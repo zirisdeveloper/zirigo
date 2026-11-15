@@ -3,8 +3,17 @@
   "showAdsSection": true,
   "showCategoryIconsSection": true,
   "showHeroHeader": true,
-  "showTypeTabs": true,
-  "showTrustBanner": true,
+  "showTypeTabs": false,
+  "showTrustBanner": false,
+  "enabledPropertyTypes": {
+    "hotel": true,
+    "apartment": true,
+    "villa": true,
+    "chalet": true,
+    "resort": true,
+    "dormitory": true,
+    "complex": true
+  },
   "heroPromoText": {
     "fr": "Moteur de Comparaison Multi-Plateformes en Temps Réel",
     "en": "Real-Time Multi-Platform Comparison Engine",
@@ -31,12 +40,12 @@
     "ar": "مقارنة شفافة وموثوقة: تدقيق أكثر من 4 منصات"
   },
   "trustItem3Text": {
-    "fr": "Avantages Directs : Petit-déjeuner offert, vin d'accueil & pass",
-    "en": "Direct Host Perks: Free breakfast, welcome wine & passes",
+    "fr": "Avantages Directs : Petit-déjeuner offert, cadeau d'accueil & pass",
+    "en": "Direct Host Perks: Free breakfast, welcome gift & passes",
     "ar": "مزايا الحجز المباشر: فطور مجاني، هدايا ترحيبية ودخول ميسر"
   },
   "socialFacebookUrl": "https://facebook.com",
   "socialInstagramUrl": "https://instagram.com",
   "socialLinkedInUrl": "https://linkedin.com",
-  "updatedAt": "2026-11-11T08:44:23.539Z"
+  "updatedAt": "2026-11-15T09:55:10.294Z"
 }

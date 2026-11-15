@@ -456,6 +456,7 @@ export function PropertyForm({ initialData, isEdit = false, mode = "admin" }: Pr
               <option value="chalet">{translatePropertyType("chalet", language)}</option>
               <option value="resort">{translatePropertyType("resort", language)}</option>
               <option value="dormitory">{translatePropertyType("dormitory", language)}</option>
+              <option value="complex">{translatePropertyType("complex", language)}</option>
             </select>
           </div>
 

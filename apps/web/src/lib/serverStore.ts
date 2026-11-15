@@ -138,6 +138,17 @@ export function getAllProperties(): Property[] {
     const raw = fs.readFileSync(filePath, "utf-8");
     const parsed = JSON.parse(raw);
     if (Array.isArray(parsed) && parsed.length > 0) {
+      const existingIds = new Set(parsed.map((p: Property) => p.id));
+      let changed = false;
+      for (const p of PROPERTIES) {
+        if (!existingIds.has(p.id)) {
+          parsed.push(p);
+          changed = true;
+        }
+      }
+      if (changed) {
+        saveAllProperties(parsed);
+      }
       memoryProperties = parsed;
       return parsed;
     }

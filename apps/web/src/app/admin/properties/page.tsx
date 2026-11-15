@@ -42,7 +42,7 @@ export default function AdminPropertiesPage() {
   const loadProperties = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/properties");
+      const res = await fetch("/api/properties?all=true");
       if (res.ok) {
         const data = await res.json();
         setProperties(data);
@@ -314,6 +314,7 @@ export default function AdminPropertiesPage() {
               <option value="chalet">{translatePropertyType("chalet", language)}</option>
               <option value="resort">{translatePropertyType("resort", language)}</option>
               <option value="dormitory">{translatePropertyType("dormitory", language)}</option>
+              <option value="complex">{translatePropertyType("complex", language)}</option>
             </select>
 
             <select

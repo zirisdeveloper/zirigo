@@ -56,6 +56,7 @@ export interface Translations {
   typeChalet: string;
   typeResort: string;
   typeDormitory: string;
+  typeComplex: string;
 
   // Filters & Sorting
   filters: string;
@@ -230,6 +231,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     typeChalet: "Chalets",
     typeResort: "Resorts & Spa",
     typeDormitory: "Dormitories",
+    typeComplex: "Complexes",
 
     filters: "Filters:",
     amenityPool: "Pool",
@@ -394,6 +396,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     typeChalet: "Chalets",
     typeResort: "Resorts & Spa",
     typeDormitory: "Dortoirs",
+    typeComplex: "Complexes",
 
     filters: "Filtres :",
     amenityPool: "Piscine",
@@ -558,6 +561,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     typeChalet: "شاليهات",
     typeResort: "منتجعات وسبا",
     typeDormitory: "مهاجع ونزل",
+    typeComplex: "مجمعات سياحية",
 
     filters: "تصفية حسب:",
     amenityPool: "مسبح",

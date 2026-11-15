@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getAllProperties, getAllBookings, createProperty } from "@/lib/serverStore";
 import { findConflictingBlock, isValidIsoDate } from "@/lib/availabilityStore";
 import { matchesPropertyQuery, matchesPropertyCategory } from "@/lib/searchUtils";
+import { getDisplaySettings } from "@/lib/displaySettingsStore";
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,6 +17,14 @@ export async function GET(request: NextRequest) {
     const sortBy = searchParams.get("sortBy");
 
     let list = getAllProperties();
+
+    const includeAll = searchParams.get("all") === "true";
+    if (!includeAll) {
+      const displaySettings = getDisplaySettings();
+      if (displaySettings.enabledPropertyTypes) {
+        list = list.filter((p) => displaySettings.enabledPropertyTypes[p.type] !== false);
+      }
+    }
 
     if (
       dateMode === "fixed" &&

@@ -13,6 +13,7 @@ const PROPERTY_TYPE_LABELS: Record<string, Record<Language, string>> = {
   chalet: { en: "Chalet", fr: "Chalet", ar: "شاليه" },
   resort: { en: "Resort & Spa", fr: "Resort & Spa", ar: "منتجع وسبا" },
   dormitory: { en: "Dormitories", fr: "Dortoirs", ar: "مهاجع ونزل" },
+  complex: { en: "Complexes", fr: "Complexes", ar: "مجمعات سياحية" },
 };
 
 export function translatePropertyType(type: string, lang: Language): string {
@@ -272,6 +273,18 @@ const DEMO_PROPERTY_TEXTS: Record<string, DemoPropLocalization> = {
       ar: "إقامة فاخرة بطراز كلاسيكي وأسقف عالية تطل على خليج الجزائر العاصمة والميناء. على بعد دقائق من القصبة التاريخية مع مرافق عصرية وإطلالة بحرية.",
     },
   },
+  "prop-7": {
+    title: {
+      en: "Les Andalouses Seaside Holiday Complex",
+      fr: "Complexe Touristique & Balnéaire Les Andalouses",
+      ar: "المركب السياحي والساحلي الأندلسيات",
+    },
+    description: {
+      en: "Vast Mediterranean beachfront holiday complex featuring water parks, private bungalows, a 4-star hotel, leisure marina, and direct access to a private sandy beach.",
+      fr: "Vaste complexe touristique en bord de mer méditerranéenne avec parcs aquatiques, bungalows privés, hôtel 4 étoiles, marina de loisirs et accès plage de sable fin.",
+      ar: "مركب سياحي وترفيهي متكامل على شاطئ البحر الأبيض المتوسط مع مسابح وملاعب مائية، بنغلوات فسيحة، مارينا لليخوت وشاطئ خاص مباشر.",
+    },
+  },
 };
 
 export function localizeProperty(property: Property, lang: Language): Property {
@@ -338,6 +351,7 @@ export interface ExtendedSiteTranslations {
   catChalets: string;
   catResorts: string;
   catDormitories: string;
+  catComplexes: string;
   catShowAll: string;
   moreFilters: string;
   allDbFiltersTitle: string;
@@ -675,6 +689,7 @@ export const EXTENDED_TRANSLATIONS: Record<Language, ExtendedSiteTranslations> =
     catChalets: "Chalets",
     catResorts: "Resorts & Spa",
     catDormitories: "Dortoirs",
+    catComplexes: "Complexes",
     catShowAll: "Tout afficher",
     moreFilters: "Autres",
     allDbFiltersTitle: "Tous les filtres disponibles",
@@ -1006,6 +1021,7 @@ export const EXTENDED_TRANSLATIONS: Record<Language, ExtendedSiteTranslations> =
     catChalets: "Chalets",
     catResorts: "Resorts & Spa",
     catDormitories: "Dormitories",
+    catComplexes: "Complexes",
     catShowAll: "Show all",
     moreFilters: "More",
     allDbFiltersTitle: "All available filters",
@@ -1337,6 +1353,7 @@ export const EXTENDED_TRANSLATIONS: Record<Language, ExtendedSiteTranslations> =
     catChalets: "شاليهات",
     catResorts: "منتجعات وسبا",
     catDormitories: "مهاجع ونزل",
+    catComplexes: "مجمعات سياحية",
     catShowAll: "عرض الكل",
     moreFilters: "المزيد",
     allDbFiltersTitle: "جميع الفلاتر المتاحة",

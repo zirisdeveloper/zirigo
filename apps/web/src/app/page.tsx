@@ -56,21 +56,24 @@ export default function HomePage() {
   const [allBlockedRanges, setAllBlockedRanges] = useState<AvailabilityBlock[]>([]);
   const { displaySettings } = useDisplaySettings();
 
-  const loadAvailabilitySnapshot = () => {
-    fetch("/api/availability")
+  const loadAvailabilitySnapshot = (signal?: AbortSignal) => {
+    fetch("/api/availability", { signal })
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
         if (data && Array.isArray(data.blocks)) {
           setAllBlockedRanges(data.blocks);
         }
       })
-      .catch(() => {
+      .catch((err) => {
+        if (err?.name === "AbortError") return;
         // fallback cleanly
       });
   };
 
   useEffect(() => {
-    fetch("/api/properties")
+    const controller = new AbortController();
+
+    fetch("/api/properties", { signal: controller.signal })
       .then((res) => {
         if (res.ok) return res.json();
         return null;
@@ -80,26 +83,27 @@ export default function HomePage() {
           setPropertiesList(data);
         }
       })
-      .catch((err) => console.error("Error fetching live properties:", err));
+      .catch((err) => {
+        if (err?.name === "AbortError") return;
+        // En cas de micro-coupure réseau ou rechargement HMR, utiliser un avertissement
+        // sans déclencher la boîte rouge intrusive d'erreur Next.js dev
+        console.warn("Notice: Live properties refresh skipped, using preloaded catalog.", err?.message || err);
+      });
 
-    loadAvailabilitySnapshot();
+    loadAvailabilitySnapshot(controller.signal);
+
+    const validPropertyTypes = ["hotel", "apartment", "villa", "chalet", "resort", "dorm", "complex"];
 
     const params = new URLSearchParams(window.location.search);
     const typeParam = params.get("type");
-    if (
-      typeParam &&
-      ["hotel", "apartment", "villa", "chalet", "resort", "dorm"].includes(typeParam)
-    ) {
+    if (typeParam && validPropertyTypes.includes(typeParam)) {
       setSelectedTypes([typeParam]);
     }
 
     const handleSelectCategory = (event: Event) => {
       const customEvent = event as CustomEvent<{ type?: string }>;
       const type = customEvent.detail?.type;
-      if (
-        type &&
-        ["hotel", "apartment", "villa", "chalet", "resort", "dorm"].includes(type)
-      ) {
+      if (type && validPropertyTypes.includes(type)) {
         setSelectedTypes([type]);
         document.getElementById("catalog")?.scrollIntoView({ behavior: "smooth" });
       }
@@ -107,6 +111,7 @@ export default function HomePage() {
 
     window.addEventListener("zirigo:select-category", handleSelectCategory);
     return () => {
+      controller.abort();
       window.removeEventListener("zirigo:select-category", handleSelectCategory);
     };
   }, []);
@@ -193,6 +198,12 @@ export default function HomePage() {
       searchDates.checkIn < searchDates.checkOut;
 
     return propertiesList.filter((prop) => {
+      if (
+        displaySettings?.enabledPropertyTypes &&
+        displaySettings.enabledPropertyTypes[prop.type] === false
+      ) {
+        return false;
+      }
       if (!matchesPropertyCategory(prop, selectedTypes)) return false;
       if (searchQuery && !matchesPropertyQuery(prop, searchQuery)) {
         return false;
@@ -207,7 +218,7 @@ export default function HomePage() {
       }
       return true;
     });
-  }, [propertiesList, selectedTypes, searchQuery, dateMode, searchDates, allBlockedRanges]);
+  }, [propertiesList, selectedTypes, searchQuery, dateMode, searchDates, allBlockedRanges, displaySettings?.enabledPropertyTypes]);
 
   // All filters dynamically extracted from database listings matching the current search
   const dynamicDbFilters = useMemo(() => {

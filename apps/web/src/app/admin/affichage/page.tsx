@@ -19,8 +19,22 @@ import {
   EyeOff,
   Menu,
   Share2,
+  Hotel,
+  Building2,
+  Home,
+  Trees,
+  Umbrella,
+  BedDouble,
+  Landmark,
 } from "lucide-react";
-import { DisplaySettings, LanguageCode, LocalizedText } from "@/lib/types";
+import {
+  DisplaySettings,
+  EnabledPropertyTypes,
+  LanguageCode,
+  LocalizedText,
+  Property,
+  PropertyType,
+} from "@/lib/types";
 import { DEFAULT_DISPLAY_SETTINGS } from "@/lib/displaySettingsDefaults";
 import { useDisplaySettings } from "@/lib/displaySettingsContext";
 import { SOCIAL_LINK_FIELDS } from "@/components/admin/SocialLinksCard";
@@ -43,10 +57,117 @@ type TextFieldKey =
   | "trustItem2Text"
   | "trustItem3Text";
 
+const PROPERTY_TYPE_CONFIG: {
+  key: PropertyType;
+  icon: React.ComponentType<{ size?: number; style?: React.CSSProperties }>;
+  title: Record<LanguageCode, string>;
+  desc: Record<LanguageCode, string>;
+}[] = [
+  {
+    key: "hotel",
+    icon: Hotel,
+    title: {
+      fr: "Hôtels",
+      en: "Hotels",
+      ar: "فنادق",
+    },
+    desc: {
+      fr: "Hôtels de charme, boutique-hôtels et résidences",
+      en: "Boutique hotels, luxury hotels, and serviced residences",
+      ar: "فنادق مميزة، فنادق بوتيك وإقامات فندقية",
+    },
+  },
+  {
+    key: "apartment",
+    icon: Building2,
+    title: {
+      fr: "Appartements",
+      en: "Apartments",
+      ar: "شقق",
+    },
+    desc: {
+      fr: "Appartements urbains, studios, duplex et lofts modernes",
+      en: "City apartments, studios, duplexes, and modern lofts",
+      ar: "شقق عصرية، استوديوهات ومساكن حضرية",
+    },
+  },
+  {
+    key: "villa",
+    icon: Home,
+    title: {
+      fr: "Villas",
+      en: "Villas",
+      ar: "فيلات",
+    },
+    desc: {
+      fr: "Villas de prestige avec piscine et propriétés d'exception",
+      en: "Prestige villas with pools and luxury private estates",
+      ar: "فيلات راقية مع مسابح وممتلكات استثنائية",
+    },
+  },
+  {
+    key: "chalet",
+    icon: Trees,
+    title: {
+      fr: "Chalets",
+      en: "Chalets",
+      ar: "شاليهات",
+    },
+    desc: {
+      fr: "Chalets alpins, refuges de montagne et séjours nature",
+      en: "Alpine chalets, mountain lodges, and nature retreats",
+      ar: "شاليهات جبلية وإقامات طبيعية هادئة",
+    },
+  },
+  {
+    key: "resort",
+    icon: Umbrella,
+    title: {
+      fr: "Resorts & Spa",
+      en: "Resorts & Spa",
+      ar: "منتجعات وسبا",
+    },
+    desc: {
+      fr: "Complexes hôteliers tout compris, thalasso et détente",
+      en: "All-inclusive resorts, spa retreats, and wellness stays",
+      ar: "منتجعات سياحية متكاملة، استجمام وسبا",
+    },
+  },
+  {
+    key: "dormitory",
+    icon: BedDouble,
+    title: {
+      fr: "Dortoirs",
+      en: "Dormitories",
+      ar: "مهاجع",
+    },
+    desc: {
+      fr: "Auberges de jeunesse, dortoirs et hébergements partagés",
+      en: "Youth hostels, dormitories, and shared accommodations",
+      ar: "نزل شباب، مهاجع وإقامات مشتركة اقتصادية",
+    },
+  },
+  {
+    key: "complex",
+    icon: Landmark,
+    title: {
+      fr: "Complexes",
+      en: "Complexes",
+      ar: "مجمعات سياحية",
+    },
+    desc: {
+      fr: "Complexes touristiques, villages vacances et centres balnéaires",
+      en: "Tourist complexes, holiday villages, and multi-amenity seaside compounds",
+      ar: "مجمعات سياحية وترفيهية، قرى العطلات ومراكز الاستجمام",
+    },
+  },
+];
+
 export default function AdminAffichagePage() {
   const { language, ext } = useI18n();
   const { refreshDisplaySettings } = useDisplaySettings();
   const [settings, setSettings] = useState<DisplaySettings>(DEFAULT_DISPLAY_SETTINGS);
+  const [propertyCounts, setPropertyCounts] = useState<Record<string, number>>({});
   const [editLang, setEditLang] = useState<LanguageCode>("fr");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -69,6 +190,19 @@ export default function AdminAffichagePage() {
         // default fallback
       })
       .finally(() => setIsLoading(false));
+
+    fetch("/api/properties?all=true")
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data: Property[]) => {
+        if (Array.isArray(data)) {
+          const counts: Record<string, number> = {};
+          data.forEach((p) => {
+            counts[p.type] = (counts[p.type] || 0) + 1;
+          });
+          setPropertyCounts(counts);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const persistPatch = async (patch: Partial<DisplaySettings>, successMsg?: string) => {
@@ -114,6 +248,66 @@ export default function AdminAffichagePage() {
     if (!ok) {
       setSettings((prev) => ({ ...prev, [key]: !nextVal }));
     }
+  };
+
+  const handleTogglePropertyType = async (typeKey: PropertyType) => {
+    const currentTypes =
+      settings.enabledPropertyTypes || DEFAULT_DISPLAY_SETTINGS.enabledPropertyTypes;
+    const nextVal = !currentTypes[typeKey];
+    const nextTypes: EnabledPropertyTypes = { ...currentTypes, [typeKey]: nextVal };
+    setSettings((prev) => ({
+      ...prev,
+      enabledPropertyTypes: nextTypes,
+    }));
+    const cfg = PROPERTY_TYPE_CONFIG.find((c) => c.key === typeKey);
+    const label = cfg?.title[language] || typeKey;
+    const ok = await persistPatch(
+      { enabledPropertyTypes: nextTypes },
+      nextVal
+        ? language === "en"
+          ? `${label} enabled on site`
+          : language === "ar"
+          ? `تم تفعيل ${label} على الموقع`
+          : `${label} activé(s) sur le site`
+        : language === "en"
+          ? `${label} disabled on site`
+          : language === "ar"
+          ? `تم تعطيل ${label} من الموقع`
+          : `${label} désactivé(s) du site`
+    );
+    if (!ok) {
+      setSettings((prev) => ({
+        ...prev,
+        enabledPropertyTypes: currentTypes,
+      }));
+    }
+  };
+
+  const handleToggleAllTypes = async (enableAll: boolean) => {
+    const nextTypes: EnabledPropertyTypes = {
+      hotel: enableAll,
+      apartment: enableAll,
+      villa: enableAll,
+      chalet: enableAll,
+      resort: enableAll,
+      dormitory: enableAll,
+      complex: enableAll,
+    };
+    setSettings((prev) => ({ ...prev, enabledPropertyTypes: nextTypes }));
+    await persistPatch(
+      { enabledPropertyTypes: nextTypes },
+      enableAll
+        ? language === "en"
+          ? "All accommodation types enabled"
+          : language === "ar"
+          ? "تم تفعيل جميع أنواع الإقامة"
+          : "Tous les types d'hébergement ont été activés"
+        : language === "en"
+          ? "All accommodation types disabled"
+          : language === "ar"
+          ? "تم تعطيل جميع أنواع الإقامة"
+          : "Tous les types d'hébergement ont été désactivés"
+    );
   };
 
   const handleTextChange = (field: TextFieldKey, value: string) => {
@@ -457,6 +651,226 @@ export default function AdminAffichagePage() {
             </div>
           );
         })}
+      </div>
+
+      {/* Accommodation & Booking Types Visibility Card */}
+      <div className={styles.adminCard} style={{ marginBottom: "1.75rem" }}>
+        <div className={styles.adminCardHeader}>
+          <div className={styles.cardTitle}>
+            <Building2 size={20} style={{ color: "var(--brand-primary)" }} />
+            <span>
+              {language === "ar"
+                ? "أنواع الحجز والإقامة المعروضة على الموقع"
+                : language === "en"
+                ? "Accommodation & Booking Types Displayed on Site"
+                : "Types de réservation & d'hébergement à afficher sur le site"}
+            </span>
+          </div>
+
+          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
+            <span
+              style={{
+                fontSize: "0.8rem",
+                color: "var(--text-muted)",
+                fontWeight: 600,
+                marginRight: "0.5rem",
+              }}
+            >
+              {Object.values(settings.enabledPropertyTypes || {}).filter(Boolean).length} /{" "}
+              {PROPERTY_TYPE_CONFIG.length}{" "}
+              {language === "ar" ? "نشط" : language === "en" ? "active" : "actifs"}
+            </span>
+            <button
+              type="button"
+              onClick={() => handleToggleAllTypes(true)}
+              className="btn btn-secondary"
+              style={{ padding: "0.35rem 0.75rem", fontSize: "0.78rem" }}
+            >
+              {language === "ar" ? "تفعيل الكل" : language === "en" ? "Enable All" : "Tout activer"}
+            </button>
+            <button
+              type="button"
+              onClick={() => handleToggleAllTypes(false)}
+              className="btn btn-secondary"
+              style={{ padding: "0.35rem 0.75rem", fontSize: "0.78rem" }}
+            >
+              {language === "ar"
+                ? "تعطيل الكل"
+                : language === "en"
+                ? "Disable All"
+                : "Tout désactiver"}
+            </button>
+          </div>
+        </div>
+
+        <div style={{ padding: "1.25rem 1.35rem" }}>
+          <p
+            style={{
+              fontSize: "0.88rem",
+              color: "var(--text-secondary)",
+              lineHeight: 1.5,
+              marginBottom: "1.25rem",
+            }}
+          >
+            {language === "ar"
+              ? "اختر أنواع الإقامة النشطة والمعروضة في المنصة (فنادق، شقق، فيلات، شاليهات، منتجعات وسبا، مهاجع). الأنواع المعطلة ستُخفى تلقائياً من شريط الأيقونات وفلاتر البحث والقائمة الجانبية وقائمة الإعلانات."
+              : language === "en"
+              ? "Select which booking types are active and displayed on the platform (hotels, apartments, villas, chalets, resorts & spa, dormitories). Disabled types will be automatically hidden from category strips, search filters, the menu drawer, and the public catalog."
+              : "Choisissez les types d'hébergement actifs et visibles sur le site (hôtels, appartements, villas, chalets, resorts & spa, dortoirs). Les types désactivés sont automatiquement masqués du bandeau d'icônes, des filtres de recherche, du menu latéral et du catalogue public."}
+          </p>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(310px, 1fr))",
+              gap: "1rem",
+            }}
+          >
+            {PROPERTY_TYPE_CONFIG.map((item) => {
+              const isEnabled =
+                settings.enabledPropertyTypes?.[item.key] ??
+                DEFAULT_DISPLAY_SETTINGS.enabledPropertyTypes[item.key];
+              const IconComp = item.icon;
+              const count = propertyCounts[item.key] ?? 0;
+
+              return (
+                <div
+                  key={item.key}
+                  style={{
+                    border: isEnabled
+                      ? "1px solid var(--border-medium)"
+                      : "1px dashed var(--border-subtle)",
+                    borderRadius: "var(--radius-md)",
+                    padding: "1rem 1.15rem",
+                    backgroundColor: isEnabled ? "var(--bg-primary)" : "var(--bg-muted)",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "space-between",
+                    gap: "0.85rem",
+                    transition: "all 0.2s ease",
+                    opacity: isEnabled ? 1 : 0.65,
+                  }}
+                >
+                  <div style={{ display: "flex", alignItems: "flex-start", gap: "0.85rem" }}>
+                    <div
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: "var(--radius-md)",
+                        backgroundColor: isEnabled
+                          ? "rgba(13, 148, 136, 0.12)"
+                          : "var(--bg-secondary)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <IconComp
+                        size={22}
+                        style={{
+                          color: isEnabled ? "var(--brand-primary)" : "var(--text-muted)",
+                        }}
+                      />
+                    </div>
+
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          gap: "0.5rem",
+                          marginBottom: "0.2rem",
+                        }}
+                      >
+                        <h3
+                          style={{
+                            fontSize: "1rem",
+                            fontWeight: 700,
+                            color: "var(--text-primary)",
+                            margin: 0,
+                          }}
+                        >
+                          {item.title[language]}
+                        </h3>
+                        {renderVisibilityBadge(isEnabled)}
+                      </div>
+                      <p
+                        style={{
+                          fontSize: "0.8rem",
+                          color: "var(--text-secondary)",
+                          lineHeight: 1.35,
+                          margin: 0,
+                        }}
+                      >
+                        {item.desc[language]}
+                      </p>
+                      <div
+                        style={{
+                          fontSize: "0.75rem",
+                          color: "var(--text-muted)",
+                          marginTop: "0.35rem",
+                          fontWeight: 600,
+                        }}
+                      >
+                        {count}{" "}
+                        {language === "ar"
+                          ? "إعلان مسجل"
+                          : language === "en"
+                          ? count > 1
+                            ? "listings in database"
+                            : "listing in database"
+                          : count > 1
+                          ? "annonces dans la base"
+                          : "annonce dans la base"}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "flex-end",
+                      borderTop: "1px solid var(--border-subtle)",
+                      paddingTop: "0.75rem",
+                    }}
+                  >
+                    <button
+                      type="button"
+                      onClick={() => handleTogglePropertyType(item.key)}
+                      className={isEnabled ? "btn btn-secondary" : "btn btn-primary"}
+                      style={{
+                        padding: "0.45rem 0.95rem",
+                        fontSize: "0.82rem",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "0.4rem",
+                        fontWeight: 700,
+                      }}
+                    >
+                      {isEnabled ? <EyeOff size={14} /> : <Eye size={14} />}
+                      <span>
+                        {isEnabled
+                          ? language === "en"
+                            ? `Disable ${item.title[language]}`
+                            : language === "ar"
+                            ? `تعطيل ${item.title[language]}`
+                            : `Désactiver ${item.title[language]}`
+                          : language === "en"
+                            ? `Enable ${item.title[language]}`
+                            : language === "ar"
+                            ? `تفعيل ${item.title[language]}`
+                            : `Activer ${item.title[language]}`}
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* Form for Section Visibility + Editable Text Zones */}

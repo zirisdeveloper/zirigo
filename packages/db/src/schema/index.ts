@@ -229,11 +229,12 @@ export const siteDisplaySettings = pgTable("site_display_settings", {
   showAdsSection: boolean("show_ads_section").default(true).notNull(),
   showCategoryIconsSection: boolean("show_category_icons_section").default(true).notNull(),
   showHeroHeader: boolean("show_hero_header").default(true).notNull(),
-  showTypeTabs: boolean("show_type_tabs").default(true).notNull(),
+  showTypeTabs: boolean("show_type_tabs").default(false).notNull(),
   showTrustBanner: boolean("show_trust_banner").default(true).notNull(),
   socialFacebookUrl: varchar("social_facebook_url", { length: 500 }).default("https://facebook.com").notNull(),
   socialInstagramUrl: varchar("social_instagram_url", { length: 500 }).default("https://instagram.com").notNull(),
   socialLinkedInUrl: varchar("social_linkedin_url", { length: 500 }).default("https://linkedin.com").notNull(),
+  enabledPropertyTypesJson: jsonb("enabled_property_types_json"),
   customTextsJson: jsonb("custom_texts_json"),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

@@ -1,12 +1,23 @@
-import { DisplaySettings } from "./types";
+import { DisplaySettings, EnabledPropertyTypes } from "./types";
+
+export const DEFAULT_ENABLED_PROPERTY_TYPES: EnabledPropertyTypes = {
+  hotel: true,
+  apartment: true,
+  villa: true,
+  chalet: true,
+  resort: true,
+  dormitory: true,
+  complex: true,
+};
 
 export const DEFAULT_DISPLAY_SETTINGS: DisplaySettings = {
   showHeaderMenuButton: true,
   showAdsSection: true,
   showCategoryIconsSection: true,
   showHeroHeader: true,
-  showTypeTabs: true,
+  showTypeTabs: false,
   showTrustBanner: true,
+  enabledPropertyTypes: DEFAULT_ENABLED_PROPERTY_TYPES,
   heroPromoText: {
     fr: "Moteur de Comparaison Multi-Plateformes en Temps Réel",
     en: "Real-Time Multi-Platform Comparison Engine",

@@ -50,7 +50,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return data.user || null;
       }
     } catch (err) {
-      console.error("Failed to fetch session:", err);
+      console.warn("Notice: Session check skipped or interrupted:", err);
     } finally {
       setIsLoading(false);
     }

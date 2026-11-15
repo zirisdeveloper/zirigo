@@ -157,7 +157,15 @@ export function AdAndCategoryStrip({
       label: ext.catDormitories,
       image: "/images/categories/dormitories.svg",
     },
-  ];
+    {
+      id: "complex",
+      label: ext.catComplexes,
+      image: "/images/categories/complexes.svg",
+    },
+  ].filter((cat) => {
+    if (!displaySettings?.enabledPropertyTypes) return true;
+    return displaySettings.enabledPropertyTypes[cat.id as keyof typeof displaySettings.enabledPropertyTypes] !== false;
+  });
 
   const scrollToCatalog = () => {
     const el = document.getElementById("catalog");

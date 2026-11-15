@@ -1,5 +1,19 @@
 [
   {
+    "id": "notif-1794751252169-874",
+    "userId": "usr-1794302681659",
+    "alertId": "alert-1794751252164",
+    "alertName": "complexe",
+    "propertyId": "prop-7",
+    "propertySlug": "complexe-touristique-andalouses",
+    "propertyTitle": "Complexe Touristique & Balnéaire Les Andalouses",
+    "propertyCity": "Oran, Algeria",
+    "pricePerNight": 160,
+    "message": "1 hébergement(s) correspondent déjà à votre alerte « complexe », dont Complexe Touristique & Balnéaire Les Andalouses.",
+    "isRead": false,
+    "createdAt": "2026-11-15T14:00:52.169Z"
+  },
+  {
     "id": "notif-1794304094525-188",
     "userId": "usr-1794302681659",
     "alertId": "alert-1794304094521",

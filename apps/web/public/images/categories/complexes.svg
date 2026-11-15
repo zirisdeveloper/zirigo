@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" fill="none">
+  <defs>
+    <filter id="complexShadow" x="-15%" y="-10%" width="130%" height="135%">
+      <feDropShadow dx="0" dy="10" stdDeviation="8" flood-color="#0f172a" flood-opacity="0.18"/>
+    </filter>
+    <linearGradient id="cBaseTop" x1="40" y1="120" x2="216" y2="210" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f8fafc"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="cBaseSideL" x1="30" y1="158" x2="128" y2="225" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#cbd5e1"/>
+      <stop offset="100%" stop-color="#94a3b8"/>
+    </linearGradient>
+    <linearGradient id="cPoolGrad" x1="55" y1="140" x2="195" y2="210" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+    <linearGradient id="bldgGlass1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <linearGradient id="bldgGlass2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#075985"/>
+    </linearGradient>
+    <linearGradient id="bldgWhite" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e2e8f0"/>
+    </linearGradient>
+    <linearGradient id="bldgAccent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+    <linearGradient id="cPalmGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22c55e"/>
+      <stop offset="100%" stop-color="#15803d"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="256" height="256" fill="#ffffff"/>
+
+  <!-- Isometric Rounded Plinth Base -->
+  <g filter="url(#complexShadow)">
+    <path d="M128 98 L224 153 C231 157 231 167 224 171 L134 223 C130 225 126 225 122 223 L32 171 C25 167 25 157 32 153 Z" fill="url(#cBaseTop)"/>
+    <path d="M27 160 L122 215 C126 217 130 217 134 215 L229 160 L229 168 C229 171 227 173 224 175 L134 227 C130 229 126 229 122 227 L32 175 C29 173 27 171 27 168 Z" fill="url(#cBaseSideL)"/>
+  </g>
+
+  <!-- Paved Resort Complex Esplanade / Garden -->
+  <path d="M128 105 L215 154 L128 204 L41 154 Z" fill="#f1f5f9"/>
+
+  <!-- Curving Turquoise Pools Network -->
+  <path d="M128 138 L190 173 L145 198 L80 162 Z" fill="#e2e8f0"/>
+  <path d="M128 141 L186 173 L145 195 L84 163 Z" fill="url(#cPoolGrad)"/>
+  <path d="M110 160 C125 152 145 162 165 156" stroke="#bae6fd" stroke-width="1.8" stroke-linecap="round" opacity="0.8"/>
+  <path d="M102 175 C118 170 134 176 150 171" stroke="#ffffff" stroke-width="1.4" stroke-linecap="round" opacity="0.6"/>
+
+  <!-- Left Main Modern Complex Wing (Tower A) -->
+  <g>
+    <!-- Left Face -->
+    <path d="M58 80 L96 102 L96 152 L58 130 Z" fill="#cbd5e1"/>
+    <!-- Right Face (Glass curtain) -->
+    <path d="M96 102 L132 81 L132 131 L96 152 Z" fill="url(#bldgGlass1)"/>
+    <!-- Roof -->
+    <path d="M58 80 L94 59 L132 81 L96 102 Z" fill="url(#bldgWhite)"/>
+    <!-- Roof Heliport / Penthouse Accent -->
+    <path d="M78 72 L94 63 L110 72 L94 81 Z" fill="url(#bldgAccent)"/>
+    <!-- Windows & Balconies Left -->
+    <line x1="68" y1="92" x2="88" y2="103" stroke="#94a3b8" stroke-width="2"/>
+    <line x1="68" y1="104" x2="88" y2="115" stroke="#94a3b8" stroke-width="2"/>
+    <line x1="68" y1="116" x2="88" y2="127" stroke="#94a3b8" stroke-width="2"/>
+    <!-- Windows & Balconies Right (Glass glow) -->
+    <line x1="104" y1="104" x2="124" y2="92" stroke="#e0f2fe" stroke-width="2" opacity="0.9"/>
+    <line x1="104" y1="116" x2="124" y2="104" stroke="#e0f2fe" stroke-width="2" opacity="0.9"/>
+    <line x1="104" y1="128" x2="124" y2="116" stroke="#e0f2fe" stroke-width="2" opacity="0.9"/>
+    <line x1="104" y1="140" x2="124" y2="128" stroke="#e0f2fe" stroke-width="2" opacity="0.9"/>
+  </g>
+
+  <!-- Right Resort Pavilion (Tower B / Club & Suites) -->
+  <g>
+    <!-- Left Face -->
+    <path d="M136 95 L168 113 L168 152 L136 134 Z" fill="url(#bldgGlass2)"/>
+    <!-- Right Face -->
+    <path d="M168 113 L198 96 L198 135 L168 152 Z" fill="#94a3b8"/>
+    <!-- Roof Deck -->
+    <path d="M136 95 L166 78 L198 96 L168 113 Z" fill="url(#bldgWhite)"/>
+    <!-- Roof Pergola / Terrace -->
+    <path d="M152 89 L166 81 L180 89 L166 97 Z" fill="#0d9488"/>
+    <!-- Window Lines -->
+    <line x1="144" y1="110" x2="160" y2="119" stroke="#7dd3fc" stroke-width="2" opacity="0.8"/>
+    <line x1="144" y1="122" x2="160" y2="131" stroke="#7dd3fc" stroke-width="2" opacity="0.8"/>
+    <line x1="144" y1="134" x2="160" y2="143" stroke="#7dd3fc" stroke-width="2" opacity="0.8"/>
+  </g>
+
+  <!-- Central Glass Skybridge Connecting Tower A & Tower B -->
+  <g>
+    <path d="M116 93 L146 110 L146 118 L116 101 Z" fill="url(#bldgGlass1)" opacity="0.9"/>
+    <path d="M116 93 L126 87 L156 104 L146 110 Z" fill="#f8fafc"/>
+  </g>
+
+  <!-- Palm Trees & Landscaping -->
+  <g>
+    <!-- Palm 1 Left -->
+    <path d="M46 148 Q48 136 52 130" stroke="#78350f" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="52" cy="128" r="7" fill="url(#cPalmGrad)"/>
+    <circle cx="47" cy="129" r="6" fill="url(#cPalmGrad)"/>
+    <circle cx="56" cy="129" r="6" fill="url(#cPalmGrad)"/>
+
+    <!-- Palm 2 Center Pool -->
+    <path d="M80 182 Q83 170 88 162" stroke="#78350f" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="88" cy="160" r="8" fill="url(#cPalmGrad)"/>
+    <circle cx="82" cy="161" r="7" fill="url(#cPalmGrad)"/>
+    <circle cx="94" cy="161" r="7" fill="url(#cPalmGrad)"/>
+
+    <!-- Palm 3 Right Deck -->
+    <path d="M198 168 Q200 156 204 150" stroke="#78350f" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="204" cy="148" r="7" fill="url(#cPalmGrad)"/>
+    <circle cx="199" cy="149" r="6" fill="url(#cPalmGrad)"/>
+    <circle cx="209" cy="149" r="6" fill="url(#cPalmGrad)"/>
+  </g>
+
+  <!-- Yellow & White Beach Umbrellas by the Pool -->
+  <g>
+    <path d="M158 178 L158 186" stroke="#94a3b8" stroke-width="1.4"/>
+    <ellipse cx="158" cy="178" rx="6" ry="3.5" fill="#f59e0b"/>
+
+    <path d="M172 186 L172 194" stroke="#94a3b8" stroke-width="1.4"/>
+    <ellipse cx="172" cy="186" rx="6" ry="3.5" fill="#0ea5e9"/>
+  </g>
+</svg>
+

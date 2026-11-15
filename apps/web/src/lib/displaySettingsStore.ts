@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { DisplaySettings, LocalizedText } from "./types";
+import { DisplaySettings, EnabledPropertyTypes, LocalizedText, PropertyType } from "./types";
 import { DEFAULT_DISPLAY_SETTINGS } from "./displaySettingsDefaults";
 
 function getDataDirectory(): string {
@@ -49,6 +49,23 @@ function sanitizeSocialUrl(incoming: unknown, fallback: string): string {
   return `https://${trimmed}`;
 }
 
+function mergeEnabledPropertyTypes(
+  incoming: unknown,
+  fallback: EnabledPropertyTypes
+): EnabledPropertyTypes {
+  if (!incoming || typeof incoming !== "object") return fallback;
+  const inc = incoming as Partial<Record<PropertyType, unknown>>;
+  return {
+    hotel: typeof inc.hotel === "boolean" ? inc.hotel : fallback.hotel,
+    apartment: typeof inc.apartment === "boolean" ? inc.apartment : fallback.apartment,
+    villa: typeof inc.villa === "boolean" ? inc.villa : fallback.villa,
+    chalet: typeof inc.chalet === "boolean" ? inc.chalet : fallback.chalet,
+    resort: typeof inc.resort === "boolean" ? inc.resort : fallback.resort,
+    dormitory: typeof inc.dormitory === "boolean" ? inc.dormitory : fallback.dormitory,
+    complex: typeof inc.complex === "boolean" ? inc.complex : fallback.complex,
+  };
+}
+
 export function getDisplaySettings(): DisplaySettings {
   const filePath = getSettingsFilePath();
   if (!fs.existsSync(filePath)) {
@@ -67,6 +84,10 @@ export function getDisplaySettings(): DisplaySettings {
       showHeroHeader: parsed.showHeroHeader ?? DEFAULT_DISPLAY_SETTINGS.showHeroHeader,
       showTypeTabs: parsed.showTypeTabs ?? DEFAULT_DISPLAY_SETTINGS.showTypeTabs,
       showTrustBanner: parsed.showTrustBanner ?? DEFAULT_DISPLAY_SETTINGS.showTrustBanner,
+      enabledPropertyTypes: mergeEnabledPropertyTypes(
+        parsed.enabledPropertyTypes,
+        DEFAULT_DISPLAY_SETTINGS.enabledPropertyTypes
+      ),
       heroPromoText: mergeLocalized(parsed.heroPromoText, DEFAULT_DISPLAY_SETTINGS.heroPromoText),
       heroTitleText: mergeLocalized(parsed.heroTitleText, DEFAULT_DISPLAY_SETTINGS.heroTitleText),
       heroSubtitleText: mergeLocalized(
@@ -147,6 +168,10 @@ export function updateDisplaySettings(
       typeof updates.showTrustBanner === "boolean"
         ? updates.showTrustBanner
         : current.showTrustBanner,
+    enabledPropertyTypes:
+      "enabledPropertyTypes" in updates
+        ? mergeEnabledPropertyTypes(updates.enabledPropertyTypes, current.enabledPropertyTypes)
+        : current.enabledPropertyTypes,
     heroPromoText: mergeLocalized(updates.heroPromoText, current.heroPromoText),
     heroTitleText: mergeLocalized(updates.heroTitleText, current.heroTitleText),
     heroSubtitleText: mergeLocalized(updates.heroSubtitleText, current.heroSubtitleText),

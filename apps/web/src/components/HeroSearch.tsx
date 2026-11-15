@@ -5,6 +5,7 @@ import { Search, MapPin, Calendar, CalendarCheck2, Users, CheckCircle2, X, Check
 import { useI18n, Language } from "../lib/i18n";
 import { addDaysIso, isValidIsoDate } from "../lib/dateUtils";
 import { DisplaySettings } from "../lib/types";
+import { DEFAULT_DISPLAY_SETTINGS } from "../lib/displaySettingsDefaults";
 import styles from "./HeroSearch.module.css";
 
 export type SearchDateMode = "fixed" | "flexible";
@@ -116,7 +117,12 @@ export function HeroSearch({
     { id: "chalet", label: t.typeChalet },
     { id: "resort", label: t.typeResort },
     { id: "dormitory", label: t.typeDormitory },
-  ];
+    { id: "complex", label: t.typeComplex },
+  ].filter((type) => {
+    if (type.id === "all") return true;
+    if (!displaySettings?.enabledPropertyTypes) return true;
+    return displaySettings.enabledPropertyTypes[type.id as keyof typeof displaySettings.enabledPropertyTypes] !== false;
+  });
 
   const scrollToCatalog = () => {
     const el = document.getElementById("catalog");
@@ -183,7 +189,8 @@ export function HeroSearch({
 
   const destinations = POPULAR_DESTINATIONS[language] || POPULAR_DESTINATIONS.fr;
   const showHeroHeader = displaySettings?.showHeroHeader ?? true;
-  const showTypeTabs = displaySettings?.showTypeTabs ?? true;
+  const showTypeTabs =
+    displaySettings?.showTypeTabs ?? DEFAULT_DISPLAY_SETTINGS.showTypeTabs;
   const showTrustBanner = displaySettings?.showTrustBanner ?? true;
 
   const promoText = displaySettings?.heroPromoText?.[language] ?? t.heroPromo;
